@@ -35,6 +35,7 @@ function Level:init(def)
 end
 
 function Level:update(dt)
+    self.player:update(dt)
 end
 
 function Level:render()

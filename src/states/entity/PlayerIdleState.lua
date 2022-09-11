@@ -7,8 +7,9 @@ if love.keyboard.isDown('right') and love.keyboard.isDown('up') then
     self.entity.y = self.entity.y - 7*dt
 elseif love.keyboard.isDown('right') and love.keyboard.isDown('down') then
     self.entity.direction = 'right-down'
-    self.entity.y = self.entity.y + 7*dt
-    self.entity.x = self.entity.x + 14*dt
+    Timer.tween(0.5, {
+    [self.entity] = {y = self.entity.y + 16,
+    x = self.entity.x + 32}})
 elseif love.keyboard.isDown('down') and love.keyboard.isDown('left') then
     self.entity.direction = 'left-down'
     self.entity.y = self.entity.y + 7*dt
