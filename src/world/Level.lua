@@ -8,8 +8,8 @@ function Level:init(def)
 
     self.player = Player{
         animations = ENTITY_DEFS['player'].animations,
-        mapX = 4,
-        mapY = 4,
+        mapX = 9,
+        mapY = 9,
         width = 16,
         height = 32,
         mapSize = 10
