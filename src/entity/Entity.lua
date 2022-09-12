@@ -32,14 +32,14 @@ end
 function Entity:to_grid_coordinate(x,y) 
     local a = 1 * 0.5 * self.width
     local b = -1 * 0.5 * self.width
-    local c =  0.5 * self.height
-    local d =  0.5 * self.height
+    local c =  0.5 * (16)
+    local d =  0.5 * (16)
     
     inv = self:invert_matrix(a, b, c, d)
     
     
-      self.mapX= math.floor(x* inv.a + (y ) * inv.b + 1)
-      self.mapY= math.floor(x * inv.c + (y )* inv.d + 1)
+      self.mapX= math.floor(x* inv.a + (y + self.height-10) * inv.b + 1)
+      self.mapY= math.floor(x * inv.c + (y + self.height-10)* inv.d + 1)
     
 end
 
