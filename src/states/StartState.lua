@@ -24,8 +24,6 @@ end
 function StartState:render()
     love.graphics.translate(-math.floor(self.camX), -math.floor(self.camY))
     self.level:render()   
-    love.graphics.draw(gTextures['player'],
-    math.floor(VIRTUAL_WIDTH/2 + self.level.player.x), 
-    math.floor(VIRTUAL_HEIGHT/2+ self.level.player.y))
     love.graphics.rectangle('line', VIRTUAL_WIDTH/2 + self.level.player.moveboxX, VIRTUAL_HEIGHT/2+ self.level.player.moveboxY, 8, 6)
+    love.graphics.print(tostring(self.level.player.mapX)..''..tostring(self.level.player.mapY), gFonts['medium'], 10, 10)
 end

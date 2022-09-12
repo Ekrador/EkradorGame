@@ -1,20 +1,19 @@
 PlayerIdleState = Class{__includes = EntityIdleState}
 
 function PlayerIdleState:update(dt)
-if love.keyboard.isDown('right') and love.keyboard.isDown('up') then
+if love.keyboard.isDown('w')  then
     self.entity.direction = 'right-up'
     self.entity.x = self.entity.x + 14*dt
     self.entity.y = self.entity.y - 7*dt
-elseif love.keyboard.isDown('right') and love.keyboard.isDown('down') then
+elseif love.keyboard.isDown('d') then
     self.entity.direction = 'right-down'
-    Timer.tween(0.5, {
-    [self.entity] = {y = self.entity.y + 16,
-    x = self.entity.x + 32}})
-elseif love.keyboard.isDown('down') and love.keyboard.isDown('left') then
+    self.entity.x = self.entity.x + 14*dt
+    self.entity.y = self.entity.y + 7*dt
+elseif love.keyboard.isDown('s') then
     self.entity.direction = 'left-down'
     self.entity.y = self.entity.y + 7*dt
     self.entity.x = self.entity.x - 14*dt
-elseif love.keyboard.isDown('up') and love.keyboard.isDown('left') then
+elseif love.keyboard.isDown('a') then
     self.entity.direction = 'left-up'
     self.entity.x = self.entity.x - 14*dt
     self.entity.y = self.entity.y - 7*dt
@@ -35,3 +34,4 @@ elseif love.keyboard.isDown('left') then
         self.entity:changeState('idle')
 end
 end
+

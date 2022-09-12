@@ -14,7 +14,7 @@ function Entity:init(def)
 
     self.x = (self.mapX - 1)  + ((self.mapX-self.mapY) * (GROUND_WIDTH / 2)) 
 
-    self.y = (self.mapY - 1) + ((self.mapY+self.mapX) * (GROUND_HEIGHT / 2)) - (GROUND_HEIGHT * (self.mapSize / 2)-self.height+8)
+    self.y = (self.mapY - 1) + ((self.mapY+self.mapX) * (GROUND_HEIGHT / 2)) - (GROUND_HEIGHT * (self.mapSize / 2)) -self.height
     self.moveboxX = self.x + 12
     self.moveboxY = self.y + self.height - 6
 end
@@ -54,6 +54,8 @@ function Entity:update(dt)
     self.stateMachine:update(dt)
     self.moveboxX = self.x + 12
     self.moveboxY = self.y + self.height - 6
+    -- self.mapX = math.floor(self.x - ((self.mapX-self.mapY) * (GROUND_WIDTH / 2))) 
+    -- self.mapY = math.floor(self.y - ((self.mapY+self.mapX) * (GROUND_HEIGHT / 2)) - (GROUND_HEIGHT * (self.mapSize / 2)-self.height))
 end
 
 function Entity:render()
