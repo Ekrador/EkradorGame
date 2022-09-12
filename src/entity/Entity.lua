@@ -12,9 +12,9 @@ function Entity:init(def)
     self.width = def.width
     self.height = def.height
 
-    self.x = (self.mapX-1)*0.5*32 + (self.mapY-1)*-1*32*0.5
+    self.x = (self.mapX-1)*0.5*self.width + (self.mapY-1)*-1*self.width*0.5
 
-    self.y = (self.mapX-1)*0.5*16+ (self.mapY-1)*0.5*16 - self.height+10
+    self.y = (self.mapX-1)*0.5*0.5*self.height+ (self.mapY-1)*0.5*0.5*self.height - self.height+10
     self.moveboxX = self.x + 12
     self.moveboxY = self.y + self.height - 6
 end

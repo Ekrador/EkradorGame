@@ -10,8 +10,8 @@ function Level:init(def)
         animations = ENTITY_DEFS['player'].animations,
         mapX = 3,
         mapY = 5,
-        width = 16,
-        height = 32,
+        width = 32,
+        height = 35,
         mapSize = 10
     }
     self.player.stateMachine = StateMachine {
