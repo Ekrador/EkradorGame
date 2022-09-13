@@ -15,6 +15,10 @@ function Entity:init(def)
     self.x = (self.mapX-1)*0.5*self.width + (self.mapY-1)*-1*self.width*0.5
 
     self.y = (self.mapX-1)*0.5*0.5*self.height+ (self.mapY-1)*0.5*0.5*self.height - self.height+10
+
+    self.mmx = 0
+    self.mmy = 0
+
     self.moveboxX = self.x + 12
     self.moveboxY = self.y + self.height - 6
 end
@@ -79,6 +83,8 @@ function Entity:update(dt)
     self.moveboxX = self.x + 12
     self.moveboxY = self.y + self.height - 6
     self:to_grid_coordinate(self.x,self.y)
+    self.mmx = mx - VIRTUAL_WIDTH/2 
+    self.mmy = my - VIRTUAL_HEIGHT/2 
 end
 
 function Entity:render()

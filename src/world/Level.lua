@@ -45,3 +45,4 @@ function Level:render()
     self.map:render()
     self.player:render()
 end
+
