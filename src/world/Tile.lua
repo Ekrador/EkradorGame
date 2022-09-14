@@ -31,8 +31,8 @@ function Tile:render()
     -- else love.graphics.setColor(255, 255, 255, 1)
     -- end
     love.graphics.draw(TILE_IDS[self.id], 
-    math.floor(VIRTUAL_WIDTH / 2 + (self.x-1)*0.5*32 + (self.y-1)*-1*32*0.5),
-    math.floor(VIRTUAL_HEIGHT / 2 + (self.x-1)*0.5*16+ (self.y-1)*0.5*16)- self.height + GROUND_HEIGHT)
+    math.floor(VIRTUAL_WIDTH / 2 + (self.x-1)*0.5*GROUND_WIDTH + (self.y-1)*-1*GROUND_WIDTH*0.5),
+    math.floor(VIRTUAL_HEIGHT / 2 + (self.x-1)*0.5*GROUND_HEIGHT+ (self.y-1)*0.5*GROUND_HEIGHT)- self.height + GROUND_HEIGHT)
     -- math.floor(VIRTUAL_WIDTH / 2 + self.x - 1+ ((self.x - self.y) * (GROUND_WIDTH / 2))), 
     -- math.floor(VIRTUAL_HEIGHT / 2 + self.y - 1 + ((self.y + self.x) * (GROUND_HEIGHT / 2)) - (GROUND_HEIGHT * (mapSize / 2)) - self.height + GROUND_HEIGHT))
     love.graphics.setColor(255, 255, 255, 1)

@@ -36,8 +36,10 @@ function PlayerIdleState:update(dt)
     end
     if love.mouse.wasPressed(2) then
 
+        local newX = (mxx-1)*0.5*self.entity.width + (myy-1)*-1*self.entity.width*0.5
+        local newY = (mxx-1)*0.5*GROUND_HEIGHT+ (myy-1)*0.5*GROUND_HEIGHT - self.entity.height + GROUND_HEIGHT
         Timer.tween(2,{
-            [self.entity] = { x = self.entity.x  + self.entity.mmx - self.entity.width/2, y = self.entity.y + self.entity.mmy - self.entity.height }
+            [self.entity] = { x = newX, y = newY }
         })
     end
 end

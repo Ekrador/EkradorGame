@@ -11,7 +11,7 @@ function Level:init(def)
         mapX = 3,
         mapY = 5,
         width = 32,
-        height = 35,
+        height = 39,
         mapSize = 10
     }
     self.player.stateMachine = StateMachine {
