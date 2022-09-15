@@ -30,4 +30,7 @@ function StartState:render()
     love.graphics.print(tostring(mx)..'  '..tostring(my), gFonts['medium'], self.camX, self.camY + 20)
     love.graphics.print(tostring(self.level.player.mmx)..'  '..tostring(self.level.player.mmy), gFonts['medium'], self.camX, self.camY +30)
     love.graphics.print(tostring(mxx)..'  '..tostring(myy), gFonts['medium'], self.camX, self.camY +40)
+    for i =1, #path do
+        love.graphics.print(tostring(path[i].x)..'  '..tostring(path[i].y), gFonts['medium'], self.camX, self.camY +40+10*i)
+    end
 end

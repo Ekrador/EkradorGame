@@ -7,7 +7,7 @@ function Entity:init(def)
 
     self.mapX = def.mapX
     self.mapY = def.mapY
-    self.mapSize = def.mapSize
+    self.map = def.map
 
     self.width = def.width
     self.height = def.height
@@ -93,49 +93,92 @@ end
 
 
 function Entity:pathfind(def)
-    startX = def.startX
-    startY = def.startY
-    endX = def.endX
-    endY = def.endY
-    xCur = startX
-    yCur = startY
-    tilemap = def.tilemap
-    MDx = {0,1,1,1,0,-1,-1,-1}
-    MDy = {-1,-1,0,1,1,1,0,-1}
-    path = {}
-    for i, tilemap.mapSize do
+    local startX = def.startX
+    local startY = def.startY
+    local endX = def.endX
+    local endY = def.endY
+    local xCur = startX
+    local yCur = startY
+    local tilemap = def.tilemap
+    local MDx = {0,1,1,1,0,-1,-1,-1}
+    local MDy = {-1,-1,0,1,1,1,0,-1}
+    local path = {}
+    for i = 1, tilemap.mapSize do
         path[i] = {}
-        for j, tilemap.mapSize do
+        for j = 1, tilemap.mapSize do
             path[i][j] = 0
         end
     end
-    MShx = {}
-    MShy = {}
-    MshN = {}
+    local MShx = {}
+    local MShy = {}
+    local MshN = {}
 
-    lastStep = 0
-    curStep = 0
-    for i = 1, 8 do
-        local dx = MDx[i]
-        local dy = MDy[i]
-        local newX = xCur + dx
-        local newY = yCur + dy
-        if not tilemap[newY][newX]:collidable() and path[newY][newX] == 0 then
-            lastStep = lastStep + 1
-            MShx[lastStep] = newX
-            MShy[lastStep] = newY
-            MshN[lastStep] = i
-            path[newY][newX] = i
+    local lastStep = 0
+    local curStep = 0
+    local maxSteps = 100
+    local tracking = true
+    while tracking do
+        for i = 1, 8 do
+            local dx = MDx[i]
+            local dy = MDy[i]
+            local newX = xCur + dx
+            local newY = yCur + dy
+            if not tilemap.tiles[newY][newX]:collidable() and path[newY][newX] == 0 then
+                lastStep = lastStep + 1
+                MShx[lastStep] = newX
+                MShy[lastStep] = newY
+                MshN[lastStep] = i
+                path[newY][newX] = i
 
-            if newX == endX and newY == endY then
-                goto
+                if newX == endX and newY == endY then
+                    tracking = false
+                    break
+                end
+                if lastStep > maxSteps then
+                    return nil
+                end
+
             end
         end
-    end
-    if curStep < lastStep then
-        curStep = curStep + 1
-        xCur = MShx[curStep]
-        yCur = MShy[curStep]
-            
 
+        if not tracking then
+            break
+        end
+
+        if curStep < lastStep then
+            curStep = curStep + 1
+            xCur = MShx[curStep]
+            yCur = MShy[curStep]
+        end
+    end
+
+    local Npath = 0 
+    local returnPath = {5,6,7,8,1,2,3,4}
+    xCur = endX
+    yCur = endY
+    local PathX = {}
+    local PathY = {}
+    while true do
+        Npath = Npath + 1
+        PathX[Npath] = xCur
+        PathY[Npath] = yCur
+        local qwe = path[yCur][xCur]
+        local reversedPath = returnPath[qwe]
+        local dx = MDx[reversedPath]
+        local dy = MDy[reversedPath]
+        xCur = xCur + dx
+        yCur = yCur + dy
+        if xCur == startX and yCur == startY then
+            local movePath = {}
+            for i = 1, Npath do
+                movePath[Npath + 1 - i] = {
+                    x = PathX[i],
+                    y = PathY[i]
+                }
+            end
+            return movePath
+        end
+
+    end
 end
+

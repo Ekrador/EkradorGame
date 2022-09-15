@@ -35,11 +35,27 @@ function PlayerIdleState:update(dt)
             self.entity:changeState('idle')
     end
     if love.mouse.wasPressed(2) then
-
-        local newX = (mxx-1)*0.5*self.entity.width + (myy-1)*-1*self.entity.width*0.5
-        local newY = (mxx-1)*0.5*GROUND_HEIGHT+ (myy-1)*0.5*GROUND_HEIGHT - self.entity.height + GROUND_HEIGHT
-        Timer.tween(2,{
-            [self.entity] = { x = newX, y = newY }
-        })
+        if not self.entity.map.tiles[myy][mxx]:collidable() then
+            self:move(dt)
+        end
     end
+end
+
+function PlayerIdleState:move(dt)
+    path = self.entity:pathfind{
+        startX = self.entity.mapX,
+        startY = self.entity.mapY,
+        endX = mxx,
+        endY = myy,
+        tilemap = self.entity.map
+    }
+    
+    for i = 1, #path do
+        local newX = (path[i].x-1)*0.5*self.entity.width + (path[i].y-1)*-1*self.entity.width*0.5
+        local newY = (path[i].x-1)*0.5*GROUND_HEIGHT+ (path[i].y-1)*0.5*GROUND_HEIGHT - self.entity.height + GROUND_HEIGHT
+        Timer.tween(1,{
+            [self.entity] = { x = newX, y = newY }
+        })  
+    end
+
 end

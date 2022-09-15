@@ -6,20 +6,7 @@ function Level:init(def)
     local tiles = {}
     local counter = 1
 
-    self.player = Player{
-        animations = ENTITY_DEFS['player'].animations,
-        mapX = 3,
-        mapY = 5,
-        width = 32,
-        height = 39,
-        mapSize = 10
-    }
-    self.player.stateMachine = StateMachine {
-        ['walk'] = function() return PlayerWalkState(self.player) end,
-        ['idle'] = function() return PlayerIdleState(self.player, self) end
-    }
-    self.player.stateMachine:change('idle')
-
+    
     for i = 1, mapSize do
         tiles[i] = {}
         for j = 1 , mapSize do
@@ -32,7 +19,20 @@ function Level:init(def)
     self.map = TileMap(self.mapSize)
     self.map.tiles = tiles
 
-    
+    self.player = Player{
+        animations = ENTITY_DEFS['player'].animations,
+        mapX = 3,
+        mapY = 5,
+        width = 32,
+        height = 39,
+        map = self.map
+    }
+    self.player.stateMachine = StateMachine {
+        ['walk'] = function() return PlayerWalkState(self.player) end,
+        ['idle'] = function() return PlayerIdleState(self.player, self) end
+    }
+    self.player.stateMachine:change('idle')
+
 
 end
 

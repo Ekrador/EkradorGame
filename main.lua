@@ -20,6 +20,7 @@ function love.load()
     love.mouse.keysReleased = {}
     mxx = 0
     myy = 0
+    path = {}
 end
 
 function love.resize(w, h)
