@@ -25,7 +25,8 @@ function Level:init(def)
         mapY = 5,
         width = 32,
         height = 39,
-        map = self.map
+        map = self.map,
+        speed = 2
     }
     self.player.stateMachine = StateMachine {
         ['walk'] = function() return PlayerWalkState(self.player) end,

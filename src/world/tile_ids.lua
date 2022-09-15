@@ -6,5 +6,5 @@ TILE_IDS = {
 }
 
 COLLIDABLE_TILES = {
-    4
+    4, 2
 }

@@ -11,6 +11,7 @@ function Entity:init(def)
 
     self.width = def.width
     self.height = def.height
+    self.speed = def.speed
 
     self.x = (self.mapX-1)*0.5*self.width + (self.mapY-1)*-1*self.width*0.5
 
@@ -170,10 +171,11 @@ function Entity:pathfind(def)
         yCur = yCur + dy
         if xCur == startX and yCur == startY then
             local movePath = {}
-            for i = 1, Npath do
+            for i = Npath, 1, -1  do
                 movePath[Npath + 1 - i] = {
                     x = PathX[i],
-                    y = PathY[i]
+                    y = PathY[i],
+                    direct = path[PathY[i]][PathX[i]]
                 }
             end
             return movePath
