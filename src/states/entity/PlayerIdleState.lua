@@ -35,7 +35,10 @@ function PlayerIdleState:update(dt)
             self.entity:changeState('idle')
     end
     if love.mouse.wasPressed(2) then
-        if not self.entity.map.tiles[myy][mxx]:collidable() then
+        
+        if myy > 0 and myy < self.entity.map.mapSize 
+        and mxx > 0 and mxx < self.entity.map.mapSize and
+         not self.entity.map.tiles[myy][mxx]:collidable() then
             path = self.entity:pathfind{
                 startX = self.entity.mapX,
                 startY = self.entity.mapY,
@@ -43,14 +46,34 @@ function PlayerIdleState:update(dt)
                 endY = myy,
                 tilemap = self.entity.map
             }
-            self:move(path, 1)
+            if path then             
+                if not self.entity.getCommand then
+                    self.entity.getCommand = true
+                    self:move(path, 1)
+                    :finish(function() if path then
+                        self:move(path,1)
+                        end
+                    end)
+                else 
+                    self.entity.stop = true
+
+                end
+            end
         end
     end
 end
 
 function PlayerIdleState:move(path, i)
+    if self.entity.stop then
+        self.entity.stop = false
+        self.entity.getCommand = false
+        return {finish = finish}
+    end
+
     if i > #path then
-        return
+        self.entity.getCommand = false
+        path = nil
+        return {finish = finish}
     end
     newX = (path[i].x-1)*0.5*self.entity.width + (path[i].y-1)*-1*self.entity.width*0.5
     newY = (path[i].x-1)*0.5*GROUND_HEIGHT+ (path[i].y-1)*0.5*GROUND_HEIGHT - self.entity.height + GROUND_HEIGHT
@@ -58,4 +81,9 @@ function PlayerIdleState:move(path, i)
         [self.entity] = { x = newX, y = newY }
     })  
     :finish(function() self:move(path, i + 1) end)
+end
+local function finish (self, finishField)
+    self.finishField = finishField
+
+    return self
 end

@@ -28,8 +28,8 @@ end
 function Tile:render()
     if (self.y - self.level.player.mapY < self.height/GROUND_HEIGHT  and
         self.y - self.level.player.mapY >= 0) and
-        (0 >= self.x - self.level.player.mapX and 
-        self.x - self.level.player.mapX < 3) and
+        (self.x - self.level.player.mapX >= 0 and 
+        self.x - self.level.player.mapX < self.height/GROUND_HEIGHT) and
         self:collidable() then
         love.graphics.setColor(255, 255, 255, 0.5)
     else love.graphics.setColor(255, 255, 255, 1)
@@ -37,7 +37,5 @@ function Tile:render()
     love.graphics.draw(TILE_IDS[self.id], 
     math.floor(VIRTUAL_WIDTH / 2 + (self.x-1)*0.5*GROUND_WIDTH + (self.y-1)*-1*GROUND_WIDTH*0.5),
     math.floor(VIRTUAL_HEIGHT / 2 + (self.x-1)*0.5*GROUND_HEIGHT+ (self.y-1)*0.5*GROUND_HEIGHT)- self.height + GROUND_HEIGHT)
-    -- math.floor(VIRTUAL_WIDTH / 2 + self.x - 1+ ((self.x - self.y) * (GROUND_WIDTH / 2))), 
-    -- math.floor(VIRTUAL_HEIGHT / 2 + self.y - 1 + ((self.y + self.x) * (GROUND_HEIGHT / 2)) - (GROUND_HEIGHT * (mapSize / 2)) - self.height + GROUND_HEIGHT))
     love.graphics.setColor(255, 255, 255, 1)
 end

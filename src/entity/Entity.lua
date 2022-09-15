@@ -19,6 +19,8 @@ function Entity:init(def)
 
     self.mmx = 0
     self.mmy = 0
+    self.getCommand = false
+    self.stop = false
 
     self.moveboxX = self.x + 12
     self.moveboxY = self.y + self.height - 6
@@ -98,6 +100,10 @@ function Entity:pathfind(def)
     local startY = def.startY
     local endX = def.endX
     local endY = def.endY
+    if startX == endX and startY == endY then
+        return
+    end
+    
     local xCur = startX
     local yCur = startY
     local tilemap = def.tilemap
