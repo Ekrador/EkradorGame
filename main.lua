@@ -95,8 +95,8 @@ function to_grid_coordinate(x,y)
     
     
    
-       mxx = math.floor(x* inv.a + (y+25)  * inv.b + 1)
-       myy = math.floor(x * inv.c + (y+25) * inv.d + 1)
+       mxx = math.floor(x* inv.a + (y+30)  * inv.b + 1)
+       myy = math.floor(x * inv.c + (y+30) * inv.d + 1)
     
     
 end
