@@ -11,6 +11,7 @@ require 'src/const'
 require 'src/states/BaseState'
 require 'src/states/StateStack'
 require 'src/states/StartState'
+require 'src/states/PlayState'
 
 require 'src/entity/entity_defs'
 require 'src/entity/Entity'
@@ -33,6 +34,7 @@ gTextures = {
     ['ground'] = love.graphics.newImage('graphics/ground.png'),
     ['tile_road'] = love.graphics.newImage('graphics/tile_road.png'),
     ['player'] = love.graphics.newImage('graphics/player.png'),
+    ['skeleton'] = love.graphics.newImage('graphics/skeleton.png'),
     ['wall'] = love.graphics.newImage('graphics/wall.png')
 }
 

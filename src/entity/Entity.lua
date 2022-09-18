@@ -7,11 +7,11 @@ function Entity:init(def)
 
     self.mapX = def.mapX
     self.mapY = def.mapY
-    self.map = def.map
 
     self.width = def.width
     self.height = def.height
     self.speed = def.speed
+    self.level = def.level
 
     self.x = (self.mapX-1)*0.5*self.width + (self.mapY-1)*-1*self.width*0.5
 

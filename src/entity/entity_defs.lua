@@ -44,9 +44,11 @@ ENTITY_DEFS = {
                 frames = {41},
                 texture = 'entities'
             },
-        }
+        },
+        speed = 2,
+        health = 100
     },
-    ['npc'] = {
+    ['skeleton'] = {
         animations = {
             ['walk-left'] = {
                 frames = {16, 17, 18, 17},
@@ -77,13 +79,14 @@ ENTITY_DEFS = {
                 texture = 'entities'
             },
             ['idle-down'] = {
-                frames = {5},
-                texture = 'entities'
+                texture = 'skeleton'
             },
             ['idle-up'] = {
                 frames = {41},
                 texture = 'entities'
             },
-        }
+        },
+        speed = 1,
+        health = 10
     }
 }
