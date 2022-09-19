@@ -18,10 +18,6 @@ function TileMap:pointToTile(x, y)
     return self.tiles[math.floor(y / TILE_SIZE) + 1][math.floor(x / TILE_SIZE) + 1]
 end
 
-function TileMap:render()
-    for y = 1, self.mapSize do
-        for x = 1, self.mapSize do
-            self.tiles[y][x]:render()
-        end
-    end
+function TileMap:render(x,y)
+    self.tiles[y][x]:render()
 end

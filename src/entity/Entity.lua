@@ -1,7 +1,11 @@
 Entity = Class{}
 
 function Entity:init(def)
+    self.directions = {'up-right','right','down-right','down','down-left','left','up-left','up'}
     self.direction = 'down'
+    
+    self.MDx = {0,1,1,1,0,-1,-1,-1}
+    self.MDy = {-1,-1,0,1,1,1,0,-1}
 
     self.animations = self:createAnimations(def.animations)
 
@@ -12,6 +16,9 @@ function Entity:init(def)
     self.height = def.height
     self.speed = def.speed
     self.level = def.level
+    self.health = def.health
+    self.dead = false
+    self.playerPos = def.playerPos 
 
     self.x = (self.mapX-1)*0.5*self.width + (self.mapY-1)*-1*self.width*0.5
 
@@ -21,10 +28,8 @@ function Entity:init(def)
     self.mmy = 0
     self.getCommand = false
     self.stop = false
-
-    self.moveboxX = self.x + 12
-    self.moveboxY = self.y + self.height - 6
 end
+
 function Entity:invert_matrix(a, b, c, d)  
     det = (1 / (a * d - b * c))
     
@@ -83,8 +88,6 @@ end
 
 function Entity:update(dt)
     self.stateMachine:update(dt)
-    self.moveboxX = self.x + 12
-    self.moveboxY = self.y + self.height - 6
     self:to_grid_coordinate(self.x,self.y)
     self.mmx = mx - VIRTUAL_WIDTH/2 
     self.mmy = my - VIRTUAL_HEIGHT/2 
@@ -106,8 +109,6 @@ function Entity:pathfind(def)
     
     local xCur = startX
     local yCur = startY
-    local MDx = {0,1,1,1,0,-1,-1,-1}
-    local MDy = {-1,-1,0,1,1,1,0,-1}
     local path = {}
     for i = 1, self.level.mapSize do
         path[i] = {}
@@ -125,8 +126,8 @@ function Entity:pathfind(def)
     local tracking = true
     while tracking do
         for i = 1, 8 do
-            local dx = MDx[i]
-            local dy = MDy[i]
+            local dx = self.MDx[i]
+            local dy = self.MDy[i]
             local newX = xCur + dx
             local newY = yCur + dy
             if not self.level.map.tiles[newY][newX]:collidable() and path[newY][newX] == 0 then
@@ -168,10 +169,10 @@ function Entity:pathfind(def)
         Npath = Npath + 1
         PathX[Npath] = xCur
         PathY[Npath] = yCur
-        local qwe = path[yCur][xCur]
-        local reversedPath = returnPath[qwe]
-        local dx = MDx[reversedPath]
-        local dy = MDy[reversedPath]
+        local reverse = path[yCur][xCur]
+        local reversedPath = returnPath[reverse]
+        local dx = self.MDx[reversedPath]
+        local dy = self.MDy[reversedPath]
         xCur = xCur + dx
         yCur = yCur + dy
         if xCur == startX and yCur == startY then

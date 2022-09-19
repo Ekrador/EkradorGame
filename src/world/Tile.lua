@@ -6,8 +6,7 @@ function Tile:init(def)
     self.id = def.id
     self.width = TILE_IDS[self.id]:getWidth()
     self.height = TILE_IDS[self.id]:getHeight() - 1
-    self.level = def.level
-    self.player = def.player
+
 
    
 end
@@ -27,10 +26,7 @@ function Tile:collidable(target)
 end
 
 function Tile:render()
-   
-    if not self:collidable() then
-        love.graphics.draw(TILE_IDS[self.id], 
-        math.floor(VIRTUAL_WIDTH / 2 + (self.x-1)*0.5*GROUND_WIDTH + (self.y-1)*-1*GROUND_WIDTH*0.5),
-        math.floor(VIRTUAL_HEIGHT / 2 + (self.x-1)*0.5*GROUND_HEIGHT+ (self.y-1)*0.5*GROUND_HEIGHT)- self.height + GROUND_HEIGHT)
-    end
+    love.graphics.draw(TILE_IDS[self.id], 
+    math.floor(VIRTUAL_WIDTH / 2 + (self.x-1)*0.5*GROUND_WIDTH + (self.y-1)*-1*GROUND_WIDTH*0.5),
+    math.floor(VIRTUAL_HEIGHT / 2 + (self.x-1)*0.5*GROUND_HEIGHT+ (self.y-1)*0.5*GROUND_HEIGHT)- self.height + GROUND_HEIGHT)
 end

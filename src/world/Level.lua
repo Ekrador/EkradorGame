@@ -4,6 +4,7 @@ function Level:init(def)
     self.mapSize = def.mapSize
     self.data = def.data 
     self.safeZone = def.safeZone
+    self.playerPos = {}
     
     self.difficulty = def.difficulty
     self.enemiesAmount = def.enemiesAmount
@@ -20,7 +21,7 @@ function Level:generateTileMap()
         tiles[i] = {}
         for j = 1 , self.mapSize do
             tiles[i][j] = Tile{
-                x = j, y = i, id = self.data[counter], level = self}
+                x = j, y = i, id = self.data[counter]}
            counter = counter + 1
         end
     end
@@ -50,7 +51,8 @@ function Level:generateEntities()
                             width = 32,
                             height = 39,
                             health = ENTITY_DEFS[type].health,
-                            level = self
+                            level = self,
+                            playerPos = self.playerPos
                         })
 
                         self.entities[i].stateMachine = StateMachine {
@@ -70,15 +72,25 @@ end
 
 function Level:update(dt)
     self.map:update(dt)
-    for k, entity in pairs(self.entities) do
-        entity:update(dt)
+
+    for i = #self.entities, 1, -1 do
+        local entity = self.entities[i]
+        if entity.health <= 0 then
+            entity.dead = true
+        elseif not entity.dead then
+            entity.playerPos = self.playerPos
+            entity:processAI(dt)
+            entity:update(dt)
+        end
     end
 end
 
-function Level:render()
-    self.map:render()
+function Level:render(x,y)
+    self.map:render(x,y)
     for k, entity in pairs(self.entities) do
+        if entity.mapX == x and entity.mapY == y then
         entity:render()
+        end
     end
 end
 

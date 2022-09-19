@@ -34,22 +34,3 @@ function PlayerWalkState:update(dt)
     end
 end
 
-function PlayerWalkState:move(path, i)
-    if self.entity.stop then
-        self.entity.stop = false
-        self.entity.getCommand = false
-        return 
-    end
-
-    if i > #path then
-        self.entity.getCommand = false
-        return
-    end
-    newX = (path[i].x-1)*0.5*self.entity.width + (path[i].y-1)*-1*self.entity.width*0.5
-    newY = (path[i].x-1)*0.5*GROUND_HEIGHT+ (path[i].y-1)*0.5*GROUND_HEIGHT - self.entity.height + GROUND_HEIGHT
-    Timer.tween(1 / self.entity.speed,{
-        [self.entity] = { x = newX, y = newY }
-    })  
-    :finish(function() self:move(path, i + 1) end)
-end
-
