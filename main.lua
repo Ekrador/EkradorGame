@@ -94,9 +94,9 @@ function to_grid_coordinate(x,y)
     inv = invert_matrix(a, b, c, d)
     
     
-   
-       mxx = math.floor(x* inv.a + (y+30)  * inv.b + 1)
-       myy = math.floor(x * inv.c + (y+30) * inv.d + 1)
+    --player.height
+       mxx = math.floor(x* inv.a + (y+39)  * inv.b + 1)
+       myy = math.floor(x * inv.c + (y+39) * inv.d + 1)
     
     
 end

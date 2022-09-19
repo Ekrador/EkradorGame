@@ -106,13 +106,12 @@ function Entity:pathfind(def)
     
     local xCur = startX
     local yCur = startY
-    local tilemap = def.tilemap
     local MDx = {0,1,1,1,0,-1,-1,-1}
     local MDy = {-1,-1,0,1,1,1,0,-1}
     local path = {}
-    for i = 1, tilemap.mapSize do
+    for i = 1, self.level.mapSize do
         path[i] = {}
-        for j = 1, tilemap.mapSize do
+        for j = 1, self.level.mapSize do
             path[i][j] = 0
         end
     end
@@ -130,7 +129,7 @@ function Entity:pathfind(def)
             local dy = MDy[i]
             local newX = xCur + dx
             local newY = yCur + dy
-            if not tilemap.tiles[newY][newX]:collidable() and path[newY][newX] == 0 then
+            if not self.level.map.tiles[newY][newX]:collidable() and path[newY][newX] == 0 then
                 lastStep = lastStep + 1
                 MShx[lastStep] = newX
                 MShy[lastStep] = newY

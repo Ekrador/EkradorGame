@@ -1,11 +1,11 @@
 
 PlayerWalkState = Class{__includes = EntityWalkState}
 
-function PlayerWalkState:init(entity)
+function PlayerWalkState:init(entity, level)
     EntityWalkState.init(self, entity)
-    
+    self.level = level
 end
-
+  
 function PlayerWalkState:update(dt)
     if love.mouse.wasPressed(2) or love.mouse.wasReleased(2) then  
         self.entity.getCommand = false    
@@ -16,8 +16,7 @@ function PlayerWalkState:update(dt)
                 startX = self.entity.mapX,
                 startY = self.entity.mapY,
                 endX = mxx,
-                endY = myy,
-                tilemap = self.level.map.tiles
+                endY = myy
             }
             if path then             
                 if not self.entity.getCommand then

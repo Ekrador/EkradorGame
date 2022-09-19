@@ -27,16 +27,10 @@ function Tile:collidable(target)
 end
 
 function Tile:render()
-    if (self.y - self.player.mapY < self.height/GROUND_HEIGHT  and
-        self.y - self.player.mapY >= 0) and
-        (self.x - self.player.mapX >= 0 and 
-        self.x - self.player.mapX < self.height/GROUND_HEIGHT) and
-        self:collidable() then
-        love.graphics.setColor(255, 255, 255, 0.5)
-    else love.graphics.setColor(255, 255, 255, 1)
+   
+    if not self:collidable() then
+        love.graphics.draw(TILE_IDS[self.id], 
+        math.floor(VIRTUAL_WIDTH / 2 + (self.x-1)*0.5*GROUND_WIDTH + (self.y-1)*-1*GROUND_WIDTH*0.5),
+        math.floor(VIRTUAL_HEIGHT / 2 + (self.x-1)*0.5*GROUND_HEIGHT+ (self.y-1)*0.5*GROUND_HEIGHT)- self.height + GROUND_HEIGHT)
     end
-    love.graphics.draw(TILE_IDS[self.id], 
-    math.floor(VIRTUAL_WIDTH / 2 + (self.x-1)*0.5*GROUND_WIDTH + (self.y-1)*-1*GROUND_WIDTH*0.5),
-    math.floor(VIRTUAL_HEIGHT / 2 + (self.x-1)*0.5*GROUND_HEIGHT+ (self.y-1)*0.5*GROUND_HEIGHT)- self.height + GROUND_HEIGHT)
-    love.graphics.setColor(255, 255, 255, 1)
 end
