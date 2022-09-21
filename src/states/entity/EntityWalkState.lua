@@ -1,9 +1,8 @@
 EntityWalkState = Class{__includes = EntityBaseState}
 
-function EntityWalkState:init(entity, level, player)
+function EntityWalkState:init(entity, level)
     self.entity = entity
     self.level = level
-    self.player = player
 end
 
 function EntityWalkState:enter(params)
@@ -14,27 +13,32 @@ function EntityWalkState:update(dt)
     self.path = self.entity:pathfind{
         startX = self.entity.mapX,
         startY = self.entity.mapY,
-        endX = self.entity.playerPos.x,
-        endY = self.entity.playerPos.y
+        endX = self.level.player.mapX,
+        endY = self.level.player.mapY
     }
 end
 
 function EntityWalkState:processAI(dt)  
-    if not self.getCommand  then
-        self.getCommand = true
-        self:doStep(dt)
-        
+    if not self.entity.getCommand  then
+        self:checkAgro()
+        self:doStep()      
     end
 end
 
 function EntityWalkState:doStep()
-    direction = math.random(#self.entity.directions)
+    local direction = 0
+    if self.entity.chasing and self.path  then
+        direction = self.path[1].direct
+    else
+        direction = math.random(#self.entity.directions)
+    end
+
     local dx = self.entity.MDx[direction]
     local dy = self.entity.MDy[direction]
     local newX = self.entity.mapX + dx
     local newY = self.entity.mapY + dy
-    if not self.level.map.tiles[newY][newX]:collidable() then
-        self.getCommand = true
+    if not self.level.map.tiles[newY][newX]:collidable() and not self.entity.stop then
+        self.entity.getCommand = true
         self.entity.direction = self.entity.directions[direction]
         self.entity:changeAnimation('walk-' .. tostring(self.entity.direction))
         self.entity.mapX = newX
@@ -45,45 +49,43 @@ function EntityWalkState:doStep()
         Timer.tween(1/self.entity.speed, {
             [self.entity] = { x = newX, y = newY }
         })  
-        :finish(function() Timer.after(0.6,function() self:checkAgro() self:chanceToIdle()end )
+        :finish(function() Timer.after(0.6,function() 
+            if not self.entity.chasing then
+                self:chanceToIdle()
+            end
+            self.entity.getCommand = false
+        end)
         end)
     else
-        self.getCommand = false
+        self.entity.getCommand = false
     end
 end
+
 function EntityWalkState:chanceToIdle()
-    self.getCommand = false
+    self.entity.getCommand = false
     if math.random(8) == 1 then
         self.entity:changeState('idle')
     end
 end
 
 function EntityWalkState:checkAgro()
-    local distToPlayer = math.sqrt((self.entity.playerPos.x - self.entity.mapX)^2 + 
-    (self.entity.playerPos.y - self.entity.mapY)^2)
-    if distToPlayer < self.entity.agroRange then
+    local distToPlayer = self.entity:distToPlayer()
+    if distToPlayer <= self.entity.attackRange  then
+        self.entity.stop = true
+        self.entity:changeState('attack')
+    end
+
+    if distToPlayer <= self.entity.agroRange then
         self.entity.chasing = true
-        if distToPlayer < self.entity.attackRange then
-            if self.path then             
-                if not self.entity.getCommand then
-                    self.entity.getCommand = true
-                    for i = 1, self.entity.attackRange do
-                        table.remove(path)
-                    end
-                    self.chasing = true
-                    self:move(path, 1)
-                    self:checkAgro()
-                end
-            end
     else 
-        self.entity:changeState('idle')
+        self.entity.chasing = false
     end
 end
 
 function EntityWalkState:move(path, i)
     if self.entity.stop then
         self.entity.stop = false
-        self.entity.getCommand = false
+        self.entity.entity.getCommand = false
         return 
     end
 
@@ -91,6 +93,9 @@ function EntityWalkState:move(path, i)
         self.entity.getCommand = false
         return
     end
+
+    self.entity.mapX = path[i].x
+    self.entity.mapY = path[i].y
     local newX = (path[i].x-1)*0.5*self.entity.width + (path[i].y-1)*-1*self.entity.width*0.5
     local newY = (path[i].x-1)*0.5*GROUND_HEIGHT+ (path[i].y-1)*0.5*GROUND_HEIGHT - self.entity.height + GROUND_HEIGHT
     Timer.tween(1 / self.entity.speed,{

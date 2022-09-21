@@ -87,6 +87,9 @@ ENTITY_DEFS = {
             },
         },
         speed = 1,
-        health = 10
+        health = 10,
+        agroRange = 6,
+        attackRange = 1,
+        damage = 5
     }
 }

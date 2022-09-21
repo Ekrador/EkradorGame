@@ -1,9 +1,8 @@
 EntityIdleState = Class{__includes = EntityBaseState}
 
-function EntityIdleState:init(entity, level, player)
+function EntityIdleState:init(entity, level)
     self.level = level
     self.entity = entity
-    self.player = player
     self.entity:changeAnimation('idle-' .. self.entity.direction)
     self.waitDuration = 0
     self.waitTimer = 0

@@ -20,9 +20,9 @@ function Entity:init(def)
     self.level = def.level
     self.health = def.health
     self.dead = false
-    self.playerPos = def.playerPos 
+    self.damage = def.damage
 
-    self.x = (self.mapX-1)*0.5*self.width + (self.mapY-1)*-1*self.width*0.5
+    self.x = (self.mapX-1)*0.5*GROUND_WIDTH + (self.mapY-1)*-1*GROUND_WIDTH*0.5
 
     self.y = (self.mapX-1)*0.5*GROUND_HEIGHT+ (self.mapY-1)*0.5*GROUND_HEIGHT - self.height + GROUND_HEIGHT
 
@@ -44,8 +44,8 @@ function Entity:invert_matrix(a, b, c, d)
 end
   
 function Entity:to_grid_coordinate(x,y) 
-    local a = 1 * 0.5 * self.width
-    local b = -1 * 0.5 * self.width
+    local a = 1 * 0.5 * GROUND_WIDTH
+    local b = -1 * 0.5 * GROUND_WIDTH
     local c =  0.5 * (16)
     local d =  0.5 * (16)
     
@@ -90,15 +90,27 @@ end
 
 function Entity:update(dt)
     self.stateMachine:update(dt)
-    self:to_grid_coordinate(self.x,self.y)
     self.mmx = mx - VIRTUAL_WIDTH/2 
     self.mmy = my - VIRTUAL_HEIGHT/2 
+end
+
+function Entity:collides(target)
+    return not (self.x + self.width < target.x or self.x > target.x + target.width or
+                self.y + self.height < target.y or self.y > target.y + target.height)
+end
+
+function Entity:damage(dmg)
+    self.health = self.health - dmg
 end
 
 function Entity:render()
     self.stateMachine:render()
 end
 
+function Entity:distToPlayer()
+    return math.floor(math.sqrt((self.level.player.mapX - self.mapX)^2 + 
+    (self.level.player.mapY - self.mapY)^2))
+end
 
 function Entity:pathfind(def)
     local startX = def.startX

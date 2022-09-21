@@ -27,6 +27,6 @@ end
 
 function Tile:render()
     love.graphics.draw(TILE_IDS[self.id], 
-    math.floor(VIRTUAL_WIDTH / 2 + (self.x-1)*0.5*GROUND_WIDTH + (self.y-1)*-1*GROUND_WIDTH*0.5),
-    math.floor(VIRTUAL_HEIGHT / 2 + (self.x-1)*0.5*GROUND_HEIGHT+ (self.y-1)*0.5*GROUND_HEIGHT)- self.height + GROUND_HEIGHT)
+    math.floor((self.x-1)*0.5*GROUND_WIDTH + (self.y-1)*-1*GROUND_WIDTH*0.5),
+    math.floor((self.x-1)*0.5*GROUND_HEIGHT+ (self.y-1)*0.5*GROUND_HEIGHT)- self.height + GROUND_HEIGHT)
 end

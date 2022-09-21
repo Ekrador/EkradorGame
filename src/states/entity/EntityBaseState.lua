@@ -12,6 +12,6 @@ function EntityBaseState:processAI(params, dt) end
 function EntityBaseState:render()
     local anim = self.entity.currentAnimation
     love.graphics.draw(gTextures['player'],
-    VIRTUAL_WIDTH/2 + self.entity.x, 
-    VIRTUAL_HEIGHT/2 + self.entity.y)
+    self.entity.x, 
+    self.entity.y)
 end

@@ -24,13 +24,10 @@ function PlayState:enter(params)
         ['idle'] = function() return PlayerIdleState(self.player, self.level) end
     }
     
-    self.level.playerPos = {
-        x = self.player.mapX,
-        y = self.player.mapY
-    }
     self.level:generateTileMap()
     self.map = self.level.map
     self.player.level = self.level
+    self.level.player = self.player
     self.player.stateMachine:change('idle')
     self.level:generateEntities()
 
@@ -39,18 +36,13 @@ end
 function PlayState:update(dt)
     self.player:update(dt)
     self.level:update(dt)
-    self.level.playerPos = {
-        x = self.player.mapX,
-        y = self.player.mapY
-    }
-
     self:updateCamera()
     to_grid_coordinate(self.player.x + self.player.mmx - self.player.width/2, self.player.y + self.player.mmy - self.player.height)
 end
 
 function PlayState:updateCamera()
-    self.camX = self.player.x
-    self.camY = self.player.y 
+    self.camX = self.player.x - VIRTUAL_WIDTH / 2
+    self.camY = self.player.y - VIRTUAL_HEIGHT / 2
 
 end
 
@@ -58,12 +50,17 @@ function PlayState:render()
     love.graphics.translate(-math.floor(self.camX), -math.floor(self.camY))
     self:rendermap()
     self.player:render()
+    love.graphics.rectangle('line', self.player.x , self.player.y , self.player.width, self.player.height)
     love.graphics.print(tostring(self.player.mapX)..'  '..tostring(self.player.mapY), gFonts['medium'], self.camX, self.camY)
     love.graphics.print(tostring(self.player.x)..'  '..tostring(self.player.y), gFonts['medium'], self.camX, self.camY + 10)
     love.graphics.print(tostring(mx)..'  '..tostring(my), gFonts['medium'], self.camX, self.camY + 20)
     love.graphics.print(tostring(self.player.mmx)..'  '..tostring(self.player.mmy), gFonts['medium'], self.camX, self.camY +30)
     love.graphics.print(tostring(mxx)..'  '..tostring(myy), gFonts['medium'], self.camX, self.camY +40)
-    love.graphics.print(tostring(self.level.qwer), gFonts['medium'],self.camX, self.camY + 50)
+    love.graphics.print(tostring(#self.level.entities), gFonts['medium'],self.camX, self.camY + 50)
+    love.graphics.print(tostring(self.player.health), gFonts['medium'],self.camX, self.camY + 60)
+    for k, v in pairs(self.level.entities) do
+        love.graphics.print(tostring(v.mapX)..' '..tostring(v.mapY)..'  '..tostring(v.direction), gFonts['medium'], self.camX, self.camY + 70)
+    end
     
 end
 

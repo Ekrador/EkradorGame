@@ -4,8 +4,7 @@ function Level:init(def)
     self.mapSize = def.mapSize
     self.data = def.data 
     self.safeZone = def.safeZone
-    self.playerPos = {}
-    
+    self.player = {}
     self.difficulty = def.difficulty
     self.enemiesAmount = def.enemiesAmount
     self.qwer = def.enemiesAmount
@@ -52,12 +51,16 @@ function Level:generateEntities()
                             height = 39,
                             health = ENTITY_DEFS[type].health,
                             level = self,
-                            playerPos = self.playerPos
+                            player = self.player,
+                            attackRange = ENTITY_DEFS[type].attackRange,
+                            agroRange = ENTITY_DEFS[type].agroRange,
+                            damage = ENTITY_DEFS[type].damage
                         })
 
                         self.entities[i].stateMachine = StateMachine {
                             ['walk'] = function() return EntityWalkState(self.entities[i], self) end,
-                            ['idle'] = function() return EntityIdleState(self.entities[i], self) end
+                            ['idle'] = function() return EntityIdleState(self.entities[i], self) end,
+                            ['attack'] = function() return EntityAttackState(self.entities[i], self) end
                         }
                     
                         self.entities[i]:changeState('walk', self)
@@ -78,7 +81,6 @@ function Level:update(dt)
         if entity.health <= 0 then
             entity.dead = true
         elseif not entity.dead then
-            entity.playerPos = self.playerPos
             entity:processAI(dt)
             entity:update(dt)
         end
@@ -88,7 +90,7 @@ end
 function Level:render(x,y)
     self.map:render(x,y)
     for k, entity in pairs(self.entities) do
-        if entity.mapX == x and entity.mapY == y then
+        if not entity.dead and entity.mapX == x and entity.mapY == y then
         entity:render()
         end
     end
