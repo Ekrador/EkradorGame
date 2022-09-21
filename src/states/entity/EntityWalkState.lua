@@ -4,9 +4,6 @@ function EntityWalkState:init(entity, level, player)
     self.entity = entity
     self.level = level
     self.player = player
-    self.steps = 0
-    self.movementTimer = 0
-    self.bumped = false
 end
 
 function EntityWalkState:enter(params)
@@ -14,7 +11,12 @@ function EntityWalkState:enter(params)
 end
 
 function EntityWalkState:update(dt)
-    
+    self.path = self.entity:pathfind{
+        startX = self.entity.mapX,
+        startY = self.entity.mapY,
+        endX = self.entity.playerPos.x,
+        endY = self.entity.playerPos.y
+    }
 end
 
 function EntityWalkState:processAI(dt)  
@@ -25,7 +27,7 @@ function EntityWalkState:processAI(dt)
     end
 end
 
-function EntityWalkState:doStep(dt)
+function EntityWalkState:doStep()
     direction = math.random(#self.entity.directions)
     local dx = self.entity.MDx[direction]
     local dy = self.entity.MDy[direction]
@@ -43,7 +45,7 @@ function EntityWalkState:doStep(dt)
         Timer.tween(1/self.entity.speed, {
             [self.entity] = { x = newX, y = newY }
         })  
-        :finish(function() Timer.after(0.6,function() self:checkAgro(dt) self:chanceToIdle()end )
+        :finish(function() Timer.after(0.6,function() self:checkAgro() self:chanceToIdle()end )
         end)
     else
         self.getCommand = false
@@ -56,27 +58,23 @@ function EntityWalkState:chanceToIdle()
     end
 end
 
-function EntityWalkState:checkAgro(dt)
+function EntityWalkState:checkAgro()
     local distToPlayer = math.sqrt((self.entity.playerPos.x - self.entity.mapX)^2 + 
     (self.entity.playerPos.y - self.entity.mapY)^2)
-    if distToPlayer < 6 then
-        path = self.entity:pathfind{
-            startX = self.entity.mapX,
-            startY = self.entity.mapY,
-            endX = self.entity.playerPos.x,
-            endY = self.entity.playerPos.y
-        }
-        if path then             
-            if not self.entity.getCommand then
-                self.entity.getCommand = true
-                self:move(path, 1)
-                if distToPlayer < 2 then
-                    self.entity:changeState('idle')
-                else 
-                    self.entity:changeState('idle')
+    if distToPlayer < self.entity.agroRange then
+        self.entity.chasing = true
+        if distToPlayer < self.entity.attackRange then
+            if self.path then             
+                if not self.entity.getCommand then
+                    self.entity.getCommand = true
+                    for i = 1, self.entity.attackRange do
+                        table.remove(path)
+                    end
+                    self.chasing = true
+                    self:move(path, 1)
+                    self:checkAgro()
                 end
             end
-        end
     else 
         self.entity:changeState('idle')
     end

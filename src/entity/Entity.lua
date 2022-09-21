@@ -11,7 +11,9 @@ function Entity:init(def)
 
     self.mapX = def.mapX
     self.mapY = def.mapY
-
+    self.attackRange = def.attackRange
+    self.agroRange = def.agroRange
+    self.chasing = false
     self.width = def.width
     self.height = def.height
     self.speed = def.speed
