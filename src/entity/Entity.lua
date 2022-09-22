@@ -21,41 +21,18 @@ function Entity:init(def)
     self.health = def.health
     self.dead = false
     self.damage = def.damage
+    self.path = {}
 
     self.x = (self.mapX-1)*0.5*GROUND_WIDTH + (self.mapY-1)*-1*GROUND_WIDTH*0.5
 
     self.y = (self.mapX-1)*0.5*GROUND_HEIGHT+ (self.mapY-1)*0.5*GROUND_HEIGHT - self.height + GROUND_HEIGHT
 
-    self.mmx = 0
-    self.mmy = 0
+    self.mouseInScreenX = 0
+    self.mouseInScreenY = 0
     self.getCommand = false
     self.stop = false
 end
 
-function Entity:invert_matrix(a, b, c, d)  
-    det = (1 / (a * d - b * c))
-    
-    return {
-      a= det * d,
-      b= det * -b,
-      c= det * -c,
-      d= det * a
-    }
-end
-  
-function Entity:to_grid_coordinate(x,y) 
-    local a = 1 * 0.5 * GROUND_WIDTH
-    local b = -1 * 0.5 * GROUND_WIDTH
-    local c =  0.5 * (16)
-    local d =  0.5 * (16)
-    
-    inv = self:invert_matrix(a, b, c, d)
-    
-    
-      self.mapX= math.floor(x* inv.a + (y + self.height-GROUND_HEIGHT) * inv.b + 1)
-      self.mapY= math.floor(x * inv.c + (y + self.height-GROUND_HEIGHT)* inv.d + 1)
-    
-end
 
 function Entity:changeState(name)
     self.stateMachine:change(name)
@@ -90,8 +67,11 @@ end
 
 function Entity:update(dt)
     self.stateMachine:update(dt)
-    self.mmx = mx - VIRTUAL_WIDTH/2 
-    self.mmy = my - VIRTUAL_HEIGHT/2 
+    self.mouseInScreenX = mx - VIRTUAL_WIDTH/2 
+    self.mouseInScreenY = my - VIRTUAL_HEIGHT/2 
+    if self.currentAnimation then
+        self.currentAnimation:update(dt)
+    end
 end
 
 function Entity:collides(target)
@@ -195,7 +175,7 @@ function Entity:pathfind(def)
                 movePath[Npath + 1 - i] = {
                     x = PathX[i],
                     y = PathY[i],
-                    direct = path[PathY[i]][PathX[i]]
+                    direction = path[PathY[i]][PathX[i]]
                 }
             end
             return movePath

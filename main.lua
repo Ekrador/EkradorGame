@@ -19,9 +19,8 @@ function love.load()
     love.keyboard.keysPressed = {}
     love.mouse.keysPressed = {}
     love.mouse.keysReleased = {}
-    mxx = 0
-    myy = 0
-    path = {}
+    mouseTileX = 0
+    mouseTileY = 0
 end
 
 function love.resize(w, h)
@@ -96,8 +95,8 @@ function to_grid_coordinate(x,y)
     
     
     --player.height
-       mxx = math.floor(x* inv.a + (y+39)  * inv.b + 1)
-       myy = math.floor(x * inv.c + (y+39) * inv.d + 1)
+       mouseTileX = math.floor(x* inv.a + (y+39)  * inv.b + 1)
+       mouseTileY = math.floor(x * inv.c + (y+39) * inv.d + 1)
     
     
 end

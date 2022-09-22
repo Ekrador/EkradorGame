@@ -4,7 +4,7 @@ function Level:init(def)
     self.mapSize = def.mapSize
     self.data = def.data 
     self.safeZone = def.safeZone
-    self.player = {}
+    self.player = Class{}
     self.difficulty = def.difficulty
     self.enemiesAmount = def.enemiesAmount
     self.qwer = def.enemiesAmount
@@ -51,7 +51,6 @@ function Level:generateEntities()
                             height = 39,
                             health = ENTITY_DEFS[type].health,
                             level = self,
-                            player = self.player,
                             attackRange = ENTITY_DEFS[type].attackRange,
                             agroRange = ENTITY_DEFS[type].agroRange,
                             damage = ENTITY_DEFS[type].damage
@@ -81,8 +80,8 @@ function Level:update(dt)
         if entity.health <= 0 then
             entity.dead = true
         elseif not entity.dead then
-            entity:processAI(dt)
             entity:update(dt)
+            entity:processAI(dt)
         end
     end
 end

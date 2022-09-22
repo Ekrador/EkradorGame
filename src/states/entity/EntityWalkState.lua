@@ -10,7 +10,7 @@ function EntityWalkState:enter(params)
 end
 
 function EntityWalkState:update(dt)
-    self.path = self.entity:pathfind{
+    self.entity.path = self.entity:pathfind{
         startX = self.entity.mapX,
         startY = self.entity.mapY,
         endX = self.level.player.mapX,
@@ -27,8 +27,8 @@ end
 
 function EntityWalkState:doStep()
     local direction = 0
-    if self.entity.chasing and self.path  then
-        direction = self.path[1].direct
+    if self.entity.chasing and self.entity.path  then
+        direction = self.entity.path[1].direction
     else
         direction = math.random(#self.entity.directions)
     end
@@ -98,6 +98,9 @@ function EntityWalkState:move(path, i)
     self.entity.mapY = path[i].y
     local newX = (path[i].x-1)*0.5*self.entity.width + (path[i].y-1)*-1*self.entity.width*0.5
     local newY = (path[i].x-1)*0.5*GROUND_HEIGHT+ (path[i].y-1)*0.5*GROUND_HEIGHT - self.entity.height + GROUND_HEIGHT
+    self.entity.direction = self.entity.directions[path[i].direction]
+    self.entity:changeAnimation('walk-' .. tostring(self.entity.direction))
+
     Timer.tween(1 / self.entity.speed,{
         [self.entity] = { x = newX, y = newY }
     })  

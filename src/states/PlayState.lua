@@ -17,11 +17,14 @@ function PlayState:enter(params)
         height = 39,
         speed = ENTITY_DEFS['player'].speed,
         health = ENTITY_DEFS['player'].health,
-        level = self.level
+        level = self.level,
+        attackRange = ENTITY_DEFS['player'].attackRange,
+        damage = ENTITY_DEFS['player'].damage
     }
     self.player.stateMachine = StateMachine {
         ['walk'] = function() return PlayerWalkState(self.player, self.level) end,
-        ['idle'] = function() return PlayerIdleState(self.player, self.level) end
+        ['idle'] = function() return PlayerIdleState(self.player, self.level) end,
+        ['attack'] = function() return PlayerAttackState(self.player, self.level) end
     }
     
     self.level:generateTileMap()
@@ -37,7 +40,7 @@ function PlayState:update(dt)
     self.player:update(dt)
     self.level:update(dt)
     self:updateCamera()
-    to_grid_coordinate(self.player.x + self.player.mmx - self.player.width/2, self.player.y + self.player.mmy - self.player.height)
+    to_grid_coordinate(self.player.x + self.player.mouseInScreenX - self.player.width/2, self.player.y + self.player.mouseInScreenY - self.player.height)
 end
 
 function PlayState:updateCamera()
@@ -54,12 +57,12 @@ function PlayState:render()
     love.graphics.print(tostring(self.player.mapX)..'  '..tostring(self.player.mapY), gFonts['medium'], self.camX, self.camY)
     love.graphics.print(tostring(self.player.x)..'  '..tostring(self.player.y), gFonts['medium'], self.camX, self.camY + 10)
     love.graphics.print(tostring(mx)..'  '..tostring(my), gFonts['medium'], self.camX, self.camY + 20)
-    love.graphics.print(tostring(self.player.mmx)..'  '..tostring(self.player.mmy), gFonts['medium'], self.camX, self.camY +30)
-    love.graphics.print(tostring(mxx)..'  '..tostring(myy), gFonts['medium'], self.camX, self.camY +40)
-    love.graphics.print(tostring(#self.level.entities), gFonts['medium'],self.camX, self.camY + 50)
+    love.graphics.print(tostring(self.player.mouseInScreenX)..'  '..tostring(self.player.mouseInScreenY), gFonts['medium'], self.camX, self.camY +30)
+    love.graphics.print(tostring(mouseTileX)..'  '..tostring(mouseTileY), gFonts['medium'], self.camX, self.camY +40)
+    love.graphics.print(tostring(self.camX)..'  '..tostring(self.camY), gFonts['medium'],self.camX, self.camY + 50)
     love.graphics.print(tostring(self.player.health), gFonts['medium'],self.camX, self.camY + 60)
     for k, v in pairs(self.level.entities) do
-        love.graphics.print(tostring(v.mapX)..' '..tostring(v.mapY)..'  '..tostring(v.direction), gFonts['medium'], self.camX, self.camY + 70)
+        love.graphics.print(tostring(v.stateMachine.damage), gFonts['medium'],self.camX, self.camY + 70)
     end
     
 end

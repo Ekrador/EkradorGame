@@ -22,6 +22,7 @@ require 'src/states/entity/EntityWalkState'
 require 'src/states/entity/PlayerIdleState'
 require 'src/states/entity/PlayerWalkState'
 require 'src/states/entity/EntityAttackState'
+require 'src/states/entity/PlayerAttackState'
 require 'src/world/tile_ids'
 require 'src/world/levels_defs'
 require 'src/world/Level'
@@ -40,6 +41,8 @@ gTextures = {
 }
 
 gFrames = {
+    ['player'] = GenerateQuads(gTextures['player'], 32, 39),
+    ['skeleton'] = GenerateQuads(gTextures['skeleton'], 32, 39)
 }
 
 gFonts = {

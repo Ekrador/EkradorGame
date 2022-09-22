@@ -1,12 +1,11 @@
 PlayerIdleState = Class{__includes = EntityIdleState}
+function PlayerIdleState:enter()
+    self.entity.stop = false
+end
 
 function PlayerIdleState:update(dt)
     if love.mouse.wasPressed(2) then
-        if myy > 0 and myy < self.level.mapSize 
-        and mxx > 0 and mxx < self.level.mapSize and
-        not self.level.map.tiles[myy][mxx]:collidable() then
             self.entity.getCommand = true
             self.entity:changeState('walk')
-        end
     end
 end

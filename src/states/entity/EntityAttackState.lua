@@ -30,7 +30,7 @@ function EntityAttackState:init(entity, level)
 end
 
 function EntityAttackState:enter(params)
-    self.hit = false
+    self.entity:changeAnimation('attack-' .. tostring(self.entity.direction))
     self.entity.getCommand = false
     local dirx = self.level.player.mapX - self.entity.mapX
     local diry = self.level.player.mapY - self.entity.mapY
@@ -44,36 +44,48 @@ function EntityAttackState:enter(params)
         y = self.entity.mapY
     }
     self:damageToTile(tile, self.entity.attackRange)
+    -- self.damage = self:deleteDuplicates(self.damage)
     -- restart sword swing sound for rapid swinging
     -- gSounds['sword']:stop()
     -- gSounds['sword']:play()
 
     -- restart animation
-    --self.entity.currentAnimation:refresh()
+    self.entity.currentAnimation:refresh()
 end
 
 function EntityAttackState:update(dt)  
-    for k, tile in pairs(self.damage) do
-        if not self.hit and tile.x == self.level.player.mapX and tile.y == self.level.player.mapY then
-            self.hit = true
-            self.level.player:damage(self.entity.damage)
+    
+
+    if self.entity.currentAnimation.timesPlayed > 0 then
+        self.entity.currentAnimation.timesPlayed = 0
+        for k, tile in pairs(self.damage) do
+            if tile.x == self.level.player.mapX and tile.y == self.level.player.mapY then
+                self.level.player:damage(self.entity.damage)
+            end
+        end
+        if self.entity:distToPlayer() <= self.entity.attackRange then
+            self.entity:changeState('attack')
+        else
+            self.entity.stop = false
+            self.entity:changeState('walk')
         end
     end
-
-    -- if self.player.currentAnimation.timesPlayed > 0 then
-    --     self.player.currentAnimation.timesPlayed = 0
-    --     self.player:changeState('walk')
-    -- end
-    if self.entity:distToPlayer() <= self.entity.attackRange then
-        self.entity:changeState('attack')
-    else
-        self.entity.stop = false
-        self.entity:changeState('walk')
-    end
+    
 
 
 end
 
+function EntityAttackState:deleteDuplicates(table)
+    local newdmg = {}
+    for i = 1, #table do
+        for j = 1, #table do
+            if not i == j and not (table[i].x == table[j].x and table[i].y == table[j].y) then
+                table.insert(newdmg, table[i])
+            end
+        end
+    end
+    return newdmg
+end
 
 function EntityAttackState:damageToTile(tile, range)
     if range < 1 then
