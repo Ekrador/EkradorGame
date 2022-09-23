@@ -18,7 +18,8 @@ function Entity:init(def)
     self.height = def.height
     self.speed = def.speed
     self.level = def.level
-    self.health = def.health
+    self.maxHealth = def.maxHealth
+    self.currentHealth = self.maxHealth
     self.dead = false
     self.damage = def.damage
     self.path = {}
@@ -79,7 +80,7 @@ function Entity:collides(target)
                 self.y + self.height < target.y or self.y > target.y + target.height)
 end
 
-function Entity:damage(dmg)
+function Entity:takedamage(dmg)
     self.health = self.health - dmg
 end
 

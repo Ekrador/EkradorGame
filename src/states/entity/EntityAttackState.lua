@@ -44,7 +44,6 @@ function EntityAttackState:enter(params)
         y = self.entity.mapY
     }
     self:damageToTile(tile, self.entity.attackRange)
-    -- self.damage = self:deleteDuplicates(self.damage)
     -- restart sword swing sound for rapid swinging
     -- gSounds['sword']:stop()
     -- gSounds['sword']:play()
@@ -60,7 +59,7 @@ function EntityAttackState:update(dt)
         self.entity.currentAnimation.timesPlayed = 0
         for k, tile in pairs(self.damage) do
             if tile.x == self.level.player.mapX and tile.y == self.level.player.mapY then
-                self.level.player:damage(self.entity.damage)
+                self.level.player:takedamage(self.entity.damage)
             end
         end
         if self.entity:distToPlayer() <= self.entity.attackRange then
@@ -75,17 +74,7 @@ function EntityAttackState:update(dt)
 
 end
 
-function EntityAttackState:deleteDuplicates(table)
-    local newdmg = {}
-    for i = 1, #table do
-        for j = 1, #table do
-            if not i == j and not (table[i].x == table[j].x and table[i].y == table[j].y) then
-                table.insert(newdmg, table[i])
-            end
-        end
-    end
-    return newdmg
-end
+
 
 function EntityAttackState:damageToTile(tile, range)
     if range < 1 then

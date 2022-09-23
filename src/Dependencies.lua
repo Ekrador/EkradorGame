@@ -27,7 +27,9 @@ require 'src/world/tile_ids'
 require 'src/world/levels_defs'
 require 'src/world/Level'
 require 'src/world/Tile'
-require 'src/world/TileMap'
+require 'src/world/TileMap' 
+
+require 'ui/Interface'
 
 
 gTextures = {
@@ -37,12 +39,21 @@ gTextures = {
     ['tile_road'] = love.graphics.newImage('graphics/tile_road.png'),
     ['player'] = love.graphics.newImage('graphics/player.png'),
     ['skeleton'] = love.graphics.newImage('graphics/skeleton.png'),
-    ['wall'] = love.graphics.newImage('graphics/wall.png')
+    ['wall'] = love.graphics.newImage('graphics/wall.png'),
+    ['panel'] = love.graphics.newImage('graphics/panel.png'),
+    ['health'] = love.graphics.newImage('graphics/health.png'),
+    ['rage'] = love.graphics.newImage('graphics/rage.png'),
+    ['mana'] = love.graphics.newImage('graphics/mana.png'),
+    ['energy'] = love.graphics.newImage('graphics/energy.png')
 }
 
 gFrames = {
     ['player'] = GenerateQuads(gTextures['player'], 32, 39),
-    ['skeleton'] = GenerateQuads(gTextures['skeleton'], 32, 39)
+    ['skeleton'] = GenerateQuads(gTextures['skeleton'], 32, 39),
+    ['health'] = GenerateQuads(gTextures['health'], 39, 1),'
+    ['rage'] = GenerateQuads(gTextures['rage'], 39, 1),
+    ['mana'] = GenerateQuads(gTextures['mana'], 39, 1),
+    ['energy'] = GenerateQuads(gTextures['energy'], 39, 1)
 }
 
 gFonts = {

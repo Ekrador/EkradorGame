@@ -34,6 +34,13 @@ function PlayState:enter(params)
     self.player.stateMachine:change('idle')
     self.level:generateEntities()
 
+    -- self.playerClass = params.playerClass
+    self.GUI = Interface{
+        -- class = self.playerClass,
+        player = self.player,
+        x = self.camX,
+        y = self.camY
+    }
 end
 
 function PlayState:update(dt)
@@ -46,6 +53,8 @@ end
 function PlayState:updateCamera()
     self.camX = self.player.x - VIRTUAL_WIDTH / 2
     self.camY = self.player.y - VIRTUAL_HEIGHT / 2
+    self.GUI.x = self.camX
+    self.GUI.y = self.camY
 
 end
 
@@ -62,9 +71,9 @@ function PlayState:render()
     love.graphics.print(tostring(self.camX)..'  '..tostring(self.camY), gFonts['medium'],self.camX, self.camY + 50)
     love.graphics.print(tostring(self.player.health), gFonts['medium'],self.camX, self.camY + 60)
     for k, v in pairs(self.level.entities) do
-        love.graphics.print(tostring(v.stateMachine.damage), gFonts['medium'],self.camX, self.camY + 70)
+        love.graphics.print(tostring(v.health), gFonts['medium'],self.camX, self.camY + 70)
     end
-    
+    self.GUI:render()
 end
 
 -- function PlayState:renderCollidable(x,y)

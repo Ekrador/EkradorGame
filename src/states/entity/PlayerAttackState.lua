@@ -17,7 +17,6 @@ function PlayerAttackState:enter(params)
         y = self.entity.mapY
     }
     self:damageToTile(tile, self.entity.attackRange)
-    self.damage = self:deleteDuplicates(self.damage)
     -- restart sword swing sound for rapid swinging
     -- gSounds['sword']:stop()
     -- gSounds['sword']:play()
@@ -27,15 +26,17 @@ function PlayerAttackState:enter(params)
 end
 
 function PlayerAttackState:update(dt)  
-    for k, enemy in pairs(self.level.entities) do
-        for j, tile in pairs(self.damage) do
-            if tile.x == enemy.mapX and tile.y == enemy.mapY then
-                enemy:damage(self.entity.damage)
-            end
-        end
-    end
     if self.entity.currentAnimation.timesPlayed > 0 then
         self.entity.currentAnimation.timesPlayed = 0
+        for k, enemy in pairs(self.level.entities) do
+            for j, tile in pairs(self.damage) do
+                if tile.x == enemy.mapX and tile.y == enemy.mapY then
+                    enemy:takedamage(self.entity.damage)
+                    goto next
+                end
+            end
+            ::next::
+        end
         self.entity:changeState('walk')
     end
 end
