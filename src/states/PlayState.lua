@@ -8,7 +8,7 @@ function PlayState:enter(params)
     self.camX = 0
     self.camY = 0
     self.level = Level(LEVEL_DEF['city'])
-    
+    self.playerClass = 'mage' --params.playerClass
     self.player = Player{
         animations = ENTITY_DEFS['player'].animations,
         mapX = 3,
@@ -16,10 +16,16 @@ function PlayState:enter(params)
         width = 32,
         height = 39,
         speed = ENTITY_DEFS['player'].speed,
-        health = ENTITY_DEFS['player'].health,
+        maxHealth = ENTITY_DEFS['player'].health,
         level = self.level,
         attackRange = ENTITY_DEFS['player'].attackRange,
-        damage = ENTITY_DEFS['player'].damage
+        regenEnergy = ENTITY_DEFS[self.playerClass].regenEnergy,
+        currentEnergy = ENTITY_DEFS[self.playerClass].currentEnergy,
+        class = self.playerClass,
+        regenRate = ENTITY_DEFS[self.playerClass].regenRate,
+        strength = ENTITY_DEFS[self.playerClass].strength,
+        agility = ENTITY_DEFS[self.playerClass].agility,
+        intelligence = ENTITY_DEFS[self.playerClass].intelligence
     }
     self.player.stateMachine = StateMachine {
         ['walk'] = function() return PlayerWalkState(self.player, self.level) end,
@@ -33,47 +39,34 @@ function PlayState:enter(params)
     self.level.player = self.player
     self.player.stateMachine:change('idle')
     self.level:generateEntities()
-
-    -- self.playerClass = params.playerClass
-    self.GUI = Interface{
-        -- class = self.playerClass,
-        player = self.player,
-        x = self.camX,
-        y = self.camY
-    }
 end
 
-function PlayState:update(dt)
+function PlayState:update(dt)    
     self.player:update(dt)
     self.level:update(dt)
     self:updateCamera()
-    to_grid_coordinate(self.player.x + self.player.mouseInScreenX - self.player.width/2, self.player.y + self.player.mouseInScreenY - self.player.height)
+    to_grid_coordinate(self.player.x + mouseInScreenX - self.player.width/2, self.player.y + mouseInScreenY - self.player.height)
 end
 
 function PlayState:updateCamera()
     self.camX = self.player.x - VIRTUAL_WIDTH / 2
     self.camY = self.player.y - VIRTUAL_HEIGHT / 2
-    self.GUI.x = self.camX
-    self.GUI.y = self.camY
-
 end
 
 function PlayState:render()
     love.graphics.translate(-math.floor(self.camX), -math.floor(self.camY))
     self:rendermap()
-    self.player:render()
-    love.graphics.rectangle('line', self.player.x , self.player.y , self.player.width, self.player.height)
+    self.player:render(math.floor(self.camX), math.floor(self.camY))
     love.graphics.print(tostring(self.player.mapX)..'  '..tostring(self.player.mapY), gFonts['medium'], self.camX, self.camY)
     love.graphics.print(tostring(self.player.x)..'  '..tostring(self.player.y), gFonts['medium'], self.camX, self.camY + 10)
     love.graphics.print(tostring(mx)..'  '..tostring(my), gFonts['medium'], self.camX, self.camY + 20)
-    love.graphics.print(tostring(self.player.mouseInScreenX)..'  '..tostring(self.player.mouseInScreenY), gFonts['medium'], self.camX, self.camY +30)
+    love.graphics.print(tostring(mouseInScreenX)..'  '..tostring(mouseInScreenY), gFonts['medium'], self.camX, self.camY +30)
     love.graphics.print(tostring(mouseTileX)..'  '..tostring(mouseTileY), gFonts['medium'], self.camX, self.camY +40)
     love.graphics.print(tostring(self.camX)..'  '..tostring(self.camY), gFonts['medium'],self.camX, self.camY + 50)
-    love.graphics.print(tostring(self.player.health), gFonts['medium'],self.camX, self.camY + 60)
+    love.graphics.print(tostring(self.player.currentHealth), gFonts['medium'],self.camX, self.camY + 60)
     for k, v in pairs(self.level.entities) do
-        love.graphics.print(tostring(v.health), gFonts['medium'],self.camX, self.camY + 70)
+        love.graphics.print(tostring(v.mapX)..' '..tostring(v.mapY), gFonts['medium'],self.camX, self.camY + 70)
     end
-    self.GUI:render()
 end
 
 -- function PlayState:renderCollidable(x,y)

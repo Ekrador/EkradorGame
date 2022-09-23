@@ -30,6 +30,7 @@ require 'src/world/Tile'
 require 'src/world/TileMap' 
 
 require 'ui/Interface'
+require 'ui/Inventory'
 
 
 gTextures = {
@@ -42,18 +43,21 @@ gTextures = {
     ['wall'] = love.graphics.newImage('graphics/wall.png'),
     ['panel'] = love.graphics.newImage('graphics/panel.png'),
     ['health'] = love.graphics.newImage('graphics/health.png'),
-    ['rage'] = love.graphics.newImage('graphics/rage.png'),
-    ['mana'] = love.graphics.newImage('graphics/mana.png'),
-    ['energy'] = love.graphics.newImage('graphics/energy.png')
+    ['Rage'] = love.graphics.newImage('graphics/rage.png'),
+    ['Mana'] = love.graphics.newImage('graphics/mana.png'),
+    ['Energy'] = love.graphics.newImage('graphics/energy.png'),
+    ['inventory'] = love.graphics.newImage('graphics/inventory.png'),
+    ['plus'] = love.graphics.newImage('graphics/plus.png')
 }
 
 gFrames = {
     ['player'] = GenerateQuads(gTextures['player'], 32, 39),
     ['skeleton'] = GenerateQuads(gTextures['skeleton'], 32, 39),
-    ['health'] = GenerateQuads(gTextures['health'], 39, 1),'
-    ['rage'] = GenerateQuads(gTextures['rage'], 39, 1),
-    ['mana'] = GenerateQuads(gTextures['mana'], 39, 1),
-    ['energy'] = GenerateQuads(gTextures['energy'], 39, 1)
+    ['health'] = GenerateQuads(gTextures['health'], 39, 1),
+    ['Rage'] = GenerateQuads(gTextures['Rage'], 39, 1),
+    ['Mana'] = GenerateQuads(gTextures['Mana'], 39, 1),
+    ['Energy'] = GenerateQuads(gTextures['Energy'], 39, 1),
+    ['plus'] = GenerateQuads(gTextures['plus'], 11, 11)
 }
 
 gFonts = {

@@ -49,7 +49,7 @@ function Level:generateEntities()
                             mapY = y,
                             width = 32,
                             height = 39,
-                            health = ENTITY_DEFS[type].health,
+                            maxHealth = ENTITY_DEFS[type].health,
                             level = self,
                             attackRange = ENTITY_DEFS[type].attackRange,
                             agroRange = ENTITY_DEFS[type].agroRange,
@@ -77,7 +77,7 @@ function Level:update(dt)
 
     for i = #self.entities, 1, -1 do
         local entity = self.entities[i]
-        if entity.health <= 0 then
+        if entity.currentHealth <= 0 then
             entity.dead = true
         elseif not entity.dead then
             entity:update(dt)

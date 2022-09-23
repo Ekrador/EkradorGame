@@ -4,8 +4,8 @@ PlayerWalkState = Class{__includes = EntityWalkState}
 function PlayerWalkState:init(entity, level)
     EntityWalkState.init(self, entity)
     self.level = level
-    self.mx = self.entity.mouseInScreenX
-    self.my = self.entity.mouseInScreenY
+    self.mx = mouseInScreenX
+    self.my = mouseInScreenY
     self.direction = 1
 end
   
@@ -57,3 +57,29 @@ function PlayerWalkState:update(dt)
     end
 end
 
+function PlayerWalkState:move(path, i)
+    if self.entity.stop then
+        self.entity.stop = false
+        self.entity.entity.getCommand = false
+        return 
+    end
+
+    if i > #path then
+        
+        return
+    end
+
+    self.entity.mapX = path[i].x
+    self.entity.mapY = path[i].y
+    local newX = (path[i].x-1)*0.5*self.entity.width + (path[i].y-1)*-1*self.entity.width*0.5
+    local newY = (path[i].x-1)*0.5*GROUND_HEIGHT+ (path[i].y-1)*0.5*GROUND_HEIGHT - self.entity.height + GROUND_HEIGHT
+    self.entity.direction = self.entity.directions[path[i].direction]
+    self.entity:changeAnimation('walk-' .. tostring(self.entity.direction))
+
+    Timer.tween(1 / self.entity.speed,{
+        [self.entity] = { x = newX, y = newY }
+    })  
+    :finish(function() self.entity.getCommand = false 
+        self:move(path, i + 1) end)
+        self.entity.getCommand = false
+end

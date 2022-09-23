@@ -6,6 +6,7 @@ function PlayerAttackState:init(entity, level)
 end
 
 function PlayerAttackState:enter(params)
+    self.damage = {}
     self.entity:changeAnimation('attack-' .. tostring(self.entity.direction))
     self.entity.getCommand = false
     local direction = params and params.direction or nil

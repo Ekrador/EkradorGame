@@ -4,7 +4,6 @@ function EntityAttackState:init(entity, level)
     self.entity = entity
     self.level = level
     local direction = self.entity.direction
-    self.damage = {}
     self.hitDirection = 1
 
     if direction == 'up' then
@@ -26,10 +25,10 @@ function EntityAttackState:init(entity, level)
     end
     
     
-    -- self.entity:changeAnimation('attack-' .. self.entity.direction)
 end
 
 function EntityAttackState:enter(params)
+    self.damage = {}
     self.entity:changeAnimation('attack-' .. tostring(self.entity.direction))
     self.entity.getCommand = false
     local dirx = self.level.player.mapX - self.entity.mapX

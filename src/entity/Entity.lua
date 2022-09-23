@@ -20,6 +20,9 @@ function Entity:init(def)
     self.level = def.level
     self.maxHealth = def.maxHealth
     self.currentHealth = self.maxHealth
+    self.status = {}
+    self.stunned = false
+    
     self.dead = false
     self.damage = def.damage
     self.path = {}
@@ -28,8 +31,6 @@ function Entity:init(def)
 
     self.y = (self.mapX-1)*0.5*GROUND_HEIGHT+ (self.mapY-1)*0.5*GROUND_HEIGHT - self.height + GROUND_HEIGHT
 
-    self.mouseInScreenX = 0
-    self.mouseInScreenY = 0
     self.getCommand = false
     self.stop = false
 end
@@ -68,8 +69,9 @@ end
 
 function Entity:update(dt)
     self.stateMachine:update(dt)
-    self.mouseInScreenX = mx - VIRTUAL_WIDTH/2 
-    self.mouseInScreenY = my - VIRTUAL_HEIGHT/2 
+
+    self:statusEffect(dt)
+
     if self.currentAnimation then
         self.currentAnimation:update(dt)
     end
@@ -81,7 +83,11 @@ function Entity:collides(target)
 end
 
 function Entity:takedamage(dmg)
-    self.health = self.health - dmg
+    self.currentHealth = math.max(0, self.currentHealth - dmg)
+end
+
+function Entity:heal(amount)
+    self.currentHealth = math.min(self.maxHealth, self.currentHealth + amount)
 end
 
 function Entity:render()
@@ -185,3 +191,40 @@ function Entity:pathfind(def)
     end
 end
 
+function Entity:getStatus(def)
+    local state = {
+        timer = 0,
+        status = def.status,
+        duration = def.duration,
+        power = def.power
+    }
+    table.insert(self.status, state)
+end
+
+function Entity:statusEffect(dt)
+    local speed = 0
+    for k, state in pairs(self.status) do
+        if state.timer == 0 then
+            if state.status == 'stun' then
+                self.stunned = true
+            elseif state.status == 'slow' then
+                speed = self.speed
+                self.speed = self.speed / state.power
+            end
+        elseif state.timer % 2 == 0 then        
+            if state.status == 'dot' then               
+                self:takedamage(state.power)
+            elseif state.status == 'hot' then
+                self:heal(state.power)
+            end
+        elseif state.timer > state.duration then
+            if state.status == 'stun' then
+                self.stunned = false
+            elseif state.status == 'slow' then
+                self.speed = speed
+            end
+            table.remove(self.status, state)
+        end
+        state.timer = state.timer + dt
+    end
+end

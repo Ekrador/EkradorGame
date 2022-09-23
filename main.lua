@@ -1,4 +1,4 @@
-require('lovedebug')
+-- require('lovedebug')
 require 'src/Dependencies'
 
 function love.load()
@@ -58,6 +58,9 @@ end
 
 function love.update(dt)
     mx, my = push:toGame(love.mouse.getPosition())
+    mouseInScreenX = mx - VIRTUAL_WIDTH/2 
+    mouseInScreenY = my - VIRTUAL_HEIGHT/2 
+
     Timer.update(dt)
     gStateStack:update(dt)
     

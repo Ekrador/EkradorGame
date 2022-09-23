@@ -1,11 +1,3 @@
---[[
-    GD50
-    Legend of Zelda
-
-    Author: Colton Ogden
-    cogden@cs50.harvard.edu
-]]
-
 ENTITY_DEFS = {
     ['player'] = {
         animations = {
@@ -126,6 +118,30 @@ ENTITY_DEFS = {
         health = 100,
         attackRange = 1,
         damage = 10
+    },
+    ['warrior'] = {
+        regenEnergy = -2,
+        currentEnergy = 0,
+        regenRate = 1,
+        strength = 5,
+        agility = 3,
+        intelligence = 1
+    },
+    ['mage'] = {
+        regenEnergy = 1,
+        currentEnergy = 100,
+        regenRate = 5,
+        strength = 1,
+        agility = 2,
+        intelligence = 6
+    },
+    ['ranger'] = {
+        regenEnergy = 10,
+        currentEnergy = 100,
+        regenRate = 3,
+        strength = 2,
+        agility = 5,
+        intelligence = 1
     },
     ['skeleton'] = {
         animations = {
