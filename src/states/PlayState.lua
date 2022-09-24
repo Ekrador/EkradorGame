@@ -8,7 +8,7 @@ function PlayState:enter(params)
     self.camX = 0
     self.camY = 0
     self.level = Level(LEVEL_DEF['city'])
-    self.playerClass = 'mage' --params.playerClass
+    self.playerClass = 'warrior' --params.playerClass
     self.player = Player{
         animations = ENTITY_DEFS['player'].animations,
         mapX = 3,
@@ -64,26 +64,15 @@ function PlayState:render()
     love.graphics.print(tostring(mouseTileX)..'  '..tostring(mouseTileY), gFonts['medium'], self.camX, self.camY +40)
     love.graphics.print(tostring(self.camX)..'  '..tostring(self.camY), gFonts['medium'],self.camX, self.camY + 50)
     love.graphics.print(tostring(self.player.currentHealth), gFonts['medium'],self.camX, self.camY + 60)
-    for k, v in pairs(self.level.entities) do
-        love.graphics.print(tostring(v.mapX)..' '..tostring(v.mapY), gFonts['medium'],self.camX, self.camY + 70)
+    love.graphics.print(tostring(#ENTITY_SPELLS['player'][self.playerClass]), gFonts['medium'],self.camX, self.camY + 80)
+    for k, v in pairs(ENTITY_SPELLS['player'][self.playerClass]) do
+        love.graphics.print(tostring(v.name), gFonts['medium'],self.camX, self.camY + 70)
+    end
+    for k, v in pairs(self.player.spells) do
+        love.graphics.print(tostring(v.id), gFonts['medium'],self.camX, self.camY + 90)
     end
 end
 
--- function PlayState:renderCollidable(x,y)
---     if (y - self.player.mapY < self.level.map.tiles[y][x].height/GROUND_HEIGHT  and
---     y - self.player.mapY >= 0) and
---     (x - self.player.mapX >= 0 and 
---     x - self.player.mapX < self.level.map.tiles[y][x].height/GROUND_HEIGHT) and
---     self.level.map.tiles[y][x]:collidable() then
---         love.graphics.setColor(255, 255, 255, 0.5)        
---     end
---     if self.level.map.tiles[y][x]:collidable() then
---         love.graphics.draw(TILE_IDS[self.level.map.tiles[y][x].id], 
---         math.floor(VIRTUAL_WIDTH / 2 + (x-1)*0.5*GROUND_WIDTH + (y-1)*-1*GROUND_WIDTH*0.5),
---         math.floor(VIRTUAL_HEIGHT / 2 + (x-1)*0.5*GROUND_HEIGHT+ (y-1)*0.5*GROUND_HEIGHT)- self.level.map.tiles[y][x].height + GROUND_HEIGHT)
---     end
---     love.graphics.setColor(255, 255, 255, 1)
--- end
 function PlayState:rendermap()
     local half = self.player.mapY + self.player.mapX
     local gridX = 0

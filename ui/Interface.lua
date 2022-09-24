@@ -13,7 +13,7 @@ function Interface:init(def)
         self.energyBar = 'Mana'
     end
     self.inventory = Inventory(self.player, self.energyBar)
-
+    self.talentTree = TalentTree(self.player)
 end
 
 function Interface:render(x, y)
@@ -21,6 +21,7 @@ function Interface:render(x, y)
     self:renderHealth(x, y)
     self:tips(x, y)
     self.inventory:render(x, y)
+    self.talentTree:render(x, y)
 end
 
 function Interface:renderHealth(x, y)

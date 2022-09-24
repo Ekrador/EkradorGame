@@ -14,8 +14,10 @@ require 'src/states/StartState'
 require 'src/states/PlayState'
 
 require 'src/entity/entity_defs'
+require 'src/entity/entity_spells'
 require 'src/entity/Entity'
 require 'src/entity/Player'
+require 'src/entity/Spells'
 require 'src/states/entity/EntityBaseState'
 require 'src/states/entity/EntityIdleState'
 require 'src/states/entity/EntityWalkState'
@@ -31,6 +33,7 @@ require 'src/world/TileMap'
 
 require 'ui/Interface'
 require 'ui/Inventory'
+require 'ui/TalentTree'
 
 
 gTextures = {
@@ -47,7 +50,9 @@ gTextures = {
     ['Mana'] = love.graphics.newImage('graphics/mana.png'),
     ['Energy'] = love.graphics.newImage('graphics/energy.png'),
     ['inventory'] = love.graphics.newImage('graphics/inventory.png'),
-    ['plus'] = love.graphics.newImage('graphics/plus.png')
+    ['plus'] = love.graphics.newImage('graphics/plus.png'),
+    ['talent_tree'] = love.graphics.newImage('graphics/talent_tree.png'),
+    ['warrior_spells'] = love.graphics.newImage('graphics/warrior_spells.png') 
 }
 
 gFrames = {
@@ -57,7 +62,8 @@ gFrames = {
     ['Rage'] = GenerateQuads(gTextures['Rage'], 39, 1),
     ['Mana'] = GenerateQuads(gTextures['Mana'], 39, 1),
     ['Energy'] = GenerateQuads(gTextures['Energy'], 39, 1),
-    ['plus'] = GenerateQuads(gTextures['plus'], 11, 11)
+    ['plus'] = GenerateQuads(gTextures['plus'], 11, 11),
+    ['warrior_spells'] = GenerateQuads(gTextures['warrior_spells'], 15, 15)
 }
 
 gFonts = {

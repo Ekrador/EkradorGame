@@ -196,7 +196,7 @@ function Entity:getStatus(def)
         timer = 0,
         status = def.status,
         duration = def.duration,
-        power = def.power
+        effectPower = def.effectPower
     }
     table.insert(self.status, state)
 end
@@ -209,13 +209,13 @@ function Entity:statusEffect(dt)
                 self.stunned = true
             elseif state.status == 'slow' then
                 speed = self.speed
-                self.speed = self.speed / state.power
+                self.speed = self.speed / state.effectPower
             end
         elseif state.timer % 2 == 0 then        
             if state.status == 'dot' then               
-                self:takedamage(state.power)
+                self:takedamage(state.effectPower)
             elseif state.status == 'hot' then
-                self:heal(state.power)
+                self:heal(state.effectPower)
             end
         elseif state.timer > state.duration then
             if state.status == 'stun' then

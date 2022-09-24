@@ -14,6 +14,12 @@ function Player:init(def)
     self.intelligence = def.intelligence
     self.damage = self.strenght
     self.bonusPoints = 5
+    self.gold = 0
+    self.spellBook = {}
+    for k, v in pairs(ENTITY_SPELLS['player'][self.class]) do
+        spell = Spells{ENTITY_SPELLS['player'][self.class].v, self}
+        table.insert(self.spells, spell)
+    end
     self.GUI = Interface{
         class = self.class,
         player = self
@@ -47,8 +53,11 @@ function Player:update(dt)
         if love.keyboard.wasPressed('q') then
             self:spentEnergy(20)
         end
-        if love.keyboard.wasPressed('p') then
+        if love.keyboard.wasPressed('c') then
             self.GUI.inventory:togle()
+        end
+        if love.keyboard.wasPressed('p') then
+            self.GUI.talentTree:togle()
         end
 
 end
