@@ -59,7 +59,8 @@ function Level:generateEntities()
                         self.entities[i].stateMachine = StateMachine {
                             ['walk'] = function() return EntityWalkState(self.entities[i], self) end,
                             ['idle'] = function() return EntityIdleState(self.entities[i], self) end,
-                            ['attack'] = function() return EntityAttackState(self.entities[i], self) end
+                            ['attack'] = function() return EntityAttackState(self.entities[i], self) end,
+                            ['stunned'] = function() return EntityStunnedState(self.entities[i], self) end
                         }
                     
                         self.entities[i]:changeState('walk', self)

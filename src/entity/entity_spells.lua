@@ -20,7 +20,7 @@ ENTITY_SPELLS = {
                 aoe = nil,
                 effectPower = 0,
                 cooldown = 10
-            }
+            },
         },
         ['mage'] = {
 

@@ -38,7 +38,7 @@ end
 
 function Inventory:tips(x, y)
     if (mx > 64 and mx < 144) and (my > 121 and my < 132) then
-        love.graphics.print('Strength: your melee attack deal more physical\n damage',gFonts['small'], x + 88, (y + 175))
+        love.graphics.print('Strength: your melee attack deal more physical\n damage',gFonts['small'], x + 88, y + 175)
     elseif (mx > 64 and mx < 144) and (my > 133 and my < 143) then
         love.graphics.print('Agility: your ranged attack deals more physical\n damage and also increases your attack speed.',gFonts['small'], x + 88, y + 175)
     elseif (mx > 64 and mx < 144) and (my > 144 and my < 155) then

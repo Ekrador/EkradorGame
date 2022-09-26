@@ -30,7 +30,8 @@ function PlayState:enter(params)
     self.player.stateMachine = StateMachine {
         ['walk'] = function() return PlayerWalkState(self.player, self.level) end,
         ['idle'] = function() return PlayerIdleState(self.player, self.level) end,
-        ['attack'] = function() return PlayerAttackState(self.player, self.level) end
+        ['attack'] = function() return PlayerAttackState(self.player, self.level) end,
+        ['stunned'] = function() return PlayerStunnedState(self.entities[i], self) end
     }
     
     self.level:generateTileMap()
@@ -57,19 +58,21 @@ function PlayState:render()
     love.graphics.translate(-math.floor(self.camX), -math.floor(self.camY))
     self:rendermap()
     self.player:render(math.floor(self.camX), math.floor(self.camY))
-    love.graphics.print(tostring(self.player.mapX)..'  '..tostring(self.player.mapY), gFonts['medium'], self.camX, self.camY)
-    love.graphics.print(tostring(self.player.x)..'  '..tostring(self.player.y), gFonts['medium'], self.camX, self.camY + 10)
-    love.graphics.print(tostring(mx)..'  '..tostring(my), gFonts['medium'], self.camX, self.camY + 20)
-    love.graphics.print(tostring(mouseInScreenX)..'  '..tostring(mouseInScreenY), gFonts['medium'], self.camX, self.camY +30)
-    love.graphics.print(tostring(mouseTileX)..'  '..tostring(mouseTileY), gFonts['medium'], self.camX, self.camY +40)
-    love.graphics.print(tostring(self.camX)..'  '..tostring(self.camY), gFonts['medium'],self.camX, self.camY + 50)
-    love.graphics.print(tostring(self.player.currentHealth), gFonts['medium'],self.camX, self.camY + 60)
-    love.graphics.print(tostring(#ENTITY_SPELLS['player'][self.playerClass]), gFonts['medium'],self.camX, self.camY + 80)
-    for k, v in pairs(ENTITY_SPELLS['player'][self.playerClass]) do
-        love.graphics.print(tostring(v.name), gFonts['medium'],self.camX, self.camY + 70)
-    end
+    -- love.graphics.print(tostring(self.player.mapX)..'  '..tostring(self.player.mapY), gFonts['medium'], self.camX, self.camY)
+    -- love.graphics.print(tostring(self.player.x)..'  '..tostring(self.player.y), gFonts['medium'], self.camX, self.camY + 10)
+    -- love.graphics.print(tostring(mx)..'  '..tostring(my), gFonts['medium'], self.camX, self.camY + 20)
+    -- love.graphics.print(tostring(mouseInScreenX)..'  '..tostring(mouseInScreenY), gFonts['medium'], self.camX, self.camY +30)
+    -- love.graphics.print(tostring(mouseTileX)..'  '..tostring(mouseTileY), gFonts['medium'], self.camX, self.camY +40)
+    -- love.graphics.print(tostring(self.camX)..'  '..tostring(self.camY), gFonts['medium'],self.camX, self.camY + 50)
+    -- love.graphics.print(tostring(self.player.currentHealth), gFonts['medium'],self.camX, self.camY + 60)
+    -- for k, v in pairs(ENTITY_SPELLS['player'][self.playerClass]) do
+    --     love.graphics.print(tostring(v.name), gFonts['medium'],self.camX, self.camY + 70)
+    -- end
     for k, v in pairs(self.player.spells) do
-        love.graphics.print(tostring(v.id), gFonts['medium'],self.camX, self.camY + 90)
+        love.graphics.print(tostring(v.level), gFonts['medium'],self.camX, self.camY)
+        love.graphics.print(tostring(v.id), gFonts['medium'],self.camX, self.camY+10)
+        love.graphics.print(tostring(v.x), gFonts['medium'],self.camX, self.camY+20)
+        love.graphics.print(tostring(v.y), gFonts['medium'],self.camX, self.camY+30)
     end
 end
 
