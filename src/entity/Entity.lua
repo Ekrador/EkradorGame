@@ -207,6 +207,7 @@ function Entity:statusEffect(dt)
         if state.timer == 0 then
             if state.status == 'stun' then
                 self.stunned = true
+                self:changeState
             elseif state.status == 'slow' then
                 speed = self.speed
                 self.speed = self.speed / state.effectPower
