@@ -258,8 +258,9 @@ ENTITY_DEFS = {
                 texture = 'skeleton'
             }
         },
+        name = 'skeleton',
         speed = 1,
-        health = 20,
+        health = 200,
         agroRange = 6,
         attackRange = 1,
         damage = 5

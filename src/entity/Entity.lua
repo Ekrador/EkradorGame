@@ -3,9 +3,6 @@ Entity = Class{}
 function Entity:init(def)
     self.directions = {'up-right','right','down-right','down','down-left','left','up-left','up'}
     self.direction = 'down'
-    
-    self.MDx = {0,1,1,1,0,-1,-1,-1}
-    self.MDy = {-1,-1,0,1,1,1,0,-1}
 
     self.animations = self:createAnimations(def.animations)
 
@@ -14,8 +11,8 @@ function Entity:init(def)
     self.attackRange = def.attackRange
     self.agroRange = def.agroRange
     self.chasing = false
-    self.width = def.width
-    self.height = def.height
+    self.width = def.width 
+    self.height = def.height 
     self.speed = def.speed
     self.level = def.level
     self.maxHealth = def.maxHealth
@@ -36,8 +33,8 @@ function Entity:init(def)
 end
 
 
-function Entity:changeState(name)
-    self.stateMachine:change(name)
+function Entity:changeState(name, params)
+    self.stateMachine:change(name, params)
     
 end
 
@@ -127,8 +124,8 @@ function Entity:pathfind(def)
     local tracking = true
     while tracking do
         for i = 1, 8 do
-            local dx = self.MDx[i]
-            local dy = self.MDy[i]
+            local dx = MDx[i]
+            local dy = MDy[i]
             local newX = xCur + dx
             local newY = yCur + dy
             if not self.level.map.tiles[newY][newX]:collidable() and path[newY][newX] == 0 then
@@ -172,8 +169,8 @@ function Entity:pathfind(def)
         PathY[Npath] = yCur
         local reverse = path[yCur][xCur]
         local reversedPath = returnPath[reverse]
-        local dx = self.MDx[reversedPath]
-        local dy = self.MDy[reversedPath]
+        local dx = MDx[reversedPath]
+        local dy = MDy[reversedPath]
         xCur = xCur + dx
         yCur = yCur + dy
         if xCur == startX and yCur == startY then
@@ -207,16 +204,10 @@ function Entity:statusEffect(dt)
         if state.timer == 0 then
             if state.status == 'stun' then
                 self.stunned = true
-                self:changeState
+                self:changeState('stunned', {duration = state.duration})
             elseif state.status == 'slow' then
                 speed = self.speed
                 self.speed = self.speed / state.effectPower
-            end
-        elseif state.timer % 2 == 0 then        
-            if state.status == 'dot' then               
-                self:takedamage(state.effectPower)
-            elseif state.status == 'hot' then
-                self:heal(state.effectPower)
             end
         elseif state.timer > state.duration then
             if state.status == 'stun' then
@@ -224,7 +215,13 @@ function Entity:statusEffect(dt)
             elseif state.status == 'slow' then
                 self.speed = speed
             end
-            table.remove(self.status, state)
+            self.status[k] = nil
+        elseif state.timer % 2 == 0 then        
+            if state.status == 'dot' then               
+                self:takedamage(state.effectPower)
+            elseif state.status == 'hot' then
+                self:heal(state.effectPower)
+            end  
         end
         state.timer = state.timer + dt
     end

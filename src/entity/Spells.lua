@@ -10,8 +10,8 @@ function Spells:init(def, player)
     self.cost = def.cost
     self.energy = def.energy
     self.duration = def.duration
-    self.effectToTarget = def.effectToTarget
-    self.effectToSelf = def.effectToSelf
+    self.debuff = def.debuff
+    self.buff = def.buff
     self.aoe = def.aoe
     self.effectPower = def.effectPower
     self.level = def.level
@@ -20,8 +20,11 @@ function Spells:init(def, player)
     self.require = def.require
     self.player = player
     self.cooldown = def.cooldown
+    self.targetType = def.target
+    self.target = nil
     self.ready = true
     self.cooldownTimer = 0
+    self.onUse = def.onUse
     self.mainStat = 1
     self.mainStatString = ''
     if self.player.class == 'warrior' then 
@@ -46,30 +49,70 @@ function Spells:update(dt)
     end
 end
 
-function Spells:use(target)
+function Spells:use(target, enemyOnScreen)
     if self.ready then
-        if self.aoe then
-
+        if self:distToTarget(target) > self.range then
+            --error sound
         else
-            if self.effectToTarget then
-                target:getDebuff{
-                    status = self.effectToTarget,
+            self.player:spentEnergy(self.cost)
+            self.player:getEnergy(self.energy)
+            self:assignTarget(target)
+            self.onUse(self.player, target)
+            for k, v in pairs(self.target) do
+                for key, enemy in pairs(enemyOnScreen) do
+                    if v.X == enemy.mapX and v.Y == enemy.mapY then
+                        if self.debuff then
+                            enemy:getStatus{
+                                status = self.debuff,
+                                duration = self.duration,
+                                effectPower = self.effectPower + (self.level * self.effectPower + self.scale * self.mainStat) / self.duration
+                            }
+                        end
+                        if self.damage > 0 then
+                            enemy:takedamage(self.damage * self.level + self.scale * self.mainStat)
+                        end
+                    end
+                end
+            end
+            if self.buff then
+                self.player:getStatus{
+                    status = self.buff,
                     duration = self.duration,
                     effectPower = self.effectPower + (self.level * self.effectPower + self.scale * self.mainStat) / self.duration
                 }
             end
-            if self.damage > 0 then
-                target:takedamage(self.damage * self.level + self.scale * self.mainStat)
-            end
-            if self.effectToSelf then
-                target:getDebuff{
-                    status = self.effectToSelf,
-                    duration = self.duration,
-                    effectPower = self.effectPower + (self.level * self.effectPower + self.scale * self.mainStat) / self.duration
-                }
-            end
+            self.ready = false
         end
     else 
         -- cooldown sound 
+    end
+end
+
+function Spells:distToTarget(target)
+    return math.floor(math.sqrt((self.player.mapX - target.mapX)^2 + 
+    (self.player.mapY - target.mapY)^2))
+end
+
+
+
+
+function Spells:assignTarget(target)
+    self.target = {}
+    if self.aoe == 0 then
+        local cell = {
+            X = target.mapX,
+            Y = target.mapY
+            }
+        table.insert(self.target, cell)
+    else
+        for i = 1, self.aoe do
+            for j = 1, 8 do
+                local cell = {
+                    X = target.mapX + MDx[j]*i,
+                    Y = target.mapY + MDy[j]*i
+                    }
+                    table.insert(self.target, cell)
+            end
+        end
     end
 end

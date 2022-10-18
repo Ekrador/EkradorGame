@@ -18,10 +18,6 @@ function PlayerAttackState:enter(params)
         y = self.entity.mapY
     }
     self:damageToTile(tile, self.entity.attackRange)
-    -- restart sword swing sound for rapid swinging
-    -- gSounds['sword']:stop()
-    -- gSounds['sword']:play()
-
     -- restart animation
     self.entity.currentAnimation:refresh()
 end

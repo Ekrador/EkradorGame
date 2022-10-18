@@ -34,7 +34,7 @@ function EntityAttackState:enter(params)
     local dirx = self.level.player.mapX - self.entity.mapX
     local diry = self.level.player.mapY - self.entity.mapY
     for i = 1, 8 do
-        if self.entity.MDx[i] == dirx and self.entity.MDy[i] == diry then
+        if MDx[i] == dirx and MDy[i] == diry then
             self.entity.direction = self.entity.directions[i]
         end
     end
@@ -43,17 +43,12 @@ function EntityAttackState:enter(params)
         y = self.entity.mapY
     }
     self:damageToTile(tile, self.entity.attackRange)
-    -- restart sword swing sound for rapid swinging
-    -- gSounds['sword']:stop()
-    -- gSounds['sword']:play()
 
     -- restart animation
     self.entity.currentAnimation:refresh()
 end
 
 function EntityAttackState:update(dt)  
-    
-
     if self.entity.currentAnimation.timesPlayed > 0 then
         self.entity.currentAnimation.timesPlayed = 0
         for k, tile in pairs(self.damage) do
@@ -79,22 +74,22 @@ function EntityAttackState:damageToTile(tile, range)
     if range < 1 then
         return 
     else
-        local dx = self.entity.MDx[hitDirection == 1 and 8 or hitDirection - 1]
-        local dy = self.entity.MDy[hitDirection == 1 and 8 or hitDirection - 1]
+        local dx = MDx[hitDirection == 1 and 8 or hitDirection - 1]
+        local dy = MDy[hitDirection == 1 and 8 or hitDirection - 1]
         local newX = tile.x + dx
         local newY = tile.y + dy
         local nextTile = {x = newX, y = newY}
         self:damageToTile(nextTile, range - 1)
         table.insert(self.damage, nextTile)
-        dx = self.entity.MDx[hitDirection]
-        dy = self.entity.MDy[hitDirection]
+        dx = MDx[hitDirection]
+        dy = MDy[hitDirection]
         newX = tile.x + dx
         newY = tile.y + dy
         nextTile = {x = newX, y = newY}
         self:damageToTile(nextTile, range - 1)
         table.insert(self.damage, nextTile)
-        dx = self.entity.MDx[hitDirection == 8 and 1 or hitDirection + 1]
-        dy = self.entity.MDy[hitDirection == 8 and 1 or hitDirection + 1]
+        dx = MDx[hitDirection == 8 and 1 or hitDirection + 1]
+        dy = MDy[hitDirection == 8 and 1 or hitDirection + 1]
         newX = tile.x + dx
         newY = tile.y + dy
         nextTile = {x = newX, y = newY}

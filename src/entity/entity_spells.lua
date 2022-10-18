@@ -14,12 +14,22 @@ ENTITY_SPELLS = {
                 range = 4,
                 cost = 0,
                 energy = 20,
-                duration = 1.5,
-                effectToTarget = 'stun',
-                effectToSelf = nil,
-                aoe = nil,
+                duration = 3.5,
+                debuff = 'stun',
+                buff = nil,
+                aoe = 0,
                 effectPower = 0,
-                cooldown = 10
+                cooldown = 10,
+                target = 'enemy',
+                onUse = function(player, target)
+                    local path = player:pathfind{
+                        startX = player.mapX,
+                        startY = player.mapY,
+                        endX = target.mapX,
+                        endY = target.mapY
+                    }
+                    player:move(path, 1, 10)
+                end
             },
         },
         ['mage'] = {

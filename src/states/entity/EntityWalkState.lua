@@ -33,8 +33,8 @@ function EntityWalkState:doStep()
         direction = math.random(#self.entity.directions)
     end
 
-    local dx = self.entity.MDx[direction]
-    local dy = self.entity.MDy[direction]
+    local dx = MDx[direction]
+    local dy = MDy[direction]
     local newX = self.entity.mapX + dx
     local newY = self.entity.mapY + dy
     if not self.level.map.tiles[newY][newX]:collidable() and not self.entity.stop then

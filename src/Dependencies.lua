@@ -25,6 +25,7 @@ require 'src/states/entity/PlayerIdleState'
 require 'src/states/entity/PlayerWalkState'
 require 'src/states/entity/EntityAttackState'
 require 'src/states/entity/PlayerAttackState'
+require 'src/states/entity/PlayerAbilityState'
 require 'src/states/entity/EntityStunnedState'
 require 'src/world/tile_ids'
 require 'src/world/levels_defs'
@@ -53,7 +54,8 @@ gTextures = {
     ['inventory'] = love.graphics.newImage('graphics/inventory.png'),
     ['plus'] = love.graphics.newImage('graphics/plus.png'),
     ['talent_tree'] = love.graphics.newImage('graphics/talent_tree.png'),
-    ['warrior_spells'] = love.graphics.newImage('graphics/warrior_spells.png') 
+    ['warrior_spells'] = love.graphics.newImage('graphics/warrior_spells.png'),
+    ['stun'] = love.graphics.newImage('graphics/stun.png')
 }
 
 gFrames = {

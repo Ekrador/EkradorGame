@@ -8,11 +8,18 @@ end
 function EntityStunnedState:enter(params)
     self.stunDuration = params.duration
     self.timer = 0
+    self.entity.getCommand = false
+    self.entity.stop = false
 end
 
 function EntityStunnedState:update(dt)
     self.timer = self.timer + dt
     if self.timer > self.stunDuration then
-        self.entity:changeState('idle')
+        self.entity:changeState('walk')
     end
+end
+
+function EntityStunnedState:render()
+    EntityBaseState.render(self)
+    love.graphics.draw(gTextures['stun'], self.entity.x , self.entity.y - 8)
 end
