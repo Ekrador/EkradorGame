@@ -5,7 +5,7 @@ end
 
 function PlayerIdleState:update(dt)
     if love.mouse.wasPressed(2) or love.keyboard.isDown('lshift') then
-            self.entity.getCommand = true
-            self.entity:changeState('walk')
+        self.entity.getCommand = true
+        self.entity:changeState('walk')
     end
 end

@@ -5,7 +5,6 @@ function Entity:init(def)
     self.direction = 'down'
 
     self.animations = self:createAnimations(def.animations)
-
     self.mapX = def.mapX
     self.mapY = def.mapY
     self.attackRange = def.attackRange

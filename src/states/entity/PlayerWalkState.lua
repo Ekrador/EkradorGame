@@ -35,20 +35,18 @@ function PlayerWalkState:update(dt)
     elseif (love.mouse.wasPressed(2) or love.mouse.wasReleased(2)) and 
     (mouseTileY > 0 and mouseTileY < self.level.mapSize) and (mouseTileX > 0 and mouseTileX < self.level.mapSize) and
     not self.level.map.tiles[mouseTileY][mouseTileX]:collidable() then
-        self.entity.getCommand = false   
         local path = self.entity:pathfind{
             startX = self.entity.mapX,
             startY = self.entity.mapY,
             endX = mouseTileX,
             endY = mouseTileY
         }
-        if path then             
-            if not self.entity.getCommand then
-                self.entity.getCommand = true
-                self.entity:move(path, 1, self.entity.speed)
-            else 
-                self.entity.stop = true
-            end
+        if path then 
+            if #self.entity.actionsQueue > 0 then
+                self.entity.actionsQueue = {}
+                self.entity.step:remove()
+            end            
+            self.entity:move(path, self.entity.speed)
         end
     else
         if not self.entity.getCommand then

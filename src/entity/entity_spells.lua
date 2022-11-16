@@ -28,7 +28,11 @@ ENTITY_SPELLS = {
                         endX = target.mapX,
                         endY = target.mapY
                     }
-                    player:move(path, 1, 10)
+                    path[#path] = nil
+                    player.actionsQueue = {}
+                    player.step:remove()
+                    player.getCommand = true
+                    player:move(path, 10)
                 end
             },
         },

@@ -7,7 +7,7 @@ function Player:init(def)
     self.regenEnergy = def.regenEnergy
     self.regenRate = def.regenRate
     self.regenTimer = 0
-    self.timer = 0
+    self.actionsQueue = {}
     self.class = def.class
     self.spells = {}
     self.spellPanel = {0,0,0,0}
@@ -25,6 +25,7 @@ function Player:init(def)
     self.bonusPoints = 5
     self.talentPoints = 1
     self.gold = 0
+    self.step = {}
     if self.class == 'warrior' then
         self.energyBar = 'Rage'
     elseif self.class == 'ranger' then
@@ -126,29 +127,81 @@ function Player:regenerateEnergy(dt)
 end
 
 
-function Player:move(path, i, speed)
+function Player:move(path, speed)
+    for i = 1, #path do
+        table.insert(self.actionsQueue, path[i])
+    end
+
+    self:steps(1, speed)
+end
+
+-- function Player:steps(i, speed)
+--     if self.stop then
+--         self.stop = false
+--         self.getCommand = false
+--         return 
+--     end
+
+--     if not self.getCommand then
+--         return
+--     end
+   
+--     local path = self.actionsQueue
+--     self.mapX = path[i].x
+--     self.mapY = path[i].y
+--     local newX = (path[i].x-1)*0.5*self.width + (path[i].y-1)*-1*self.width*0.5
+--     local newY = (path[i].x-1)*0.5*GROUND_HEIGHT+ (path[i].y-1)*0.5*GROUND_HEIGHT - self.height + GROUND_HEIGHT
+--     self.direction = self.directions[path[i].direction]
+--     self:changeAnimation('walk-' .. tostring(self.direction))
+--     self.step = Timer.tween(1 / speed,{
+--         [self] = { x = newX, y = newY }
+--     })  
+--     self.step:register():finish(function()  
+--         self:nextStep(i + 1, speed)
+--     end)
+-- end
+
+-- function Player:nextStep(i, speed)
+--     if i > #self.actionsQueue then
+--             self.actionsQueue = {}
+--         self.getCommand = false
+--         self:changeState('idle')
+--         return
+--     else
+--         self:steps(i, speed)
+--     end
+-- end
+
+
+function Player:steps(i, speed)
     if self.stop then
         self.stop = false
         self.getCommand = false
         return 
     end
 
-    if i > #path then
+    if not self.getCommand then
+        return
+    end
+   
+    if i > #self.actionsQueue then
+        self.actionsQueue = {}
+        self.getCommand = false
         self:changeState('idle')
         return
     end
 
+    local path = self.actionsQueue
     self.mapX = path[i].x
     self.mapY = path[i].y
     local newX = (path[i].x-1)*0.5*self.width + (path[i].y-1)*-1*self.width*0.5
     local newY = (path[i].x-1)*0.5*GROUND_HEIGHT+ (path[i].y-1)*0.5*GROUND_HEIGHT - self.height + GROUND_HEIGHT
     self.direction = self.directions[path[i].direction]
     self:changeAnimation('walk-' .. tostring(self.direction))
-
-    Timer.tween(1 / speed,{
+    self.step = Timer.tween(1 / speed,{
         [self] = { x = newX, y = newY }
     })  
-    :finish(function() self.getCommand = false 
-        self:move(path, i + 1, speed) end)
-        self.getCommand = false
+    self.step:register():finish(function()  
+        self:steps(i + 1, speed)
+    end)
 end

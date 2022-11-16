@@ -21,7 +21,7 @@ function PlayerAbilityState:update(dt)
     self.mouseX = mouseInScreenX + self.entity.x
     self.mouseY = mouseInScreenY + self.entity.y
     if love.mouse.wasPressed(2) or love.keyboard.isDown('lshift') or love.keyboard.wasPressed('escape') then
-        self.entity:changeState('idle')
+        self.entity:changeState('walk')
     end
 
     self:getTarget()
@@ -69,7 +69,7 @@ end
 
 function PlayerAbilityState:castSpell()
         self.entity.spells[self.id]:use(self.target, self.level.enemyOnScreen)
-        self.entity:changeState('idle')
+        self.entity:changeState('walk')
 end
 
 function PlayerAbilityState:render()
