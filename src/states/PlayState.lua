@@ -63,21 +63,19 @@ function PlayState:render()
     love.graphics.print(tostring(self.player.damage), gFonts['medium'], self.camX, self.camY + 10)
     love.graphics.print(tostring(mx)..'  '..tostring(my), gFonts['medium'], self.camX, self.camY + 40)
      love.graphics.print(tostring(mouseInScreenX)..'  '..tostring(mouseInScreenY), gFonts['medium'], self.camX, self.camY +50)
+     
     -- love.graphics.print(tostring(mouseTileX)..'  '..tostring(mouseTileY), gFonts['medium'], self.camX, self.camY +40)
     -- love.graphics.print(tostring(self.camX)..'  '..tostring(self.camY), gFonts['medium'],self.camX, self.camY + 50)
     -- love.graphics.print(tostring(self.player.currentHealth), gFonts['medium'],self.camX, self.camY + 60)
     -- for k, v in pairs(ENTITY_SPELLS['player'][self.playerClass]) do
     --     love.graphics.print(tostring(v.name), gFonts['medium'],self.camX, self.camY + 70)
     -- end
-    -- for k, v in pairs(self.player.spells) do
-    --     love.graphics.print(tostring(v.level), gFonts['medium'],self.camX, self.camY)
-    --     love.graphics.print(tostring(v.id), gFonts['medium'],self.camX, self.camY+10)
-    --     love.graphics.print(tostring(v.x), gFonts['medium'],self.camX, self.camY+20)
-    --     love.graphics.print(tostring(v.y), gFonts['medium'],self.camX, self.camY+30)
+    -- for k, v in pairs(self.player.stash) do
+    --     love.graphics.print(tostring(v.type), gFonts['medium'], self.camX, self.camY + 70)
     -- end
-    for k, v in pairs(self.level.entities) do
-        love.graphics.print(tostring(v.mapX)..'  '..tostring(v.mapY), gFonts['medium'], self.camX, self.camY + 20)
-    end
+    -- for k, v in pairs(self.level.entities) do
+    --     love.graphics.print(tostring(v.mapX)..'  '..tostring(v.mapY), gFonts['medium'], self.camX, self.camY + 20)
+    -- end
 end
 
 function PlayState:rendermap()

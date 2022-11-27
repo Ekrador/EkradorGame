@@ -32,6 +32,10 @@ require 'src/world/levels_defs'
 require 'src/world/Level'
 require 'src/world/Tile'
 require 'src/world/TileMap' 
+require 'src/world/Items'
+require 'src/world/items_defs'
+require 'src/world/Loot'
+require 'src/world/Looting'
 
 require 'ui/Interface'
 require 'ui/Inventory'
@@ -55,7 +59,18 @@ gTextures = {
     ['plus'] = love.graphics.newImage('graphics/plus.png'),
     ['talent_tree'] = love.graphics.newImage('graphics/talent_tree.png'),
     ['warrior_spells'] = love.graphics.newImage('graphics/warrior_spells.png'),
-    ['stun'] = love.graphics.newImage('graphics/stun.png')
+    ['stun'] = love.graphics.newImage('graphics/stun.png'),
+    ['chest'] = love.graphics.newImage('graphics/chest.png'),
+    ['head'] = love.graphics.newImage('graphics/head.png'),
+    ['weapon'] = love.graphics.newImage('graphics/weapon.png'),
+    ['shield'] = love.graphics.newImage('graphics/shield.png'),
+    ['neck'] = love.graphics.newImage('graphics/neck.png'),
+    ['ring'] = love.graphics.newImage('graphics/ring.png'),
+    ['boots'] = love.graphics.newImage('graphics/boots.png'),
+    ['gloves'] = love.graphics.newImage('graphics/gloves.png'),
+    ['legs'] = love.graphics.newImage('graphics/legs.png'),
+    ['looting'] = love.graphics.newImage('graphics/looting.png'),
+    ['loot'] = love.graphics.newImage('graphics/loot.png'),
 }
 
 gFrames = {

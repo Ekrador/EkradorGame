@@ -17,6 +17,9 @@ function Player:init(def)
     self.strength = def.strength
     self.agility = def.agility
     self.intelligence = def.intelligence
+    self.totalStrength = def.strength
+    self.totalAgility = def.agility
+    self.totalIntelligence = def.intelligence
     self.damage = self.strength
     self.cooldownReduction = 1
     self.level = 1
@@ -41,6 +44,21 @@ function Player:init(def)
         class = self.class,
         player = self
         }
+
+    self.equipment = {
+        chest = {},
+        head = {},
+        legs = {},
+        gloves = {},
+        boots = {},
+        ring1 = {},
+        ring2 = {},
+        neck = {},
+        weapon = {},
+        shield = {},
+    }    
+
+    self.stash = {}
 end
 
 function Player:update(dt)
@@ -52,6 +70,8 @@ function Player:update(dt)
     if self.currentAnimation then
         self.currentAnimation:update(dt)
     end
+
+    self:calculateStats()
 
     self:regenerateEnergy(dt)
 
@@ -71,7 +91,7 @@ function Player:update(dt)
             self:heal(15)
         end
         if love.keyboard.wasPressed('c') then
-            self.GUI.inventory:togle()
+            gStateStack:push(Inventory(self))
         end
         if love.keyboard.wasPressed('p') then
             gStateStack:push(TalentTree(self))
@@ -135,43 +155,6 @@ function Player:move(path, speed)
     self:steps(1, speed)
 end
 
--- function Player:steps(i, speed)
---     if self.stop then
---         self.stop = false
---         self.getCommand = false
---         return 
---     end
-
---     if not self.getCommand then
---         return
---     end
-   
---     local path = self.actionsQueue
---     self.mapX = path[i].x
---     self.mapY = path[i].y
---     local newX = (path[i].x-1)*0.5*self.width + (path[i].y-1)*-1*self.width*0.5
---     local newY = (path[i].x-1)*0.5*GROUND_HEIGHT+ (path[i].y-1)*0.5*GROUND_HEIGHT - self.height + GROUND_HEIGHT
---     self.direction = self.directions[path[i].direction]
---     self:changeAnimation('walk-' .. tostring(self.direction))
---     self.step = Timer.tween(1 / speed,{
---         [self] = { x = newX, y = newY }
---     })  
---     self.step:register():finish(function()  
---         self:nextStep(i + 1, speed)
---     end)
--- end
-
--- function Player:nextStep(i, speed)
---     if i > #self.actionsQueue then
---             self.actionsQueue = {}
---         self.getCommand = false
---         self:changeState('idle')
---         return
---     else
---         self:steps(i, speed)
---     end
--- end
-
 
 function Player:steps(i, speed)
     if self.stop then
@@ -204,4 +187,37 @@ function Player:steps(i, speed)
     self.step:register():finish(function()  
         self:steps(i + 1, speed)
     end)
+end
+
+function Player:calculateStats()
+    local strength = 0
+    local agility = 0
+    local intelligence = 0
+
+    for k, v in pairs(self.equipment) do
+        strength = strength + (v.strength and v.strength or 0)
+        agility = agility + (v.agility and v.agility or 0)
+        intelligence = intelligence + (v.intelligence and v.intelligence or 0)
+    end
+
+    self.totalStrength = strength + self.strength
+    self.totalAgility = agility + self.agility
+    self.totalIntelligence = intelligence + self.intelligence
+end
+
+
+function Player:renderItems()
+    for i = 1, #self.stash do
+        self.stash[i]:render(math.floor(self.x - VIRTUAL_WIDTH / 2), math.floor(self.y - VIRTUAL_HEIGHT / 2))
+    end
+end
+
+function Player:addToStash(item)
+    local id = #self.stash
+    local itemWithId = item
+      
+    itemWithId.y = STASH_FIRST_ITEM_Y + math.floor(id % STASH_LIMIT / STASH_ITEMS_PER_ROW) * ITEMS_INDENT
+    itemWithId.x = STASH_FIRST_ITEM_X + id % STASH_ITEMS_PER_ROW * ITEMS_INDENT
+
+    table.insert(self.stash, itemWithId)
 end

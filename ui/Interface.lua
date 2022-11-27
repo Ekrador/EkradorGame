@@ -3,14 +3,11 @@ Interface = Class{}
 function Interface:init(def)
     self.player = def.player
     self.class = def.class
-    self.timer = 0
-    self.inventory = Inventory(self.player, self.player.energyBar)
     self.holdTimer = 0
     self.grabbedSkill = 0
 end
 
 function Interface:update(dt)
-    self.inventory:update(dt) 
     self:holdMouse(dt)
     self:dragSpells(dt)
 end
@@ -18,7 +15,6 @@ end
 function Interface:render(x, y)
     love.graphics.draw(gTextures['panel'],x, y)
     self:renderResources(x, y)
-    self.inventory:render(x, y)
     for i = 1, 4 do
         if self.player.spellPanel[i] > 0 then
             love.graphics.draw(gTextures[tostring(self.player.class)..'_spells'],
@@ -30,11 +26,6 @@ function Interface:render(x, y)
         gFrames[tostring(self.player.class)..'_spells'][self.player.spells[self.grabbedSkill].id], math.floor(x + mx), math.floor(y + my))
     end
     self:tips(x, y)
-
-    -- love.graphics.print(tostring(self.grabbedSkill), gFonts['medium'], x, y + 20)
-    -- love.graphics.print(tostring(self.timer), gFonts['medium'], x, y + 10)
-    -- love.graphics.print(tostring(self.holdTimer), gFonts['medium'], x, y + 40)
-
 end
 
 function Interface:renderResources(x, y)

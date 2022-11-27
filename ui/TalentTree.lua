@@ -2,7 +2,6 @@ TalentTree = Class{__includes = BaseState}
 
 function TalentTree:init(player)
     self.player = player
-    self.visible = false
     self.spells = {}
     for i = 1 , #self.player.spells do
         self.spells[i] = {
@@ -17,14 +16,6 @@ function TalentTree:init(player)
     self.y = math.floor(self.player.y - VIRTUAL_HEIGHT / 2)
     self.grabbedSkill = 0
 end
-
--- function TalentTree:togle()
---     if self.visible then
---         self.visible = false
---     else
---         self.visible = true
---     end
--- end
 
 
 function TalentTree:render()

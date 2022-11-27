@@ -13,6 +13,7 @@ function Level:init(def)
     self.entities = {}
     self.enemyOnScreen = {}
     self.timer = 0
+    self.lootTable = {}
 end
 
 function Level:generateTileMap()
@@ -81,17 +82,37 @@ end
 function Level:update(dt)
     self.map:update(dt)
     self:enemiesOnScreen(dt)
+
     if self.player then
         self.player.enemyOnScreen = self.enemyOnScreen
     end
+
     for i = #self.entities, 1, -1 do
         local entity = self.entities[i]
         if entity.currentHealth <= 0 then
             entity.dead = true
+            if entity.chanceOnLoot then
+                if math.random(1) == 1 then
+                    table.insert(self.lootTable, Loot(entity.mapX, entity.mapY, self.player))
+                end
+                entity.chanceOnLoot = false
+            end
         elseif not entity.dead then
             entity:update(dt)
             entity:processAI(dt)
         end
+    end
+
+    for k, v in pairs(self.lootTable) do
+        v:update(dt)
+        if love.keyboard.wasPressed('f') and v.nearPlayer then
+            v:use()
+        end
+    end
+
+    -- FOR DEBUG
+    if love.keyboard.wasPressed('x') then
+        table.insert(self.lootTable, Loot(self.player.mapX, self.player.mapY, self.player))
     end
 end
 
@@ -101,6 +122,10 @@ function Level:render(x,y)
         if not entity.dead and entity.mapX == x and entity.mapY == y then
         entity:render()
         end
+    end
+
+    for k, v in pairs(self.lootTable) do
+        v:render(x, y)
     end
 end
 

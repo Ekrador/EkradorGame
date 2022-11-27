@@ -20,6 +20,7 @@ function Entity:init(def)
     self.stunned = false
     
     self.dead = false
+    self.chanceOnLoot = true
     self.damage = def.damage
     self.path = {}
 
