@@ -22,7 +22,7 @@ function Loot:spawn()
 end
 
 function Loot:use()
-    gStateStack:push(Looting(self))
+    gStateStack:push(Looting(self, self.player))
 end
 
 function Loot:update(dt)

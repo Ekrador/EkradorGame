@@ -1,7 +1,10 @@
 Looting = Class{__includes = BaseState}
 
-function Looting:init(loot)
+function Looting:init(loot, player)
     self.loot = loot
+    self.player = player
+    self.x = math.floor(self.player.x - VIRTUAL_WIDTH / 2)
+    self.y = math.floor(self.player.y - VIRTUAL_HEIGHT / 2)
 end
 
 
@@ -39,7 +42,9 @@ function Looting:render()
     for i = 1, #self.loot.content do
         self.loot.content[i]:render(math.floor(self.loot.player.x - VIRTUAL_WIDTH / 2), math.floor(self.loot.player.y - VIRTUAL_HEIGHT / 2))
     end
-
+    love.graphics.print(string.format('%4s', tostring(self.player.gold)), gFonts['small'], self.x + 300, self.y + 160)
+    love.graphics.print('Take all',gFonts['small'], self.x + 54, self.y + 103)
+    love.graphics.print('Close',gFonts['small'], self.x + 89, self.y + 103)
     self.loot.player:renderItems() 
 end
 
