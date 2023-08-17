@@ -59,17 +59,19 @@ function PlayState:render()
     love.graphics.translate(-math.floor(self.camX), -math.floor(self.camY))
     self:rendermap()
     self.player:render(math.floor(self.camX), math.floor(self.camY))
-    love.graphics.print(tostring(self.player.x - VIRTUAL_WIDTH / 2)..'  '..tostring(self.player.y - VIRTUAL_HEIGHT / 2), gFonts['small'], self.camX, self.camY + 10)
-    love.graphics.print(tostring(self.player.damage), gFonts['medium'], self.camX, self.camY + 10)
-    love.graphics.print(tostring(mx)..'  '..tostring(my), gFonts['medium'], self.camX, self.camY + 40)
-     love.graphics.print(tostring(mouseInScreenX)..'  '..tostring(mouseInScreenY), gFonts['medium'], self.camX, self.camY +50)
+    --love.graphics.print(tostring(self.player.x - VIRTUAL_WIDTH / 2)..'  '..tostring(self.player.y - VIRTUAL_HEIGHT / 2), gFonts['small'], self.camX, self.camY + 10)
+    --love.graphics.print(tostring(self.player.damage), gFonts['medium'], self.camX, self.camY + 10)
+    --love.graphics.print(tostring(mx)..'  '..tostring(my), gFonts['medium'], self.camX, self.camY + 40)
+    --love.graphics.print(tostring(mouseInScreenX)..'  '..tostring(mouseInScreenY), gFonts['medium'], self.camX, self.camY +50)
      
     -- love.graphics.print(tostring(mouseTileX)..'  '..tostring(mouseTileY), gFonts['medium'], self.camX, self.camY +40)
     -- love.graphics.print(tostring(self.camX)..'  '..tostring(self.camY), gFonts['medium'],self.camX, self.camY + 50)
-    -- love.graphics.print(tostring(self.player.currentHealth), gFonts['medium'],self.camX, self.camY + 60)
-    -- for k, v in pairs(ENTITY_SPELLS['player'][self.playerClass]) do
-    --     love.graphics.print(tostring(v.name), gFonts['medium'],self.camX, self.camY + 70)
-    -- end
+    love.graphics.print(tostring(#self.player.stash), gFonts['medium'],self.camX, self.camY + 60)
+    for k, v in pairs(self.player.equipment) do
+        if v.weared ~= nil then
+            love.graphics.print(tostring(type(v.weared)), gFonts['medium'],self.camX, self.camY + 70)
+        end
+    end
     -- for k, v in pairs(self.player.stash) do
     --     love.graphics.print(tostring(v.type), gFonts['medium'], self.camX, self.camY + 70)
     -- end

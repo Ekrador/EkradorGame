@@ -37,15 +37,15 @@ end
 
 
 function Looting:render()
-    love.graphics.draw(gTextures['looting'], math.floor(self.loot.player.x - VIRTUAL_WIDTH / 2), math.floor(self.loot.player.y - VIRTUAL_HEIGHT / 2))
+    love.graphics.draw(gTextures['looting'], self.x,self.y)
 
     for i = 1, #self.loot.content do
-        self.loot.content[i]:render(math.floor(self.loot.player.x - VIRTUAL_WIDTH / 2), math.floor(self.loot.player.y - VIRTUAL_HEIGHT / 2))
+        self.loot.content[i]:render(self.x, self.y)
     end
     love.graphics.print(string.format('%4s', tostring(self.player.gold)), gFonts['small'], self.x + 300, self.y + 160)
     love.graphics.print('Take all',gFonts['small'], self.x + 54, self.y + 103)
     love.graphics.print('Close',gFonts['small'], self.x + 89, self.y + 103)
-    self.loot.player:renderItems() 
+    self:renderStashItems()
 end
 
 function Looting:itemTransfer(k, item)
@@ -54,5 +54,13 @@ function Looting:itemTransfer(k, item)
         table.remove(self.loot.content, k)
     else 
         --error sound
+    end
+end
+
+function Looting:renderStashItems()
+    for k,v in pairs(self.player.stash) do
+        if v ~= nil then
+            v:render(self.x, self.y)
+        end
     end
 end

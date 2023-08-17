@@ -46,16 +46,42 @@ function Player:init(def)
         }
 
     self.equipment = {
-        chest = {},
-        head = {},
-        legs = {},
-        gloves = {},
-        boots = {},
-        ring1 = {},
-        ring2 = {},
-        neck = {},
-        weapon = {},
-        shield = {},
+        chest = {
+            weared = nil,
+            coords = {x = 96, y = 44}
+        },
+        head = {
+            weared = nil,
+            coords = {x = 96, y = 26}
+        },
+        legs = {
+            weared = nil,
+            coords = {x = 96, y = 63}
+        },
+        gloves = {
+            weared = nil,
+            coords = {x = 74, y = 67}
+        },
+        boots = {
+            weared = nil,
+            coords = {x = 96, y = 84}
+        },
+        ring = {
+            weared = nil,
+            coords = {x = 119, y = 84}
+        },
+        neck = {
+            weared = nil,
+            coords = {x = 115, y = 34}
+        },
+        weapon = {
+            weared = nil,
+            coords = {x = 74, y = 48}
+        },
+        shield = {
+            weared = nil,
+            coords = {x = 119, y = 60}
+        },
     }    
 
     self.stash = {}
@@ -85,6 +111,7 @@ function Player:update(dt)
         end
     end
 
+    
 
         -- FOR DEBUG
         if love.keyboard.wasPressed('space') then
@@ -206,18 +233,25 @@ function Player:calculateStats()
 end
 
 
-function Player:renderItems()
-    for i = 1, #self.stash do
-        self.stash[i]:render(math.floor(self.x - VIRTUAL_WIDTH / 2), math.floor(self.y - VIRTUAL_HEIGHT / 2))
-    end
-end
 
 function Player:addToStash(item)
-    local id = #self.stash
-    local itemWithId = item
-      
-    itemWithId.y = STASH_FIRST_ITEM_Y + math.floor(id % STASH_LIMIT / STASH_ITEMS_PER_ROW) * ITEMS_INDENT
-    itemWithId.x = STASH_FIRST_ITEM_X + id % STASH_ITEMS_PER_ROW * ITEMS_INDENT
+    local id 
+    for i = 1, #self.stash do
+        if self.stash[i+1] == nil then
+            id = i + 1
+            break
+        end
+    end
+    if #self.stash == 0 then
+        id = 1
+    end
+    item.x = STASH_FIRST_ITEM_X + (id - 1) % STASH_ITEMS_PER_ROW * ITEMS_INDENT
+    item.y = STASH_FIRST_ITEM_Y + math.floor((id - 1) % STASH_LIMIT / STASH_ITEMS_PER_ROW) * ITEMS_INDENT
+    table.insert(self.stash, id, item)
+end
 
-    table.insert(self.stash, itemWithId)
+
+
+function Player:unequipItem(item)
+
 end

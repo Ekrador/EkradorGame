@@ -29,7 +29,7 @@ function Inventory:render()
     love.graphics.draw(gTextures['plus'], gFrames['plus'][frame],x + 132, y + 120)
     love.graphics.draw(gTextures['plus'], gFrames['plus'][frame],x + 132, y + 132)
     love.graphics.draw(gTextures['plus'], gFrames['plus'][frame],x + 132, y + 144)
-    self.player:renderItems()
+    self:renderItems()
     self:tips(self.x, self.y)
 end
 
@@ -45,6 +45,21 @@ function Inventory:tips(x, y)
 end
 
 function Inventory:update(dt)
+    if love.mouse.wasPressed(2) then
+        for i = 1, #self.player.stash do
+            if self.player.stash[i] ~= nil then
+                local itemX = self.player.stash[i].x
+                local itemY = self.player.stash[i].y
+                if mx >= itemX  and mx <= itemX + 16 and
+                my >= itemY  and my <= itemY + 16 then
+                    local item = self.player.stash[i]
+                    self:equipItem(item) 
+                    break   
+                end
+            end
+        end
+    end
+
     self.player:calculateStats()
         if self.player.bonusPoints > 0 then
             if love.mouse.wasPressed(1) and (mx > 132 and mx < 143) and (my > 120 and my < 131) then
@@ -64,3 +79,44 @@ function Inventory:update(dt)
         end
 end
 
+function Inventory:equipItem(item)
+    --перенести в инвентарь, переделать отрисовку
+    local slot = item.type
+    local index 
+        for k,v in pairs(self.player.stash) do
+            if item == v then
+                index = k
+                break
+            end
+        end 
+    if self.player.equipment[slot].weared ~= nil then  
+        local wearedItem = self.player.equipment[slot].weared
+        local tempX, tempY = wearedItem.x, wearedItem.y
+        local tempItem = item
+        wearedItem.x = item.x
+        wearedItem.y = item.y      
+        item.x = tempX
+        item.y = tempY
+        self.player.stash[index] = wearedItem
+        self.player.equipment[slot].weared = tempItem
+    else
+        self.player.equipment[slot].weared = item
+        item.x = self.player.equipment[slot].coords.x
+        item.y = self.player.equipment[slot].coords.y
+        self.player.stash[index] = nil
+    end
+end
+
+
+function Inventory:renderItems()
+    for k,v in pairs(self.player.stash) do
+        if v ~= nil then
+            v:render(self.x, self.y)
+        end
+    end
+    for k,v in pairs(self.player.equipment) do
+        if v.weared ~= nil then
+            v.weared:render(self.x, self.y)
+        end
+    end
+end
