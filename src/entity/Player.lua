@@ -20,7 +20,7 @@ function Player:init(def)
     self.totalStrength = def.strength
     self.totalAgility = def.agility
     self.totalIntelligence = def.intelligence
-    self.damage = self.strength
+    self.damage = self.totalStrength
     self.cooldownReduction = 1
     self.level = 1
     self.xp = 0
@@ -103,6 +103,8 @@ function Player:update(dt)
 
     self:calculateStats()
 
+    self:healthChangedTimer(dt)
+
     self:regenerateEnergy(dt)
 
     self:useSpell()
@@ -140,9 +142,8 @@ end
 
 function Player:render(x, y)
     self.stateMachine:render()
-    self.GUI:render(x, y)
-   
-                
+    self.GUI:render(x, y)        
+    self:healthChangedDisplay()      
 end
 
 function Player:getXp(xp)
@@ -236,6 +237,7 @@ function Player:calculateStats()
     self.totalStrength = strength + self.strength
     self.totalAgility = agility + self.agility
     self.totalIntelligence = intelligence + self.intelligence
+    self.damage = self.totalStrength
 end
 
 

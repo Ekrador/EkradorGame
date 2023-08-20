@@ -40,6 +40,7 @@ require 'src/world/Looting'
 require 'ui/Interface'
 require 'ui/Inventory'
 require 'ui/TalentTree'
+require 'ui/ProgressBar'
 
 
 gTextures = {

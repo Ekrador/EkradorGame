@@ -66,7 +66,7 @@ function PlayState:render()
      
     -- love.graphics.print(tostring(mouseTileX)..'  '..tostring(mouseTileY), gFonts['medium'], self.camX, self.camY +40)
     -- love.graphics.print(tostring(self.camX)..'  '..tostring(self.camY), gFonts['medium'],self.camX, self.camY + 50)
-    love.graphics.print(tostring(self.player.stashCounter), gFonts['medium'],self.camX, self.camY + 60)
+    love.graphics.print(tostring(self.player.damage), gFonts['medium'],self.camX, self.camY + 60)
     for k, v in pairs(self.player.equipment) do
         if v.weared ~= nil then
             love.graphics.print(tostring(type(v.weared)), gFonts['medium'],self.camX, self.camY + 70)

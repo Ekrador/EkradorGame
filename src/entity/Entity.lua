@@ -18,11 +18,12 @@ function Entity:init(def)
     self.currentHealth = self.maxHealth
     self.status = {}
     self.stunned = false
-    
+    self.healthLogHandler = self.currentHealth
     self.dead = false
     self.chanceOnLoot = true
     self.damage = def.damage
     self.path = {}
+    self.timer = 0
 
     self.x = (self.mapX-1)*0.5*GROUND_WIDTH + (self.mapY-1)*-1*GROUND_WIDTH*0.5
 
@@ -30,6 +31,16 @@ function Entity:init(def)
 
     self.getCommand = false
     self.stop = false
+    self.healthBar = ProgressBar{
+        x = self.x,
+        y = self.y - 5,
+        width = self.width - 4,
+        height = 3,
+        color = {r = 189/255, g = 32/255, b = 32/255},
+        value = self.currentHealth,
+        max = self.maxHealth,
+    }
+    self.renderHealthBars = false
 end
 
 
@@ -66,9 +77,11 @@ end
 
 function Entity:update(dt)
     self.stateMachine:update(dt)
-
+    self.healthBar.x = self.x
+    self.healthBar.y = self.y - 5
+    self.healthBar.value = self.currentHealth
     self:statusEffect(dt)
-
+    self:healthChangedTimer(dt)
     if self.currentAnimation then
         self.currentAnimation:update(dt)
     end
@@ -89,6 +102,10 @@ end
 
 function Entity:render()
     self.stateMachine:render()
+    self:healthChangedDisplay()
+    if self.renderHealthBars then
+        self.healthBar:render()
+    end
 end
 
 function Entity:distToPlayer()
@@ -224,5 +241,32 @@ function Entity:statusEffect(dt)
             end  
         end
         state.timer = state.timer + dt
+    end
+end
+
+function Entity:healthChangedTimer(dt)
+    self.timer = self.timer + dt    
+        if self.timer > 1 then
+            self.healthLogHandler = self.currentHealth
+            self.timer = 0
+        end
+end
+
+function Entity:healthChangedDisplay()
+    if (self.currentHealth ~= self.healthLogHandler) then
+        local amount = self.currentHealth - self.healthLogHandler
+        if amount < 0 then
+            love.graphics.setColor(1, 0, 0, 1)
+        else
+            love.graphics.setColor(0, 1, 0, 1)
+        end
+        love.graphics.print(tostring(math.abs(amount)), gFonts['small'],self.x + self.width / 2, self.y - 15)
+        love.graphics.setColor(1,1,1,1)
+    end
+
+    if self.currentHealth ~= self.maxHealth then
+        self.renderHealthBars = true
+    else
+        self.renderHealthBars = false
     end
 end
