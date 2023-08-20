@@ -36,8 +36,20 @@ function Items:renderTooltip(x, y)
         love.graphics.setColor(0.2, 1, 0.2, 1)
         local tooltipText = tostring(self.type)
         tooltipText = tooltipText .. '\n'.. "Quality: " ..'  '.. tostring(self.quality) ..'\n'
-        love.graphics.print(tooltipText, gFonts['small'], tx, ty)
+        love.graphics.print(tostring(self.type), gFonts['small'], tx, ty)
         
+        if self.damage ~= 0 then
+            tooltipText = tooltipText .. "Damage: " ..'  '.. tostring(self.quality), gFonts['small'], tx, ty)
+            ty = ty + 8
+        end
+        if self.armor ~= 0 then
+            tooltipText = tooltipText .."Armor: " ..'  '.. tostring(self.quality), gFonts['small'], tx, ty)
+            ty = ty + 8
+        end
+        tooltipText = tooltipText .."Strength: " ..'  '.. tostring(self.strength), gFonts['small'],tx, ty)
+        ty = ty + 8
+        tooltipText = tooltipText .."Intelligence: " ..'  '.. tostring(self.intelligence), gFonts['small'], tx, ty )
+        tooltipText = tooltipText .."Agility: " ..'  '.. tostring(self.agility), gFonts['small'], tx, ty)
         love.graphics.setColor(255, 255, 255, 1)
     end
 end
