@@ -85,6 +85,10 @@ function Player:init(def)
     }    
 
     self.stash = {}
+    for i = 1, 56 do
+        self.stash[i] = {}
+    end
+    self.stashCounter = 0
 end
 
 function Player:update(dt)
@@ -238,18 +242,15 @@ end
 
 function Player:addToStash(item)
     local id 
-    for i = 1, #self.stash do
-        if self.stash[i+1] == nil then
-            id = i + 1
+    for i = 1, STASH_LIMIT do
+        if #self.stash[i] == 0 then
+            id = i
             break
         end
     end
-    if #self.stash == 0 then
-        id = 1
-    end
     item.x = STASH_FIRST_ITEM_X + (id - 1) % STASH_ITEMS_PER_ROW * ITEMS_INDENT
     item.y = STASH_FIRST_ITEM_Y + math.floor((id - 1) % STASH_LIMIT / STASH_ITEMS_PER_ROW) * ITEMS_INDENT
-    table.insert(self.stash, id, item)
+    self.stash[id][1] = item
 end
 
 

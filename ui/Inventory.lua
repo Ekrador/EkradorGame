@@ -46,13 +46,13 @@ end
 
 function Inventory:update(dt)
     if love.mouse.wasPressed(2) then
-        for i = 1, #self.player.stash do
-            if self.player.stash[i] ~= nil then
-                local itemX = self.player.stash[i].x
-                local itemY = self.player.stash[i].y
+        for i = 1, STASH_LIMIT do
+            if #self.player.stash[i] > 0 then
+                local itemX = self.player.stash[i][1].x
+                local itemY = self.player.stash[i][1].y
                 if mx >= itemX  and mx <= itemX + 16 and
                 my >= itemY  and my <= itemY + 16 then
-                    local item = self.player.stash[i]
+                    local item = self.player.stash[i][1]
                     self:equipItem(item) 
                     self.player:calculateStats()
                     break   
@@ -85,7 +85,7 @@ function Inventory:equipItem(item)
     local slot = item.type
     local index 
         for k,v in pairs(self.player.stash) do
-            if item == v then
+            if item == v[1] then
                 index = k
                 break
             end
@@ -98,21 +98,21 @@ function Inventory:equipItem(item)
         wearedItem.y = item.y      
         item.x = tempX
         item.y = tempY
-        self.player.stash[index] = wearedItem
+        self.player.stash[index][1] = wearedItem
         self.player.equipment[slot].weared = tempItem
     else
         self.player.equipment[slot].weared = item
         item.x = self.player.equipment[slot].coords.x
         item.y = self.player.equipment[slot].coords.y
-        self.player.stash[index] = nil
+        self.player.stash[index][1] = nil
     end
 end
 
 
 function Inventory:renderItems()
     for k,v in pairs(self.player.stash) do
-        if v ~= nil then
-            v:render(self.x, self.y)
+        if v[1] ~= nil then
+            v[1]:render(self.x, self.y)
         end
     end
     for k,v in pairs(self.player.equipment) do

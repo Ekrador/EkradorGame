@@ -38,7 +38,6 @@ end
 
 function Looting:render()
     love.graphics.draw(gTextures['looting'], self.x,self.y)
-
     for i = 1, #self.loot.content do
         self.loot.content[i]:render(self.x, self.y)
     end
@@ -49,9 +48,10 @@ function Looting:render()
 end
 
 function Looting:itemTransfer(k, item)
-    if #self.loot.player.stash < STASH_LIMIT then
+    if self.player.stashCounter < STASH_LIMIT then
         self.loot.player:addToStash(item)
         table.remove(self.loot.content, k)
+        self.player.stashCounter = self.player.stashCounter + 1
     else 
         --error sound
     end
@@ -59,8 +59,8 @@ end
 
 function Looting:renderStashItems()
     for k,v in pairs(self.player.stash) do
-        if v ~= nil then
-            v:render(self.x, self.y)
+        if v[1] ~= nil then
+            v[1]:render(self.x, self.y)
         end
     end
 end
