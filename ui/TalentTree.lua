@@ -132,54 +132,58 @@ function TalentTree:renderTips()
         love.graphics.print(tostring(yMargin), gFonts['medium'], self.x + 10, self.y)
         if (mx > self.player.spells[i].x and mx < self.player.spells[i].x + 15) 
         and (my > self.player.spells[i].y and my < self.player.spells[i].y + 15) then
-            love.graphics.setColor(0, 0, 0, 1)
-            love.graphics.rectangle('line', x, y, 100, yMargin*9, 2) 
-            love.graphics.setColor(45/255, 44/255, 44/255, 1)
-            love.graphics.rectangle('fill', x+1, y+1, 98, yMargin*9 -2) 
-            love.graphics.setColor(255, 255, 255, 1)
-            x = x + 2
-            love.graphics.print('"'..tostring(self.player.spells[i].name)..'"', gFonts['small'], x, y + 2)
-            y = y + 10
-            love.graphics.print('range: '..tostring(self.player.spells[i].range), gFonts['small'], x, y)
-            y = y + 10
-            love.graphics.print('cost: '..tostring(self.player.spells[i].cost), gFonts['small'], x, y)
-            y = y + 10
+            local tooltipText = '"'..tostring(self.player.spells[i].name)..'"'.."\n"
+            local heighMultiplier = 1
+            tooltipText = tooltipText .. 'range: '..tostring(self.player.spells[i].range) ..'\n'
+            tooltipText = tooltipText .. 'cost: '..tostring(self.player.spells[i].cost) ..'\n'
+            heighMultiplier = heighMultiplier + 2
             if self.player.spells[i].energy > 0 then
-                love.graphics.print('gain '..tostring(self.player.spells[i].energy)..' '..tostring(self.player.energyBar), gFonts['small'], x, y)
-                y = y + 10
+                tooltipText = tooltipText .. 'gain '..tostring(self.player.spells[i].energy)..' '..tostring(self.player.energyBar) .."\n"
+                heighMultiplier = heighMultiplier + 1
             end     
             if self.player.spells[i].damage > 0 then
-                love.graphics.print('damage: '..tostring(self.player.spells[i].damage * self.spells[i].level)..' + '..tostring(self.player.spells[i].scale * self.player.spells[i].mainStat)..' ('..self.player.spells[i].mainStatString..')',
-                gFonts['small'], x, y)
-                y = y + 10
+                tooltipText = tooltipText .. 'damage: '..tostring(self.player.spells[i].damage * self.spells[i].level)..' + '..
+                tostring(self.player.spells[i].scale * self.player.spells[i].mainStat)..' ('..self.player.spells[i].mainStatString..')'.. "\n"
+                heighMultiplier = heighMultiplier + 1
             end
             if self.player.spells[i].effectToTarget then
-                love.graphics.print('apply on enemy: '..tostring(self.player.spells[i].effectToTarget), gFonts['small'], x, y)
-                y = y + 10
+                tooltipText = tooltipText .. 'apply on enemy: '..tostring(self.player.spells[i].effectToTarget).. "\n"
+                heighMultiplier = heighMultiplier + 1
                 if self.player.spells[i].effectPower > 0 then
-                    love.graphics.print('deal: '..tostring(self.player.spells[i].effectPower)..' + '..tostring((self.player.spells[i].level * self.player.spells[i].effectPower + self.player.spells[i].scale * self.player.spells[i].mainStat) / self.player.spells[i].duration)..' ('..tostring(self.player.spells[i].mainStatString)..')', gFonts['small'], x, y)
-                    y = y + 10
+                    tooltipText = tooltipText .. 'deal: '..tostring(self.player.spells[i].effectPower)
+                    ..' + '..tostring((self.player.spells[i].level * self.player.spells[i].effectPower + self.player.spells[i].scale * self.player.spells[i].mainStat) / self.player.spells[i].duration)
+                    ..' ('..tostring(self.player.spells[i].mainStatString)..')'.. "\n"
+                    heighMultiplier = heighMultiplier + 1
                 end          
             end
             if self.player.spells[i].effectToSelf then
-                love.graphics.print('apply on self: '..tostring(self.player.spells[i].effectToSelf), gFonts['small'], x, y)
-                y = y + 10
+                tooltipText = tooltipText .. 'apply on self: '..tostring(self.player.spells[i].effectToSelf).."\n"
+                heighMultiplier = heighMultiplier + 1
                 if self.player.spells[i].effectPower > 0 then
-                    love.graphics.print('get: '..tostring(self.player.spells[i].effectPower)..' + '..tostring((self.player.spells[i].level * self.player.spells[i].effectPower + self.player.spells[i].scale * self.player.spells[i].mainStat) / self.player.spells[i].duration), gFonts['small'], x, y)
-                    y = y + 10
+                    tooltipText = tooltipText ..'get: '..tostring(self.player.spells[i].effectPower)..' + '..
+                    tostring((self.player.spells[i].level * self.player.spells[i].effectPower + self.player.spells[i].scale * self.player.spells[i].mainStat) / self.player.spells[i].duration).."\n"
+                    heighMultiplier = heighMultiplier + 1
                 end
             end
             if self.player.spells[i].duration > 0 then
-                love.graphics.print('duration: '..tostring(self.player.spells[i].duration).. 's', gFonts['small'], x, y)
-                y = y + 10
+                tooltipText = tooltipText ..'duration: '..tostring(self.player.spells[i].duration).. ' s'.."\n"
+                heighMultiplier = heighMultiplier + 1
             end
             if self.player.spells[i].aoe then
-                love.graphics.print('affected area: '..tostring(self.player.spells[i].aoe)..' cell around target', gFonts['small'], x, y)
-                y = y + 10
+                tooltipText = tooltipText ..'affected area: '..tostring(self.player.spells[i].aoe)..' cell around target'.."\n"
+                heighMultiplier = heighMultiplier + 1
             end
-            love.graphics.print('cooldown: '..tostring(self.player.spells[i].cooldown..'s'), gFonts['small'], x, y)
-            y = y + 10
-            love.graphics.print('learned: '..tostring((ENTITY_SPELLS['player'][self.player.class][self.player.spells[i].name].playerCanImprove - self.spells[i].playerCanImprove))..'/'..tostring(ENTITY_SPELLS['player'][self.player.class][self.player.spells[i].name].playerCanImprove), gFonts['small'], x, y)
-        end
+            tooltipText = tooltipText ..'cooldown: '..tostring(self.player.spells[i].cooldown)..' s'.."\n"
+            tooltipText = tooltipText ..'learned: '..tostring((ENTITY_SPELLS['player'][self.player.class][self.player.spells[i].name].playerCanImprove - self.spells[i].playerCanImprove))
+            ..'/'..tostring(ENTITY_SPELLS['player'][self.player.class][self.player.spells[i].name].playerCanImprove).."\n"
+            heighMultiplier = heighMultiplier + 2
+            local textWidth  = gFonts['small']:getWidth(tooltipText)
+            local textHeight = gFonts['small']:getHeight()
+            love.graphics.setColor(0, 0, 0, 0.8)
+            love.graphics.rectangle('fill',x , y, textWidth, textHeight * heighMultiplier, 3)
+            love.graphics.setColor(0.2, 1, 0.2, 1)
+            love.graphics.print(tooltipText, gFonts['small'], x, y)
+            love.graphics.setColor(255, 255, 255, 1)
+            end
     end
 end

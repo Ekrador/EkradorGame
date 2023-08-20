@@ -30,7 +30,6 @@ ENTITY_SPELLS = {
                     }
                     path[#path] = nil
                     player.actionsQueue = {}
-                    player.step:remove()
                     player.getCommand = true
                     player:move(path, 10)
                 end

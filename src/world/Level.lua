@@ -107,6 +107,7 @@ function Level:update(dt)
         v:update(dt)
         if love.keyboard.wasPressed('f') and v.nearPlayer then
             v:use()
+            break
         end
     end
 

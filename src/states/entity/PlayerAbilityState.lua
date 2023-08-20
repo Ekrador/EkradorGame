@@ -73,5 +73,4 @@ function PlayerAbilityState:castSpell()
 end
 
 function PlayerAbilityState:render()
-    love.graphics.print(tostring(self.spell.damage), gFonts['medium'], 0, 32)
 end

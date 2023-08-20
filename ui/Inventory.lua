@@ -1,8 +1,8 @@
 Inventory = Class{__includes = BaseState}
 
-function Inventory:init(player, energy)
+function Inventory:init(player)
     self.player = player
-    self.energy = energy
+    self.energy = player.energyBar
     self.x = math.floor(self.player.x - VIRTUAL_WIDTH / 2)
     self.y = math.floor(self.player.y - VIRTUAL_HEIGHT / 2)
 end

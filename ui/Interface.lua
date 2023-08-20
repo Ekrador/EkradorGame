@@ -17,8 +17,13 @@ function Interface:render(x, y)
     self:renderResources(x, y)
     for i = 1, 4 do
         if self.player.spellPanel[i] > 0 then
+            if self.player.spells[self.player.spellPanel[i]].ready ~= true then
+                love.graphics.print(math.floor(self.player.spells[self.player.spellPanel[i]].cooldown - self.player.spells[self.player.spellPanel[i]].cooldownTimer), gFonts['small'], x + 93 + (i-1) * 20 , y + 198)
+                love.graphics.setColor(1,1,1,0.3)
+            end
             love.graphics.draw(gTextures[tostring(self.player.class)..'_spells'],
-                gFrames[tostring(self.player.class)..'_spells'][self.player.spells[self.player.spellPanel[i]].id], x + 93 + (i-1) * 20, y + 198)
+            gFrames[tostring(self.player.class)..'_spells'][self.player.spells[self.player.spellPanel[i]].id], x + 93 + (i-1) * 20, y + 198)
+            love.graphics.setColor(1,1,1,1)
         end
     end
     if self.grabbedSkill > 0 then

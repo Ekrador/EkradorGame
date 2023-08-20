@@ -27,19 +27,19 @@ function Spells:init(def, player)
     self.onUse = def.onUse
     self.mainStat = 1
     self.mainStatString = ''
-    if self.player.class == 'warrior' then 
-        self.mainStat = self.player.strength
-        self.mainStatString = 'str'
-    elseif self.player.class == 'ranger' then 
-        self.mainStat = self.player.agility
-        self.mainStatString = 'agi'
-    elseif self.player.class == 'mage' then 
-        self.mainStat = self.player.intelligence
-        self.mainStatString = 'int'
-    end
 end
 
 function Spells:update(dt)
+    if self.player.class == 'warrior' then 
+        self.mainStat = self.player.totalStrength
+        self.mainStatString = 'str'
+    elseif self.player.class == 'ranger' then 
+        self.mainStat = self.player.totalAgility
+        self.mainStatString = 'agi'
+    elseif self.player.class == 'mage' then 
+        self.mainStat = self.player.totalIntelligence
+        self.mainStatString = 'int'
+    end
     if self.ready == false then
         self.cooldownTimer = self.cooldownTimer + dt*self.player.cooldownReduction
         if self.cooldownTimer > self.cooldown then
