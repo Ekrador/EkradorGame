@@ -54,22 +54,23 @@ function Inventory:update(dt)
                 my >= itemY  and my <= itemY + 16 then
                     local item = self.player.stash[i]
                     self:equipItem(item) 
+                    self.player:calculateStats()
                     break   
                 end
             end
         end
     end
 
-    self.player:calculateStats()
+    
         if self.player.bonusPoints > 0 then
             if love.mouse.wasPressed(1) and (mx > 132 and mx < 143) and (my > 120 and my < 131) then
-                self.player.strength = self.player.strength + 1
+                self.player.totalStrength = self.player.totalStrength + 1
                 self.player.bonusPoints = math.max(0, self.player.bonusPoints - 1)
             elseif love.mouse.wasPressed(1) and (mx > 132 and mx < 143) and (my > 132 and my < 143) then
-                self.player.agility = self.player.agility + 1
+                self.player.totalAgility = self.player.totalAgility + 1
                 self.player.bonusPoints = math.max(0, self.player.bonusPoints - 1)
             elseif love.mouse.wasPressed(1) and (mx > 132 and mx < 143) and (my > 143 and my < 154) then
-                self.player.intelligence = self.player.intelligence + 1
+                self.player.totalIntelligence = self.player.totalIntelligence + 1
                 self.player.bonusPoints = math.max(0, self.player.bonusPoints - 1)
             end
         end

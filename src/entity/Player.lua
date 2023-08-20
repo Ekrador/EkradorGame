@@ -222,9 +222,11 @@ function Player:calculateStats()
     local intelligence = 0
 
     for k, v in pairs(self.equipment) do
-        strength = strength + (v.strength and v.strength or 0)
-        agility = agility + (v.agility and v.agility or 0)
-        intelligence = intelligence + (v.intelligence and v.intelligence or 0)
+        if v.weared ~= nil then
+            strength = strength + (v.weared.strength and v.weared.strength or 0)
+            agility = agility + (v.weared.agility and v.weared.agility or 0)
+            intelligence = intelligence + (v.weared.intelligence and v.weared.intelligence or 0)
+        end
     end
 
     self.totalStrength = strength + self.strength
