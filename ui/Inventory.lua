@@ -115,9 +115,19 @@ function Inventory:renderItems()
             v[1]:render(self.x, self.y)
         end
     end
+    for k,v in pairs(self.player.stash) do
+        if v[1] ~= nil then
+            v[1]:renderTooltip(self.x, self.y)
+        end
+    end
     for k,v in pairs(self.player.equipment) do
         if v.weared ~= nil then
             v.weared:render(self.x, self.y)
+        end
+    end
+    for k,v in pairs(self.player.equipment) do
+        if v.weared ~= nil then
+            v.weared:renderTooltip(self.x, self.y)
         end
     end
 end

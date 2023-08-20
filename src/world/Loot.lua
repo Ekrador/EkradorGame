@@ -49,6 +49,7 @@ function Loot:generateItem()
         block_chance = ITEMS_DEFS[itemType].block_chance,
         block_damage = ITEMS_DEFS[itemType].block_damage,
         damage = ITEMS_DEFS[itemType].damage,
+        armor = ITEMS_DEFS[itemType].armor,
     }
 
     return item

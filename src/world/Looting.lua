@@ -41,6 +41,9 @@ function Looting:render()
     for i = 1, #self.loot.content do
         self.loot.content[i]:render(self.x, self.y)
     end
+    for i = 1, #self.loot.content do
+        self.loot.content[i]:renderTooltip(self.x, self.y)
+    end
     love.graphics.print(string.format('%4s', tostring(self.player.gold)), gFonts['small'], self.x + 300, self.y + 160)
     love.graphics.print('Take all',gFonts['small'], self.x + 54, self.y + 103)
     love.graphics.print('Close',gFonts['small'], self.x + 89, self.y + 103)
@@ -61,6 +64,11 @@ function Looting:renderStashItems()
     for k,v in pairs(self.player.stash) do
         if v[1] ~= nil then
             v[1]:render(self.x, self.y)
+        end
+    end
+    for k,v in pairs(self.player.stash) do
+        if v[1] ~= nil then
+            v[1]:renderTooltip(self.x, self.y)
         end
     end
 end
