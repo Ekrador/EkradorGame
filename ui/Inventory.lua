@@ -5,6 +5,8 @@ function Inventory:init(player)
     self.energy = player.energyBar
     self.x = math.floor(self.player.x - VIRTUAL_WIDTH / 2)
     self.y = math.floor(self.player.y - VIRTUAL_HEIGHT / 2)
+    self.grabbedItem = nil
+    self.grabbedItemIndex = 0
 end
 
 
@@ -31,6 +33,9 @@ function Inventory:render()
     love.graphics.draw(gTextures['plus'], gFrames['plus'][frame],x + 132, y + 144)
     self:renderItems()
     self:tips(self.x, self.y)
+    if self.grabbedItemIndex ~= nil then
+        love.graphics.print(tostring(self.grabbedItemIndex), math.floor(self.x + mx), math.floor(self.y + my))
+    end
 end
 
 
@@ -45,13 +50,17 @@ function Inventory:tips(x, y)
 end
 
 function Inventory:update(dt)
-    if love.mouse.wasPressed(2) then
         for i = 1, STASH_LIMIT do
-            if #self.player.stash[i] > 0 then
+            if self.player.stash[i][1] ~= nil then
                 local itemX = self.player.stash[i][1].x
                 local itemY = self.player.stash[i][1].y
+                if (mx > itemX and mx < itemX + 15) and 
+                (my > itemY and my < itemY + 15) and love.mouse.wasPressed(1) then
+                    self.grabbedItem = self.player.stash[i][1]
+                    self.grabbedItemIndex = i
+                end
                 if mx >= itemX  and mx <= itemX + 16 and
-                my >= itemY  and my <= itemY + 16 then
+                my >= itemY  and my <= itemY + 16 and love.mouse.wasPressed(2) then
                     local item = self.player.stash[i][1]
                     self:equipItem(item) 
                     self.player:calculateStats()
@@ -59,25 +68,66 @@ function Inventory:update(dt)
                 end
             end
         end
+
+    if love.mouse.wasReleased(1) then
+        if self.grabbedItem ~= nil then
+            if mx < 48 or mx > 336 or my < 15 or my > 170 then 
+                self.player.stash[self.grabbedItemIndex][1] = nil
+            else
+                for i = 1, 7 do
+                    local y = STASH_FIRST_ITEM_Y + math.floor((i - 1) % STASH_ITEMS_PER_ROW ) * ITEMS_INDENT
+                    for j = 1, 8 do
+                        local x = STASH_FIRST_ITEM_X + (j - 1) % STASH_ITEMS_PER_ROW * ITEMS_INDENT
+                        if (mx > x and mx < x + 16) and (my > y and my < y + 16) then 
+                            for k = 1, STASH_LIMIT do
+                                if self.player.stash[k][1] ~= nil then
+                                    if self.player.stash[k][1].x == x and self.player.stash[k][1].y == y then
+                                        local tempX = self.grabbedItem.x
+                                        local tempY = self.grabbedItem.y
+                                        local temp = self.player.stash[k][1]
+                                        self.player.stash[k][1] = self.grabbedItem
+                                        self.player.stash[k][1].x = x
+                                        self.player.stash[k][1].y = y
+                                        self.player.stash[self.grabbedItemIndex][1] = temp
+                                        self.player.stash[self.grabbedItemIndex][1].x = tempX
+                                        self.player.stash[self.grabbedItemIndex][1].y = tempY
+                                        goto endFor
+                                    end
+                                end
+                            end
+                            self.player.stash[(i-1)*8 + j][1] = self.grabbedItem
+                            self.player.stash[(i-1)*8 + j][1].x = x
+                            self.player.stash[(i-1)*8 + j][1].y = y
+                            self.player.stash[self.grabbedItemIndex][1] = nil
+                            goto endFor                                                   
+                        end
+                    end
+                end
+            end             
+        end
+        ::endFor::
+        self.grabbedItem = nil
+        self.grabbedItem = nil
+    end
+
+    if self.player.bonusPoints > 0 then
+        if love.mouse.wasPressed(1) and (mx > 132 and mx < 143) and (my > 120 and my < 131) then
+            self.player.totalStrength = self.player.totalStrength + 1
+            self.player.bonusPoints = math.max(0, self.player.bonusPoints - 1)
+        elseif love.mouse.wasPressed(1) and (mx > 132 and mx < 143) and (my > 132 and my < 143) then
+            self.player.totalAgility = self.player.totalAgility + 1
+            self.player.bonusPoints = math.max(0, self.player.bonusPoints - 1)
+        elseif love.mouse.wasPressed(1) and (mx > 132 and mx < 143) and (my > 143 and my < 154) then
+            self.player.totalIntelligence = self.player.totalIntelligence + 1
+            self.player.bonusPoints = math.max(0, self.player.bonusPoints - 1)
+        end
+    end
+
+    if love.keyboard.wasPressed('escape') or love.keyboard.wasPressed('c') then
+        gStateStack:pop()
     end
 
     
-        if self.player.bonusPoints > 0 then
-            if love.mouse.wasPressed(1) and (mx > 132 and mx < 143) and (my > 120 and my < 131) then
-                self.player.totalStrength = self.player.totalStrength + 1
-                self.player.bonusPoints = math.max(0, self.player.bonusPoints - 1)
-            elseif love.mouse.wasPressed(1) and (mx > 132 and mx < 143) and (my > 132 and my < 143) then
-                self.player.totalAgility = self.player.totalAgility + 1
-                self.player.bonusPoints = math.max(0, self.player.bonusPoints - 1)
-            elseif love.mouse.wasPressed(1) and (mx > 132 and mx < 143) and (my > 143 and my < 154) then
-                self.player.totalIntelligence = self.player.totalIntelligence + 1
-                self.player.bonusPoints = math.max(0, self.player.bonusPoints - 1)
-            end
-        end
-
-        if love.keyboard.wasPressed('escape') or love.keyboard.wasPressed('c') then
-            gStateStack:pop()
-        end
 end
 
 function Inventory:equipItem(item)

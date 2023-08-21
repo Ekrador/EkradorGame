@@ -65,57 +65,56 @@ function TalentTree:render()
 end
 
 function TalentTree:update(dt)
-        for i = 1 , #self.player.spells do
+    for i = 1 , #self.player.spells do
             
-            if self.points > 0 then
-                if love.mouse.wasPressed(1) and (mx > self.player.spells[i].x + 17 and mx < self.player.spells[i].x + 32) and 
-                (my > self.player.spells[i].y and my < self.player.spells[i].y + 15) and self.spells[i].playerCanImprove > 0 then
-                    self.spells[i].level = self.spells[i].level + 1
-                    self.points = self.points - 1
-                    self.spells[i].playerCanImprove = self.spells[i].playerCanImprove - 1
-                end
-            end
-            if (mx > self.player.spells[i].x and mx < self.player.spells[i].x + 15) and 
-                (my > self.player.spells[i].y and my < self.player.spells[i].y + 15) and love.mouse.isDown(1) and
-                self.player.spells[i].level > 0 then     
-                        self.grabbedSkill = self.player.spells[i].id
-                end
-        end
-
-        if (mx > 252 and mx < 283) and (my > 157 and my < 168) and love.mouse.wasPressed(1) then 
-            self.points = self.player.talentPoints
-            for i = 1 , #self.player.spells do
-                self.spells[i].level = self.player.spells[i].level
-                self.spells[i].playerCanImprove = self.player.spells[i].playerCanImprove
-            end
-        elseif (mx > 288 and mx < 318) and (my > 157 and my < 168) and love.mouse.wasPressed(1) then
-            self.player.talentPoints = self.points
-            for i = 1 , #self.player.spells do
-                self.player.spells[i].level = self.spells[i].level 
-                self.player.spells[i].playerCanImprove = self.spells[i].playerCanImprove
+        if self.points > 0 then
+            if love.mouse.wasPressed(1) and (mx > self.player.spells[i].x + 17 and mx < self.player.spells[i].x + 32) and 
+            (my > self.player.spells[i].y and my < self.player.spells[i].y + 15) and self.spells[i].playerCanImprove > 0 then
+                self.spells[i].level = self.spells[i].level + 1
+                self.points = self.points - 1
+                self.spells[i].playerCanImprove = self.spells[i].playerCanImprove - 1
             end
         end
+        if (mx > self.player.spells[i].x and mx < self.player.spells[i].x + 15) and 
+            (my > self.player.spells[i].y and my < self.player.spells[i].y + 15) and love.mouse.isDown(1) and
+            self.player.spells[i].level > 0 then     
+                self.grabbedSkill = self.player.spells[i].id
+        end
+    end
 
-        if love.mouse.wasReleased(1) then
-            if self.grabbedSkill > 0 then
-                for i = 1, 4 do
-                    if ((mx > 90 + (i-1) * 20) and (mx < 90 + i * 20)) and (my > 195 and my < 215) then
-                        self.player.spellPanel[i] = self.grabbedSkill
-                        for j = 1, 4 do
-                            if not i == j and self.player.spellPanel[j] == self.grabbedSkill then
-                                self.player.spellPanel[j] = 0
-                            end
+    if (mx > 252 and mx < 283) and (my > 157 and my < 168) and love.mouse.wasPressed(1) then 
+        self.points = self.player.talentPoints
+        for i = 1 , #self.player.spells do
+            self.spells[i].level = self.player.spells[i].level
+            self.spells[i].playerCanImprove = self.player.spells[i].playerCanImprove
+        end
+    elseif (mx > 288 and mx < 318) and (my > 157 and my < 168) and love.mouse.wasPressed(1) then
+        self.player.talentPoints = self.points
+        for i = 1 , #self.player.spells do
+            self.player.spells[i].level = self.spells[i].level 
+            self.player.spells[i].playerCanImprove = self.spells[i].playerCanImprove
+        end
+    end
+    if love.mouse.wasReleased(1) then
+        if self.grabbedSkill > 0 then
+            for i = 1, 4 do
+                if ((mx > 90 + (i-1) * 20) and (mx < 90 + i * 20)) and (my > 195 and my < 215) then
+                    self.player.spellPanel[i] = self.grabbedSkill
+                    for j = 1, 4 do
+                        if not i == j and self.player.spellPanel[j] == self.grabbedSkill then
+                            self.player.spellPanel[j] = 0
                         end
                     end
                 end
             end
-            self.grabbedSkill = 0
         end
+        self.grabbedSkill = 0
+    end
 
-        if ((mx > 323 and mx < 347) and (my > 157 and my < 168) and love.mouse.wasPressed(1)) or
-        love.keyboard.wasPressed('escape') or love.keyboard.wasPressed('p') then
-            gStateStack:pop()
-        end
+    if ((mx > 323 and mx < 347) and (my > 157 and my < 168) and love.mouse.wasPressed(1)) or
+    love.keyboard.wasPressed('escape') or love.keyboard.wasPressed('p') then
+        gStateStack:pop()
+    end
 end
 
 function TalentTree:renderTips()

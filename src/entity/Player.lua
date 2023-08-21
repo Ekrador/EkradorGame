@@ -245,7 +245,7 @@ end
 function Player:addToStash(item)
     local id 
     for i = 1, STASH_LIMIT do
-        if #self.stash[i] == 0 then
+        if self.stash[i][1] == nil then
             id = i
             break
         end
