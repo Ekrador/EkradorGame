@@ -36,11 +36,13 @@ require 'src/world/Items'
 require 'src/world/items_defs'
 require 'src/world/Loot'
 require 'src/world/Looting'
+require 'src/entity/Vendor'
 
 require 'ui/Interface'
 require 'ui/Inventory'
 require 'ui/TalentTree'
 require 'ui/ProgressBar'
+require 'ui/Trade'
 
 
 gTextures = {
@@ -72,6 +74,9 @@ gTextures = {
     ['legs'] = love.graphics.newImage('graphics/legs.png'),
     ['looting'] = love.graphics.newImage('graphics/looting.png'),
     ['loot'] = love.graphics.newImage('graphics/loot.png'),
+    ['vendor'] = love.graphics.newImage('graphics/vendor.png'),
+    ['trade'] = love.graphics.newImage('graphics/trade.png'),
+    ['gold'] = love.graphics.newImage('graphics/gold.png')
 }
 
 gFrames = {
@@ -94,4 +99,6 @@ gFonts = {
 }
 
 gSounds = {
+    ['need_space'] = love.audio.newSource('sounds/need_space.wav', 'static'),
+    ['need_gold'] = love.audio.newSource('sounds/need_gold.wav', 'static'),
 }

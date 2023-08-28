@@ -129,6 +129,9 @@ function Player:update(dt)
         if love.keyboard.wasPressed('p') then
             gStateStack:push(TalentTree(self))
         end
+        if love.keyboard.wasPressed('m') then
+            self.gold = self.gold + 15
+        end
 
 end
 

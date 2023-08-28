@@ -13,6 +13,8 @@ function Items:init(def)
     self.damage = def.damage
     self.armor = def.armor
     self.renderTooltips = false
+    self.price = self.quality * math.random(2, 5)
+
 end
 
 function Items:render(x, y)
@@ -33,7 +35,11 @@ function Items:renderTooltip(x, y)
         local ty = math.floor(mouseInScreenY + (y + VIRTUAL_HEIGHT / 2))
         local tooltipText = tostring(self.type)
         local heighMultiplier = 1
-        tooltipText = tooltipText .. '\n'.. "Quality: " ..'  '.. tostring(self.quality) ..'\n'
+        if self.quality == 0 then
+            tooltipText = tooltipText .. '\n'.. "Quality: " ..'  '.. 'undefined' ..'\n'           
+        else 
+            tooltipText = tooltipText .. '\n'.. "Quality: " ..'  '.. tostring(self.quality) ..'\n'
+        end
         heighMultiplier = heighMultiplier + 1
         if self.damage ~= 0 then
             tooltipText = tooltipText .. "Damage: " ..'  '.. tostring(self.damage)..'\n'
@@ -60,6 +66,8 @@ function Items:renderTooltip(x, y)
         tooltipText = tooltipText .."Agility: " ..'  '.. tostring(self.agility)..'\n'
         heighMultiplier = heighMultiplier + 1
         end
+        tooltipText = tooltipText .."Price: " ..'  '.. tostring(self.price)..'\n'
+        heighMultiplier = heighMultiplier + 1
         local textWidth  = gFonts['small']:getWidth(tooltipText)
 	    local textHeight = gFonts['small']:getHeight()
         love.graphics.setColor(0, 0, 0, 0.8)

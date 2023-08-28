@@ -10,6 +10,7 @@ function Loot:init(mapX, mapY, player)
     self.content = {}
     self:spawn()
     self.nearPlayer = false
+    self.goldAmount = math.random(0, 10)
 end
 
 function Loot:spawn()

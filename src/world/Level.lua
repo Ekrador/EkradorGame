@@ -5,6 +5,7 @@ function Level:init(def)
     self.data = def.data 
     self.safeZone = def.safeZone
     self.player = nil
+    self.vendor = nil
     self.difficulty = def.difficulty
     self.enemiesAmount = def.enemiesAmount
     self.qwer = def.enemiesAmount
@@ -82,7 +83,12 @@ end
 function Level:update(dt)
     self.map:update(dt)
     self:enemiesOnScreen(dt)
-
+    if self.vendor ~= nil then
+        self.vendor:update(dt)
+        if love.keyboard.wasPressed('f') and self.vendor.nearPlayer then
+            self.vendor:onInteract()
+        end
+    end
     if self.player then
         self.player.enemyOnScreen = self.enemyOnScreen
     end
@@ -115,6 +121,19 @@ function Level:update(dt)
     if love.keyboard.wasPressed('x') then
         table.insert(self.lootTable, Loot(self.player.mapX, self.player.mapY, self.player))
     end
+    if love.keyboard.wasPressed('z') then
+        if self.vendor == nil then
+            self.vendor = Vendor {
+                player = self.player,
+                mapX = self.player.mapX,
+                mapY = self.player.mapY,
+                width = 32,
+                height = 39,
+            }
+        else
+            self.vendor:updateAssortment()
+        end
+    end
 end
 
 function Level:render(x,y)
@@ -125,6 +144,9 @@ function Level:render(x,y)
         end
     end
 
+    if self.vendor ~= nil then
+        self.vendor:render()
+    end
     for k, v in pairs(self.lootTable) do
         v:render(x, y)
     end

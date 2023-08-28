@@ -73,6 +73,7 @@ function Inventory:update(dt)
         if self.grabbedItem ~= nil then
             if mx < 48 or mx > 336 or my < 15 or my > 170 then 
                 self.player.stash[self.grabbedItemIndex][1] = nil
+                self.player.stashCounter = self.player.stashCounter - 1
             else
                 for i = 1, 7 do
                     local y = STASH_FIRST_ITEM_Y + math.floor((i - 1) % STASH_ITEMS_PER_ROW ) * ITEMS_INDENT
@@ -107,7 +108,6 @@ function Inventory:update(dt)
         end
         ::endFor::
         self.grabbedItem = nil
-        self.grabbedItem = nil
     end
 
     if self.player.bonusPoints > 0 then
@@ -131,7 +131,6 @@ function Inventory:update(dt)
 end
 
 function Inventory:equipItem(item)
-    --перенести в инвентарь, переделать отрисовку
     local slot = item.type
     local index 
         for k,v in pairs(self.player.stash) do
@@ -155,6 +154,7 @@ function Inventory:equipItem(item)
         item.x = self.player.equipment[slot].coords.x
         item.y = self.player.equipment[slot].coords.y
         self.player.stash[index][1] = nil
+        self.player.stashCounter = self.player.stashCounter - 1
     end
 end
 
