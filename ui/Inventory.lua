@@ -58,11 +58,13 @@ function Inventory:update(dt)
                 (my > itemY and my < itemY + 15) and love.mouse.wasPressed(1) then
                     self.grabbedItem = self.player.stash[i][1]
                     self.grabbedItemIndex = i
+                    itemSwapSound()  
                 end
                 if mx >= itemX  and mx <= itemX + 16 and
                 my >= itemY  and my <= itemY + 16 and love.mouse.wasPressed(2) then
                     local item = self.player.stash[i][1]
                     self:equipItem(item) 
+                    itemSwapSound()  
                     self.player:calculateStats()
                     break   
                 end
@@ -92,6 +94,7 @@ function Inventory:update(dt)
                                         self.player.stash[self.grabbedItemIndex][1] = temp
                                         self.player.stash[self.grabbedItemIndex][1].x = tempX
                                         self.player.stash[self.grabbedItemIndex][1].y = tempY
+                                        itemSwapSound()  
                                         goto endFor
                                     end
                                 end
@@ -100,6 +103,7 @@ function Inventory:update(dt)
                             self.player.stash[(i-1)*8 + j][1].x = x
                             self.player.stash[(i-1)*8 + j][1].y = y
                             self.player.stash[self.grabbedItemIndex][1] = nil
+                            itemSwapSound()  
                             goto endFor                                                   
                         end
                     end
@@ -156,6 +160,7 @@ function Inventory:equipItem(item)
         self.player.stash[index][1] = nil
         self.player.stashCounter = self.player.stashCounter - 1
     end
+    itemSwapSound()   
 end
 
 

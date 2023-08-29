@@ -23,3 +23,13 @@ TRADE_FIRST_ITEM_Y = 26
 
 MDx = {0,1,1,1,0,-1,-1,-1}
 MDy = {-1,-1,0,1,1,1,0,-1}
+
+function coinSound()
+    gSounds['coin']:stop()
+    gSounds['coin']:play() 
+end
+
+function itemSwapSound()
+    gSounds['item_swap']:stop()
+    gSounds['item_swap']:play() 
+end

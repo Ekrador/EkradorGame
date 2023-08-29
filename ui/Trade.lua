@@ -14,6 +14,19 @@ function Trade:update(dt)
             self:buy(k, v)
         end
     end 
+
+    for i = 1, STASH_LIMIT do
+        if self.player.stash[i][1] ~= nil then
+            local itemX = self.player.stash[i][1].x
+            local itemY = self.player.stash[i][1].y
+            if mx >= itemX  and mx <= itemX + 16 and
+            my >= itemY  and my <= itemY + 16 and love.mouse.wasPressed(2) then
+                local item = self.player.stash[i][1]
+                self:sell(i, item)                
+                break   
+            end
+        end
+    end
     
     if ((mx > 141 and mx < 165) and (my > 141 and my < 152) and love.mouse.wasPressed(1))
     or love.keyboard.wasPressed('escape') then
@@ -30,10 +43,18 @@ function Trade:buy(k, item)
     else 
         local newItem = self:identifyItem(item)
         self.player:addToStash(newItem)
+        gSounds['item_swap']:stop()
+        gSounds['item_swap']:play() 
         self.player.gold = self.player.gold - item.price
         table.remove(self.vendor.salesTable, k)
         self.player.stashCounter = self.player.stashCounter + 1
     end
+end
+
+function Trade:sell(i, item)
+    self.player.gold = self.player.gold + item.price
+    coinSound()  
+    self.player.stash[i][1] = nil
 end
 
 function Trade:render()

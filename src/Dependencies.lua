@@ -101,4 +101,6 @@ gFonts = {
 gSounds = {
     ['need_space'] = love.audio.newSource('sounds/need_space.wav', 'static'),
     ['need_gold'] = love.audio.newSource('sounds/need_gold.wav', 'static'),
+    ['coin'] = love.audio.newSource('sounds/coin.wav', 'static'),
+    ['item_swap'] = love.audio.newSource('sounds/item_swap.wav', 'static'),
 }

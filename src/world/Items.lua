@@ -21,8 +21,8 @@ function Items:render(x, y)
     local rx = mouseInScreenX + (x + VIRTUAL_WIDTH / 2)
     local ry = mouseInScreenY + (y + VIRTUAL_HEIGHT / 2)
     love.graphics.draw(gTextures[self.type], x + self.x, y + self.y)
-    if rx >= x + self.x  and rx <= x + self.x + 16 and
-    ry >= y + self.y  and ry <= y + self.y + 16 then
+    if rx >= x + self.x  and rx <= x + self.x + 15 and
+    ry >= y + self.y  and ry <= y + self.y + 15 then
         self.renderTooltips = true
     else
         self.renderTooltips = false

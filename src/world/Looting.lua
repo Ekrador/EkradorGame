@@ -26,6 +26,7 @@ function Looting:update(dt)
 
     if (mx > self.goldX and mx < self.goldX + 15) and (my > self.goldY and my < self.goldY + 15) and love.mouse.wasPressed(2) then
         self.player.gold = self.player.gold + self.loot.goldAmount
+        coinSound()
         self.loot.goldAmount = 0
     end
 
@@ -34,6 +35,9 @@ function Looting:update(dt)
             self:itemTransfer(k, v)
         end
         self.player.gold = self.player.gold + self.loot.goldAmount
+        if self.loot.goldAmount > 0 then
+            coinSound()
+        end
         self.loot.goldAmount = 0
     end
     
@@ -49,7 +53,8 @@ function Looting:render()
     for i = 1, #self.loot.content do
         self.loot.content[i]:render(self.x, self.y)
     end
-
+    self:renderGold()
+    
     for i = 1, #self.loot.content do
         self.loot.content[i]:renderTooltip(self.x, self.y)
     end
@@ -57,9 +62,7 @@ function Looting:render()
     love.graphics.print(string.format('%4s', tostring(self.player.gold)), gFonts['small'], self.x + 300, self.y + 160)
     love.graphics.print('Take all',gFonts['small'], self.x + 54, self.y + 103)
     love.graphics.print('Close',gFonts['small'], self.x + 89, self.y + 103)
-    love.graphics.print(tostring(self.loot.goldAmount),gFonts['small'], self.x , self.y )
     self:renderStashItems()
-    self:renderGold()
 end
 
 function Looting:itemTransfer(k, item)
@@ -68,6 +71,7 @@ function Looting:itemTransfer(k, item)
         gSounds['need_space']:play()   
     else 
         self.loot.player:addToStash(item)
+        itemSwapSound()  
         table.remove(self.loot.content, k)
         self.player.stashCounter = self.player.stashCounter + 1
     end
@@ -91,8 +95,8 @@ function Looting:renderGold()
         love.graphics.draw(gTextures['gold'], self.x + self.goldX, self.y + self.goldY)
         local tx = math.floor(mouseInScreenX + (self.x + VIRTUAL_WIDTH / 2)) + 3
         local ty = math.floor(mouseInScreenY + (self.y + VIRTUAL_HEIGHT / 2))
-        if tx >= self.x + self.goldX  and tx <= self.x + self.goldX + 16 and
-        ty >= self.y + self.goldY  and ty <= self.y + self.goldY + 16 then        
+        if tx - 3 >= self.x + self.goldX  and tx - 3 <= self.x + self.goldX + 15 and
+        ty >= self.y + self.goldY  and ty <= self.y + self.goldY + 15 then        
             local tooltipText = tostring(self.loot.goldAmount .. ' gold')
             local textWidth  = gFonts['small']:getWidth(tooltipText)
             local textHeight = gFonts['small']:getHeight()
@@ -103,4 +107,14 @@ function Looting:renderGold()
             love.graphics.setColor(255, 255, 255, 1)
         end
     end
+end
+
+function Looting:coinSound()
+    gSounds['coin']:stop()
+    gSounds['coin']:play() 
+end
+
+function Looting:itemSwapSound()
+    gSounds['item_swap']:stop()
+    gSounds['item_swap']:play() 
 end
