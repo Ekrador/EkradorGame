@@ -33,3 +33,18 @@ function itemSwapSound()
     gSounds['item_swap']:stop()
     gSounds['item_swap']:play() 
 end
+
+function defineItemQuality()
+    local random = math.random(1, 100)
+    if random == 100 then
+        return 6
+    elseif random % 5 == 0 then
+        return 4
+    elseif random % 3 == 0 then
+        return 3
+    elseif random % 2 == 0 then
+        return 2
+    else 
+        return 1
+    end    
+end

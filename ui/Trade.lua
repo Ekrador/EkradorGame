@@ -76,7 +76,7 @@ function Trade:identifyItem(item)
         x = x,
         y = y,
         type = type,
-        quality = math.random(2, 4),
+        quality = defineItemQuality(),
         stats_multiplier = ITEMS_DEFS[type].stats_multiplier,
         block_chance = ITEMS_DEFS[type].block_chance,
         block_damage = ITEMS_DEFS[type].block_damage,

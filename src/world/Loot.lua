@@ -27,7 +27,7 @@ function Loot:use()
 end
 
 function Loot:update(dt)
-    if #self.content > 0 and self:checkForPlayer() then
+    if (#self.content > 0 or self.goldAmount > 0) and self:checkForPlayer() then
         self.nearPlayer = true
     else 
         self.nearPlayer = false
@@ -45,7 +45,7 @@ function Loot:generateItem()
         x = x,
         y = y,
         type = itemType,
-        quality = math.random(1, 4),
+        quality = defineItemQuality(),
         stats_multiplier = ITEMS_DEFS[itemType].stats_multiplier,
         block_chance = ITEMS_DEFS[itemType].block_chance,
         block_damage = ITEMS_DEFS[itemType].block_damage,
@@ -57,11 +57,11 @@ function Loot:generateItem()
 end
 
 function Loot:render(x, y)
-    if #self.content > 0 then
+    if (#self.content > 0 or self.goldAmount > 0) then
         love.graphics.draw(gTextures['loot'], self.x, self.y)
     end
 
-    if #self.content > 0 and self.nearPlayer then
+    if (#self.content > 0 or self.goldAmount > 0) and self.nearPlayer then
         love.graphics.print('Press F to loot', gFonts['small'], self.x, self.y)
     end
 end

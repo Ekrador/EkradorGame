@@ -41,7 +41,7 @@ function Looting:update(dt)
         self.loot.goldAmount = 0
     end
     
-    if #self.loot.content < 1 or ((mx > 85 and mx < 110) and (my > 99 and my < 110) and love.mouse.wasPressed(1))
+    if (#self.loot.content < 1 and self.loot.goldAmount <= 0) or ((mx > 85 and mx < 110) and (my > 99 and my < 110) and love.mouse.wasPressed(1))
     or love.keyboard.wasPressed('escape') then
         gStateStack:pop()
     end
@@ -50,6 +50,9 @@ end
 
 function Looting:render()
     love.graphics.draw(gTextures['looting'], self.x,self.y)
+    love.graphics.print(string.format('%4s', tostring(self.player.gold)), gFonts['small'], self.x + 300, self.y + 160)
+    love.graphics.print('Take all',gFonts['small'], self.x + 54, self.y + 103)
+    love.graphics.print('Close',gFonts['small'], self.x + 89, self.y + 103)
     for i = 1, #self.loot.content do
         self.loot.content[i]:render(self.x, self.y)
     end
@@ -59,9 +62,6 @@ function Looting:render()
         self.loot.content[i]:renderTooltip(self.x, self.y)
     end
 
-    love.graphics.print(string.format('%4s', tostring(self.player.gold)), gFonts['small'], self.x + 300, self.y + 160)
-    love.graphics.print('Take all',gFonts['small'], self.x + 54, self.y + 103)
-    love.graphics.print('Close',gFonts['small'], self.x + 89, self.y + 103)
     self:renderStashItems()
 end
 
