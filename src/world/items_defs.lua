@@ -1,7 +1,7 @@
 ITEMS_DEFS = {
     ['shield'] = {
         stats_multiplier = 1,
-        armor = math.random(5, 10),
+        armor = math.random(3, 15),
         damage = 0,
         block_chance = math.random(20, 70),
         block_damage = math.random(1, 10)
@@ -36,14 +36,14 @@ ITEMS_DEFS = {
     },
     ['legs'] = {
         stats_multiplier = 2,
-        armor = math.random(3, 5),
+        armor = math.random(1, 5),
         damage = 0,
         block_chance = 0,
         block_damage = 0
     },
     ['boots'] = {
         stats_multiplier = 1,
-        armor = math.random(1, 2),
+        armor = math.random(0, 2),
         damage = 0,
         block_chance = 0,
         block_damage = 0

@@ -5,9 +5,9 @@ function Items:init(def)
     self.y = def.y
     self.type = def.type
     self.quality = def.quality
-    self.strength = def.stats_multiplier * math.random(0, 3) * def.quality
-    self.intelligence = def.stats_multiplier * math.random(0, 3) * def.quality
-    self.agility = def.stats_multiplier * math.random(0, 3) * def.quality
+    self.strength = def.stats_multiplier * math.random(0, 1 * def.quality)
+    self.intelligence = def.stats_multiplier * math.random(0, 1 * def.quality)
+    self.agility = def.stats_multiplier * math.random(0, 1 * def.quality)
     self.block_chance = def.block_chance
     self.block_damage = def.block_damage
     self.damage = def.damage * def.quality
@@ -30,7 +30,7 @@ function Items:render(x, y)
         love.graphics.setColor(0, 0, 1, 1)
     elseif self.quality == 4 then
         love.graphics.setColor(0.5, 0, 0.5, 1)
-    elseif self.quality == 5 then
+    elseif self.quality == 6 then
         love.graphics.setColor(1, 0.8, 0, 1)
     end    
 
@@ -42,6 +42,25 @@ function Items:render(x, y)
     else
         self.renderTooltips = false
     end
+end
+
+function Items:renderGrabbed(x, y)
+    love.graphics.draw(gTextures[self.type], x, y)
+
+    if self.quality == 1 then
+        love.graphics.setColor(0, 0, 0, 1)
+    elseif self.quality == 2 then
+        love.graphics.setColor(0, 1, 0, 1)
+    elseif self.quality == 3 then
+        love.graphics.setColor(0, 0, 1, 1)
+    elseif self.quality == 4 then
+        love.graphics.setColor(0.5, 0, 0.5, 1)
+    elseif self.quality == 6 then
+        love.graphics.setColor(1, 0.8, 0, 1)
+    end    
+
+    love.graphics.rectangle('line',x  , y , 15, 15, 1)
+    love.graphics.setColor(1, 1, 1, 1)
 end
 
 function Items:renderTooltip(x, y)
@@ -65,7 +84,7 @@ function Items:renderTooltip(x, y)
         end
         heighMultiplier = heighMultiplier + 1
         if self.damage ~= 0 then
-            tooltipText = tooltipText .. "Damage: " ..' '.. tostring(self.damage)..'\n'
+            tooltipText = tooltipText .. "Damage: " ..' '.. tostring(math.floor(self.damage * 0.8)) .. ' - '..tostring(self.damage) ..'\n'
             heighMultiplier = heighMultiplier + 1
         end
         if self.block_chance ~= 0 then

@@ -7,7 +7,9 @@ end
 
 function PlayerAttackState:enter(params)
     self.damage = {}
+    self.entity.currentAnimation.interval = self.entity.currentAnimation.baseInterval
     self.entity:changeAnimation('attack-' .. tostring(self.entity.direction))
+    self.entity.currentAnimation.interval = self.entity.currentAnimation.interval / self.entity.attackSpeed
     self.entity.getCommand = false
     local direction = params and params.direction or nil
     if direction then

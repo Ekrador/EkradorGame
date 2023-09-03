@@ -13,12 +13,15 @@ function Entity:init(def)
     self.width = def.width 
     self.height = def.height 
     self.speed = def.speed
+    self.attackSpeed = 1
+    self.speedUnbaffed = def.speed
     self.level = def.level
     self.maxHealth = def.maxHealth
     self.currentHealth = self.maxHealth
     self.status = {}
     self.stunned = false
-    self.healthLogHandler = self.currentHealth
+    self.healthLogHandler = 0
+    self.healthChanged = false
     self.dead = false
     self.chanceOnLoot = true
     self.damage = def.damage
@@ -93,11 +96,15 @@ function Entity:collides(target)
 end
 
 function Entity:takedamage(dmg)
+    self.healthLogHandler = -dmg
     self.currentHealth = math.max(0, self.currentHealth - dmg)
+    self.healthChanged = true
 end
 
 function Entity:heal(amount)
+    self.healthLogHandler = amount
     self.currentHealth = math.min(self.maxHealth, self.currentHealth + amount)
+    self.healthChanged = true
 end
 
 function Entity:render()
@@ -216,21 +223,20 @@ function Entity:getStatus(def)
 end
 
 function Entity:statusEffect(dt)
-    local speed = 0
     for k, state in pairs(self.status) do
         if state.timer == 0 then
             if state.status == 'stun' then
                 self.stunned = true
                 self:changeState('stunned', {duration = state.duration})
             elseif state.status == 'slow' then
-                speed = self.speed
+                self.speedUnbaffed = self.speed
                 self.speed = self.speed / state.effectPower
             end
         elseif state.timer > state.duration then
             if state.status == 'stun' then
                 self.stunned = false
             elseif state.status == 'slow' then
-                self.speed = speed
+                self.speed = self.speedUnbaffed
             end
             self.status[k] = nil
         elseif state.timer % 2 == 0 then        
@@ -245,22 +251,24 @@ function Entity:statusEffect(dt)
 end
 
 function Entity:healthChangedTimer(dt)
-    self.timer = self.timer + dt    
-        if self.timer > 1 then
-            self.healthLogHandler = self.currentHealth
+    if self.healthChanged then
+        self.timer = self.timer + dt    
+        if self.timer > 0.5 then
+            self.healthLogHandler = 0
             self.timer = 0
+            self.healthChanged = false
         end
+    end
 end
 
 function Entity:healthChangedDisplay()
-    if (self.currentHealth ~= self.healthLogHandler) then
-        local amount = self.currentHealth - self.healthLogHandler
-        if amount < 0 then
+    if (self.healthLogHandler ~= 0) then
+        if self.healthLogHandler < 0 then
             love.graphics.setColor(1, 0, 0, 1)
         else
             love.graphics.setColor(0, 1, 0, 1)
         end
-        love.graphics.print(tostring(math.abs(amount)), gFonts['small'],self.x + self.width / 2, self.y - 15)
+        love.graphics.print(tostring(math.abs((math.floor(self.healthLogHandler)))), gFonts['small'], math.floor(self.x + self.width / 2), math.floor(self.y - 15))
         love.graphics.setColor(1,1,1,1)
     end
 
@@ -270,3 +278,4 @@ function Entity:healthChangedDisplay()
         self.renderHealthBars = false
     end
 end
+

@@ -15,7 +15,7 @@ end
 
 function Loot:spawn()
     self.content = {}
-    local amountItems = math.random(1, 3)
+    local amountItems = math.random(0, 3)
     for i = 1, amountItems do
         local item = self:generateItem()
         table.insert(self.content, item)

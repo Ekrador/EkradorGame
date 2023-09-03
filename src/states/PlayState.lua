@@ -18,6 +18,7 @@ function PlayState:enter(params)
         speed = ENTITY_DEFS['player'].speed,
         maxHealth = ENTITY_DEFS['player'].health,
         level = self.level,
+        regenHp = ENTITY_DEFS[self.playerClass].regenHp,
         attackRange = ENTITY_DEFS['player'].attackRange,
         regenEnergy = ENTITY_DEFS[self.playerClass].regenEnergy,
         currentEnergy = ENTITY_DEFS[self.playerClass].currentEnergy,

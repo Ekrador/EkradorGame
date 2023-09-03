@@ -7,6 +7,7 @@ function Player:init(def)
     self.regenEnergy = def.regenEnergy
     self.regenRate = def.regenRate
     self.regenTimer = 0
+    self.regenHp = def.regenHp
     self.actionsQueue = {}
     self.class = def.class
     self.spells = {}
@@ -27,6 +28,10 @@ function Player:init(def)
     self.xpToLevel = self.level * 100
     self.bonusPoints = 5
     self.talentPoints = 1
+    self.healPotionTimer = 0
+    self.energyPotionTimer = 0
+    self.healPotionReady = false
+    self.energyPotiReady = false
     self.gold = 0
     self.step = {}
     if self.class == 'warrior' then
@@ -84,6 +89,11 @@ function Player:init(def)
         },
     }    
 
+    self.belt = {}
+    for i = 1, 5 do
+        self.belt[i] = {}
+    end
+
     self.stash = {}
     for i = 1, 56 do
         self.stash[i] = {}
@@ -96,6 +106,10 @@ function Player:update(dt)
     for k, v in pairs(self.spells) do
         v:update(dt)
     end
+    
+    self:potionsCooldownHandler(dt)
+    self:healthChangedTimer(dt)
+    self:checkBeltUsage()
     self.GUI:update(dt)
     if self.currentAnimation then
         self.currentAnimation:update(dt)
@@ -103,16 +117,14 @@ function Player:update(dt)
 
     self:calculateStats()
 
-    self:healthChangedTimer(dt)
-
     self:regenerateEnergy(dt)
 
     self:useSpell()
 
     for i = 1, 5 do
         if love.keyboard.wasPressed(self.itemsKeys[i]) then
-            if self.belt[i] > 0 then
-                self.belt[i]:use()
+            if self.belt[i][1] ~= nil then
+                self.belt[i][1]:use()
             end
         end
     end
@@ -145,8 +157,8 @@ end
 
 function Player:render(x, y)
     self.stateMachine:render()
-    self.GUI:render(x, y)        
-    self:healthChangedDisplay()      
+    self.GUI:render(x, y)     
+    self:healthChangedDisplay()         
 end
 
 function Player:getXp(xp)
@@ -166,7 +178,6 @@ function Player:useSpell()
             if self.spellPanel[i] <= 0 then
                 return
             end
-
             self:changeState('ability', {id = self.spellPanel[i]})
         end
     end
@@ -177,6 +188,7 @@ function Player:regenerateEnergy(dt)
 
     if self.regenTimer > self.regenRate then
         self.regenTimer = 0
+        self.currentHealth = math.min(self.maxHealth, self.currentHealth + self.regenHp)
         self.currentEnergy = math.max(0, math.min(self.maxEnergy, self.currentEnergy + self.regenEnergy))
     end
 end
@@ -228,19 +240,23 @@ function Player:calculateStats()
     local strength = 0
     local agility = 0
     local intelligence = 0
+    local damage = 3
 
     for k, v in pairs(self.equipment) do
         if v.weared ~= nil then
             strength = strength + (v.weared.strength and v.weared.strength or 0)
             agility = agility + (v.weared.agility and v.weared.agility or 0)
             intelligence = intelligence + (v.weared.intelligence and v.weared.intelligence or 0)
+            damage = damage + (v.weared.damage and v.weared.damage or 0)
         end
     end
 
     self.totalStrength = strength + self.strength
     self.totalAgility = agility + self.agility
     self.totalIntelligence = intelligence + self.intelligence
-    self.damage = self.totalStrength
+    self.maxHealth = 100 + strength * 6
+    self.attackSpeed = 1 + agility * 0.01
+    self.damage = math.random((self.totalStrength + damage) * 0.8, self.totalStrength + damage)
 end
 
 
@@ -260,6 +276,27 @@ end
 
 
 
-function Player:unequipItem(item)
+function Player:potionsCooldownHandler(dt)
+    self.healPotionTimer = math.min(self.healPotionTimer + dt, HEAL_POTION_COOLDOWN)
+    self.energyPotionTimer = math.min(self.energyPotionTimer + dt, ENERGY_POTION_COOLDOWN)
+    if self.healPotionTimer == HEAL_POTION_COOLDOWN then
+        self.healPotionReady = true
+    else
+        self.healPotionReady = false
+    end
+    if self.energyPotionTimer == ENERGY_POTION_COOLDOWN then
+        self.energyPotionReady = true
+    else
+        self.energyPotionReady = false
+    end
+end
 
+function Player:checkBeltUsage()
+    for i = 1, 5 do
+        if self.belt[i][1] ~= nil then
+            if self.belt[i][1].drinked then
+                self.belt[i][1] = nil
+            end
+        end
+    end
 end

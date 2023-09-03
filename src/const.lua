@@ -20,6 +20,10 @@ LOOT_FIRST_ITEM_X = 57
 LOOT_FIRST_ITEM_Y = 51
 TRADE_FIRST_ITEM_X = 31
 TRADE_FIRST_ITEM_Y = 26
+HEAL_POTION_COOLDOWN = 10
+ENERGY_POTION_COOLDOWN = 10
+
+POTION_TYPES = {'Health', 'Rage', 'Mana', 'Energy'}
 
 MDx = {0,1,1,1,0,-1,-1,-1}
 MDy = {-1,-1,0,1,1,1,0,-1}
@@ -32,6 +36,11 @@ end
 function itemSwapSound()
     gSounds['item_swap']:stop()
     gSounds['item_swap']:play() 
+end
+
+function wrongAction()
+    gSounds['wrong_action']:stop()
+    gSounds['wrong_action']:play() 
 end
 
 function defineItemQuality()

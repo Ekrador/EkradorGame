@@ -98,7 +98,7 @@ function Level:update(dt)
         if entity.currentHealth <= 0 then
             entity.dead = true
             if entity.chanceOnLoot then
-                if math.random(1) == 1 then
+                if math.random(5) == 1 then
                     table.insert(self.lootTable, Loot(entity.mapX, entity.mapY, self.player))
                 end
                 entity.chanceOnLoot = false

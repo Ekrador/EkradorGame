@@ -7,14 +7,13 @@ function Inventory:init(player)
     self.y = math.floor(self.player.y - VIRTUAL_HEIGHT / 2)
     self.grabbedItem = nil
     self.grabbedItemIndex = 0
+    self.potionsList = 'Health Mana Rage Energy'
 end
 
 
 function Inventory:render()
     local x = self.x
     local y = self.y
-
-
 
     local frame = 2
     love.graphics.draw(gTextures['inventory'],x, y)
@@ -33,8 +32,8 @@ function Inventory:render()
     love.graphics.draw(gTextures['plus'], gFrames['plus'][frame],x + 132, y + 144)
     self:renderItems()
     self:tips(self.x, self.y)
-    if self.grabbedItemIndex ~= nil then
-        love.graphics.print(tostring(self.grabbedItemIndex), math.floor(self.x + mx), math.floor(self.y + my))
+    if self.grabbedItem ~= nil then
+        self.grabbedItem:renderGrabbed(self.x + mx, self.y + my)
     end
 end
 
@@ -50,26 +49,50 @@ function Inventory:tips(x, y)
 end
 
 function Inventory:update(dt)
-        for i = 1, STASH_LIMIT do
-            if self.player.stash[i][1] ~= nil then
-                local itemX = self.player.stash[i][1].x
-                local itemY = self.player.stash[i][1].y
-                if (mx > itemX and mx < itemX + 15) and 
-                (my > itemY and my < itemY + 15) and love.mouse.wasPressed(1) then
-                    self.grabbedItem = self.player.stash[i][1]
-                    self.grabbedItemIndex = i
-                    itemSwapSound()  
-                end
-                if mx >= itemX  and mx <= itemX + 16 and
-                my >= itemY  and my <= itemY + 16 and love.mouse.wasPressed(2) then
-                    local item = self.player.stash[i][1]
+    for i = 1, STASH_LIMIT do
+        if self.player.stash[i][1] ~= nil then
+            local itemX = self.player.stash[i][1].x
+            local itemY = self.player.stash[i][1].y
+            if (mx > itemX and mx < itemX + 15) and 
+            (my > itemY and my < itemY + 15) and love.mouse.wasPressed(1) then
+                self.grabbedItem = self.player.stash[i][1]
+                self.grabbedItemIndex = i
+                itemSwapSound()  
+            end
+            if mx >= itemX  and mx <= itemX + 16 and
+            my >= itemY  and my <= itemY + 16 and love.mouse.wasPressed(2) then
+                local item = self.player.stash[i][1]
+                local potion = string.find(self.potionsList, self.player.stash[i][1].type)
+                if potion ~= nil then
+                    for i = 1, 5 do
+                        if self.player.belt[i][1] == nil then
+                            self.player.belt[i][1] = item
+                            self.player.belt[i][1].x = 193 + (i-1) * 20 
+                            self.player.belt[i][1].y = 198
+                            break
+                        end
+                    end
+                else 
                     self:equipItem(item) 
                     itemSwapSound()  
                     self.player:calculateStats()
-                    break   
                 end
+                break   
             end
         end
+    end
+
+    for k, v in pairs(self.player.equipment) do
+        if mx >= v.coords.x  and mx <= v.coords.x + 16 and
+        my >= v.coords.y  and my <= v.coords.y + 16 and love.mouse.wasPressed(2) then
+            local item = self.player.equipment[k].weared
+            if item ~= nil then
+                self:unequipItem(k, item) 
+                self.player:calculateStats()
+                break   
+            end
+        end
+    end    
 
     if love.mouse.wasReleased(1) then
         if self.grabbedItem ~= nil then
@@ -137,12 +160,12 @@ end
 function Inventory:equipItem(item)
     local slot = item.type
     local index 
-        for k,v in pairs(self.player.stash) do
-            if item == v[1] then
-                index = k
-                break
-            end
-        end 
+    for k,v in pairs(self.player.stash) do
+        if item == v[1] then
+            index = k
+            break
+        end
+    end 
     if self.player.equipment[slot].weared ~= nil then  
         local wearedItem = self.player.equipment[slot].weared
         local tempX, tempY = wearedItem.x, wearedItem.y
@@ -163,6 +186,17 @@ function Inventory:equipItem(item)
     itemSwapSound()   
 end
 
+function Inventory:unequipItem(v, item)
+    if self.player.stashCounter >= STASH_LIMIT then
+        gSounds['need_space']:stop()
+        gSounds['need_space']:play()   
+    else 
+        self.player:addToStash(item)
+        itemSwapSound()  
+        self.player.equipment[v].weared = nil
+        self.player.stashCounter = self.player.stashCounter + 1
+    end
+end
 
 function Inventory:renderItems()
     for k,v in pairs(self.player.stash) do

@@ -33,6 +33,8 @@ require 'src/world/Level'
 require 'src/world/Tile'
 require 'src/world/TileMap' 
 require 'src/world/Items'
+require 'src/world/Potions'
+require 'src/world/potions_defs'
 require 'src/world/items_defs'
 require 'src/world/Loot'
 require 'src/world/Looting'
@@ -76,7 +78,11 @@ gTextures = {
     ['loot'] = love.graphics.newImage('graphics/loot.png'),
     ['vendor'] = love.graphics.newImage('graphics/vendor.png'),
     ['trade'] = love.graphics.newImage('graphics/trade.png'),
-    ['gold'] = love.graphics.newImage('graphics/gold.png')
+    ['gold'] = love.graphics.newImage('graphics/gold.png'),
+    ['Health_potion'] = love.graphics.newImage('graphics/Health_potion.png'),
+    ['Mana_potion'] = love.graphics.newImage('graphics/Mana_potion.png'),
+    ['Energy_potion'] = love.graphics.newImage('graphics/Energy_potion.png'),
+    ['Rage_potion'] = love.graphics.newImage('graphics/Rage_potion.png')
 }
 
 gFrames = {
@@ -101,6 +107,9 @@ gFonts = {
 gSounds = {
     ['need_space'] = love.audio.newSource('sounds/need_space.wav', 'static'),
     ['need_gold'] = love.audio.newSource('sounds/need_gold.wav', 'static'),
+    ['wrong_potion'] = love.audio.newSource('sounds/wrong_potion.wav', 'static'),
     ['coin'] = love.audio.newSource('sounds/coin.wav', 'static'),
     ['item_swap'] = love.audio.newSource('sounds/item_swap.wav', 'static'),
+    ['wrong_action'] = love.audio.newSource('sounds/wrong_action.wav', 'static'),
+    ['drink'] = love.audio.newSource('sounds/drink.wav', 'static'),
 }
