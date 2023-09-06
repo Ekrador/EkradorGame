@@ -15,6 +15,7 @@ function Level:init(def)
     self.enemyOnScreen = {}
     self.timer = 0
     self.lootTable = {}
+    self.projectiles = {}
 end
 
 function Level:generateTileMap()
@@ -38,7 +39,7 @@ function Level:generateEntities()
 
     else
  
-        local types = {'skeleton'}
+        local types = {'skeleton-archer'}
         local i = 0
         while self.enemiesAmount > 0 do
             for y = 1, self.mapSize do
@@ -60,18 +61,21 @@ function Level:generateEntities()
                             agroRange = ENTITY_DEFS[type].agroRange,
                             damage = ENTITY_DEFS[type].damage,
                             width = 32,
-                            height = 39
+                            height = 39,
+                            attackSpeed = ENTITY_DEFS[type].attackSpeed
                         })
 
                         self.entities[i].stateMachine = StateMachine {
                             ['walk'] = function() return EntityWalkState(self.entities[i], self) end,
                             ['idle'] = function() return EntityIdleState(self.entities[i], self) end,
                             ['attack'] = function() return EntityAttackState(self.entities[i], self) end,
+                            ['ranged_attack'] = function() return EntityRangedAttackState(self.entities[i], self) end,
                             ['stunned'] = function() return EntityStunnedState(self.entities[i], self) end
                         }
                     
                         self.entities[i]:changeState('idle', self)
                         self.enemiesAmount = self.enemiesAmount - 1
+                        break
                     end                
                 end
             end
@@ -109,6 +113,17 @@ function Level:update(dt)
         end
     end
 
+    for k, v in pairs(self.projectiles) do
+        v:update(dt)
+        if v.mapX == self.player.mapX and v.mapY == self.player.mapY then
+            self.player:takedamage(v.damage)
+            table.remove(self.projectiles, k)
+        elseif (v.mapY < 0 and v.mapY > self.mapSize) or (v.mapX < 0 and v.mapX > self.mapSize) or
+        self.map.tiles[v.mapY][v.mapX]:collidable() then
+            table.remove(self.projectiles, k)
+        end
+    end
+
     for k, v in pairs(self.lootTable) do
         v:update(dt)
         if love.keyboard.wasPressed('f') and v.nearPlayer then
@@ -143,6 +158,13 @@ function Level:render(x,y)
         entity:render()
         end
     end
+
+    for k, v in pairs(self.projectiles) do
+        v:render()
+        love.graphics.print(tostring(v.mapX).. '        '.. tostring(v.mapY).. ' '.. string.format('%.2f',tostring(v.dir)).. ' '
+        .. string.format('%.2f',tostring(math.cos(v.dir)))
+        .. ' '.. string.format('%.2f',tostring(math.sin(v.dir))),gFonts['small'])
+       end
 
     if self.vendor ~= nil then
         self.vendor:render()

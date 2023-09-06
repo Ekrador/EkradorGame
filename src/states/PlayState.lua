@@ -7,6 +7,7 @@ end
 function PlayState:enter(params)
     self.camX = 0
     self.camY = 0
+    self.pause = false
     self.level = Level(LEVEL_DEF['city'])
     self.playerClass = 'warrior' --params.playerClass
     self.player = Player{
@@ -44,11 +45,20 @@ function PlayState:enter(params)
     self.level:generateEntities()
 end
 
-function PlayState:update(dt)    
-    self.player:update(dt)
-    self.level:update(dt)
-    self:updateCamera()
-    to_grid_coordinate(self.player.x + mouseInScreenX - self.player.width/2, self.player.y + mouseInScreenY - self.player.height)
+function PlayState:update(dt)   
+    if not self.pause then 
+        self.player:update(dt)
+        self.level:update(dt)
+        self:updateCamera()
+    end
+    if love.keyboard.wasPressed('space') then
+        if self.pause then
+            self.pause = false
+        else
+            self.pause = true
+        end
+    end
+    mouseTileX, mouseTileY = to_grid_coordinate(self.player.x + mouseInScreenX - self.player.width/2, self.player.y + mouseInScreenY - self.player.height)
 end
 
 function PlayState:updateCamera()
@@ -63,9 +73,9 @@ function PlayState:render()
     --love.graphics.print(tostring(self.player.x - VIRTUAL_WIDTH / 2)..'  '..tostring(self.player.y - VIRTUAL_HEIGHT / 2), gFonts['small'], self.camX, self.camY + 10)
     --love.graphics.print(tostring(self.player.damage), gFonts['medium'], self.camX, self.camY + 10)
     --love.graphics.print(tostring(mx)..'  '..tostring(my), gFonts['medium'], self.camX, self.camY + 40)
-    --love.graphics.print(tostring(mouseInScreenX)..'  '..tostring(mouseInScreenY), gFonts['medium'], self.camX, self.camY +50)
+    love.graphics.print(tostring(math.floor(mouseInScreenX))..'  '..tostring(math.floor(mouseInScreenY)), gFonts['medium'], self.camX, self.camY +50)
      
-    -- love.graphics.print(tostring(mouseTileX)..'  '..tostring(mouseTileY), gFonts['medium'], self.camX, self.camY +40)
+    love.graphics.print(tostring(mouseTileX)..'  '..tostring(mouseTileY), gFonts['medium'], self.camX, self.camY +30)
     -- love.graphics.print(tostring(self.camX)..'  '..tostring(self.camY), gFonts['medium'],self.camX, self.camY + 50)
     --love.graphics.print(tostring(self.player.damage), gFonts['medium'],self.camX, self.camY + 60)
     --for k, v in pairs(self.player.equipment) do

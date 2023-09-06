@@ -9,6 +9,7 @@ function EntityIdleState:init(entity, level)
 end
 
 function EntityIdleState:processAI(dt)
+    self:checkAgro()
     if self.waitDuration == 0 then
         self.waitDuration = math.random(5)
     else

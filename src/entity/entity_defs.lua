@@ -387,6 +387,9 @@ ENTITY_DEFS = {
         health = 200,
         agroRange = 6,
         attackRange = 5,
-        damage = 35
+        damage = 35,
+        projectileType = 'arrow',
+        projectileSpeed = 35,
+        attackSpeed = 0.1,
     }
 }

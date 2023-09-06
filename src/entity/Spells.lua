@@ -60,16 +60,18 @@ function Spells:use(target, enemyOnScreen)
             self.onUse(self.player, target)
             for k, v in pairs(self.target) do
                 for key, enemy in pairs(enemyOnScreen) do
-                    if v.X == enemy.mapX and v.Y == enemy.mapY then
-                        if self.debuff then
-                            enemy:getStatus{
-                                status = self.debuff,
-                                duration = self.duration,
-                                effectPower = self.effectPower + (self.level * self.effectPower + self.scale * self.mainStat) / self.duration
-                            }
-                        end
-                        if self.damage > 0 then
-                            enemy:takedamage(self.damage * self.level + self.scale * self.mainStat)
+                    if not enemy.dead then
+                        if v.X == enemy.mapX and v.Y == enemy.mapY then
+                            if self.debuff then
+                                enemy:getStatus{
+                                    status = self.debuff,
+                                    duration = self.duration,
+                                    effectPower = self.effectPower + (self.level * self.effectPower + self.scale * self.mainStat) / self.duration
+                                }
+                            end
+                            if self.damage > 0 then                               
+                                enemy:takedamage(self.damage * self.level + self.scale * self.mainStat)
+                            end
                         end
                     end
                 end

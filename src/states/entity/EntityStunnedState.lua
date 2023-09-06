@@ -21,5 +21,5 @@ end
 
 function EntityStunnedState:render()
     EntityBaseState.render(self)
-    love.graphics.draw(gTextures['stun'], self.entity.x , self.entity.y - 8)
+    love.graphics.draw(gTextures['stun'], self.entity.x , self.entity.y - 16)
 end

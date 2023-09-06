@@ -3,7 +3,7 @@ Entity = Class{}
 function Entity:init(def)
     self.directions = {'up-right','right','down-right','down','down-left','left','up-left','up'}
     self.direction = 'down'
-
+    self.name = def.name
     self.animations = self:createAnimations(def.animations)
     self.mapX = def.mapX
     self.mapY = def.mapY
@@ -13,7 +13,7 @@ function Entity:init(def)
     self.width = def.width 
     self.height = def.height 
     self.speed = def.speed
-    self.attackSpeed = 1
+    self.attackSpeed = def.attackSpeed and def.attackSpeed or 1
     self.speedUnbaffed = def.speed
     self.level = def.level
     self.maxHealth = def.maxHealth
@@ -99,6 +99,8 @@ function Entity:takedamage(dmg)
     self.healthLogHandler = -dmg
     self.currentHealth = math.max(0, self.currentHealth - dmg)
     self.healthChanged = true
+    gSounds['hit']:stop()
+    gSounds['hit']:play() 
 end
 
 function Entity:heal(amount)

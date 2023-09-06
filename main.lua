@@ -91,11 +91,12 @@ function to_grid_coordinate(x,y)
     local d =  0.5 * 16
     
     inv = invert_matrix(a, b, c, d)
-    
+    local invertX
+    local invertY
     
     --player.height
-       mouseTileX = math.floor(x* inv.a + (y+39)  * inv.b + 1)
-       mouseTileY = math.floor(x * inv.c + (y+39) * inv.d + 1)
+    invertX = math.floor(x* inv.a + (y+39)  * inv.b + 1)
+    invertY = math.floor(x * inv.c + (y+39) * inv.d + 1)
     
-    
+    return invertX, invertY
 end

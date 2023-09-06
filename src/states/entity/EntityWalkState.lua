@@ -27,7 +27,7 @@ end
 
 function EntityWalkState:doStep()
     local direction = 0
-    if self.entity.chasing and self.entity.path  then
+    if self.entity.chasing and #self.entity.path > 0  then
         direction = self.entity.path[1].direction
     else
         direction = math.random(#self.entity.directions)
@@ -49,7 +49,7 @@ function EntityWalkState:doStep()
         Timer.tween(1/self.entity.speed, {
             [self.entity] = { x = newX, y = newY }
         })  
-        :finish(function() Timer.after(0.6,function() 
+        :finish(function() Timer.after(2,function() 
             if not self.entity.chasing then
                 self:chanceToIdle()
             end
@@ -68,17 +68,4 @@ function EntityWalkState:chanceToIdle()
     end
 end
 
-function EntityWalkState:checkAgro()
-    local distToPlayer = self.entity:distToPlayer()
-    if distToPlayer <= self.entity.attackRange  then
-        self.entity.stop = true
-        self.entity:changeState('attack')
-    end
-
-    if distToPlayer <= self.entity.agroRange then
-        self.entity.chasing = true
-    else 
-        self.entity.chasing = false
-    end
-end
 

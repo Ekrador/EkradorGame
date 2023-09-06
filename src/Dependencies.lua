@@ -27,6 +27,7 @@ require 'src/states/entity/EntityAttackState'
 require 'src/states/entity/PlayerAttackState'
 require 'src/states/entity/PlayerAbilityState'
 require 'src/states/entity/EntityStunnedState'
+require 'src/states/entity/EntityRangedAttackState'
 require 'src/world/tile_ids'
 require 'src/world/levels_defs'
 require 'src/world/Level'
@@ -39,6 +40,7 @@ require 'src/world/items_defs'
 require 'src/world/Loot'
 require 'src/world/Looting'
 require 'src/entity/Vendor'
+require 'src/world/Projectile'
 
 require 'ui/Interface'
 require 'ui/Inventory'
@@ -52,6 +54,7 @@ gTextures = {
     ['road'] = love.graphics.newImage('graphics/road.png'),
     ['ground'] = love.graphics.newImage('graphics/ground.png'),
     ['tile_road'] = love.graphics.newImage('graphics/tile_road.png'),
+    ['arrow'] = love.graphics.newImage('graphics/arrow.png'),
     ['player'] = love.graphics.newImage('graphics/player.png'),
     ['skeleton'] = love.graphics.newImage('graphics/skeleton.png'),
     ['wall'] = love.graphics.newImage('graphics/wall.png'),
@@ -112,4 +115,7 @@ gSounds = {
     ['item_swap'] = love.audio.newSource('sounds/item_swap.wav', 'static'),
     ['wrong_action'] = love.audio.newSource('sounds/wrong_action.wav', 'static'),
     ['drink'] = love.audio.newSource('sounds/drink.wav', 'static'),
+    ['hit'] = love.audio.newSource('sounds/hit.wav', 'static'),
+    ['arrow_shot'] = love.audio.newSource('sounds/arrow_shot.wav', 'static'),
+    ['sword_swing'] = love.audio.newSource('sounds/sword_swing.wav', 'static'),   
 }

@@ -1,6 +1,6 @@
-EntityAttackState = Class{__includes = EntityBaseState}
+EntityRangedAttackState = Class{__includes = EntityBaseState}
 
-function EntityAttackState:init(entity, level)
+function EntityRangedAttackState:init(entity, level)
     self.entity = entity
     self.level = level
     local direction = self.entity.direction
@@ -25,8 +25,7 @@ function EntityAttackState:init(entity, level)
     end 
 end
 
-function EntityAttackState:enter(params)
-    self.damage = {}
+function EntityRangedAttackState:enter(params)
     self.entity.currentAnimation.interval = self.entity.currentAnimation.baseInterval
     self.entity:changeAnimation('attack-' .. tostring(self.entity.direction))
     self.entity.currentAnimation.interval = self.entity.currentAnimation.interval / self.entity.attackSpeed
@@ -42,56 +41,29 @@ function EntityAttackState:enter(params)
         x = self.entity.mapX,
         y = self.entity.mapY
     }
-    self:damageToTile(tile, self.entity.attackRange)
-
     -- restart animation
     self.entity.currentAnimation:refresh()
 end
 
-function EntityAttackState:update(dt)  
+function EntityRangedAttackState:update(dt)  
     if self.entity.currentAnimation.timesPlayed > 0 then
         self.entity.currentAnimation.timesPlayed = 0
-        for k, tile in pairs(self.damage) do
-            if tile.x == self.level.player.mapX and tile.y == self.level.player.mapY then
-                self.level.player:takedamage(self.entity.damage)
-            end
-        end
+        table.insert(self.level.projectiles, Projectile {
+            type = ENTITY_DEFS[self.entity.name].projectileType,
+            mapX = self.entity.mapX,
+            mapY = self.entity.mapY,
+            endPointX = self.level.player.x,
+            endPointY = self.level.player.y,
+            damage = ENTITY_DEFS[self.entity.name].damage,
+            speed = ENTITY_DEFS[self.entity.name].projectileSpeed,
+            x = self.entity.x + self.entity.width/2,
+            y = self.entity.y + self.entity.height/2,
+        })
         if self.entity:distToPlayer() <= self.entity.attackRange then
-            self.entity:changeState('attack')
+            self.entity:changeState('ranged_attack')
         else
             self.entity.stop = false
             self.entity:changeState('walk')
         end
     end
-end
-
-
-
-function EntityAttackState:damageToTile(tile, range)
-    if range < 1 then
-        return 
-    else
-        local dx = MDx[hitDirection == 1 and 8 or hitDirection - 1]
-        local dy = MDy[hitDirection == 1 and 8 or hitDirection - 1]
-        local newX = tile.x + dx
-        local newY = tile.y + dy
-        local nextTile = {x = newX, y = newY}
-        self:damageToTile(nextTile, range - 1)
-        table.insert(self.damage, nextTile)
-        dx = MDx[hitDirection]
-        dy = MDy[hitDirection]
-        newX = tile.x + dx
-        newY = tile.y + dy
-        nextTile = {x = newX, y = newY}
-        self:damageToTile(nextTile, range - 1)
-        table.insert(self.damage, nextTile)
-        dx = MDx[hitDirection == 8 and 1 or hitDirection + 1]
-        dy = MDy[hitDirection == 8 and 1 or hitDirection + 1]
-        newX = tile.x + dx
-        newY = tile.y + dy
-        nextTile = {x = newX, y = newY}
-        self:damageToTile(nextTile, range - 1)
-        table.insert(self.damage, nextTile)
-    end
-
 end

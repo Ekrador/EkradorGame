@@ -26,11 +26,15 @@ end
 
 function PlayerAttackState:update(dt)  
     if self.entity.currentAnimation.timesPlayed > 0 then
+        gSounds['sword_swing']:stop()
+        gSounds['sword_swing']:play() 
         self.entity.currentAnimation.timesPlayed = 0
         for k, enemy in pairs(self.level.entities) do
             for j, tile in pairs(self.damage) do
                 if tile.x == enemy.mapX and tile.y == enemy.mapY then
-                    enemy:takedamage(self.entity.damage)
+                    if not enemy.dead then
+                        enemy:takedamage(self.entity.damage)
+                    end
                     goto next
                 end
             end
