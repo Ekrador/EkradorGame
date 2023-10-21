@@ -29,6 +29,8 @@ function PlayState:enter(params)
         agility = ENTITY_DEFS[self.playerClass].agility,
         intelligence = ENTITY_DEFS[self.playerClass].intelligence
     }
+    self.player:initplayerSpells()
+
     self.player.stateMachine = StateMachine {
         ['walk'] = function() return PlayerWalkState(self.player, self.level) end,
         ['idle'] = function() return PlayerIdleState(self.player, self.level) end,
@@ -42,7 +44,7 @@ function PlayState:enter(params)
     self.player.level = self.level
     self.level.player = self.player
     self.player.stateMachine:change('idle')
-    self.level:generateEntities()
+    self.level:generateEntities({'Lich'}, self.level.enemiesAmount, 1, 1, self.level.mapSize,self.level.mapSize)
 end
 
 function PlayState:update(dt)   
@@ -72,9 +74,16 @@ function PlayState:render()
     self.player:render(math.floor(self.camX), math.floor(self.camY))
     --love.graphics.print(tostring(self.player.x - VIRTUAL_WIDTH / 2)..'  '..tostring(self.player.y - VIRTUAL_HEIGHT / 2), gFonts['small'], self.camX, self.camY + 10)
     --love.graphics.print(tostring(self.player.damage), gFonts['medium'], self.camX, self.camY + 10)
-    --love.graphics.print(tostring(mx)..'  '..tostring(my), gFonts['medium'], self.camX, self.camY + 40)
+    love.graphics.print(tostring(mx)..'  '..tostring(my), gFonts['medium'], self.camX, self.camY + 40)
     love.graphics.print(tostring(math.floor(mouseInScreenX))..'  '..tostring(math.floor(mouseInScreenY)), gFonts['medium'], self.camX, self.camY +50)
-     
+    if self.level ~= nil then
+        for k, v in pairs(self.level.entities) do
+            love.graphics.print(tostring(v.mapX).. ' '.. tostring(v.mapY), gFonts['medium'],v.x, v.y - 50)
+            for i, j in pairs(v.spells) do
+                love.graphics.print(tostring(j.ready).. ' ' ..j.cooldownTimer..' '.. tostring(j.ready), gFonts['medium'],v.x, v.y - 40)
+            end
+        end
+    end
     love.graphics.print(tostring(mouseTileX)..'  '..tostring(mouseTileY), gFonts['medium'], self.camX, self.camY +30)
     -- love.graphics.print(tostring(self.camX)..'  '..tostring(self.camY), gFonts['medium'],self.camX, self.camY + 50)
     --love.graphics.print(tostring(self.player.damage), gFonts['medium'],self.camX, self.camY + 60)

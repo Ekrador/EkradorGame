@@ -24,6 +24,7 @@ require 'src/states/entity/EntityWalkState'
 require 'src/states/entity/PlayerIdleState'
 require 'src/states/entity/PlayerWalkState'
 require 'src/states/entity/EntityAttackState'
+require 'src/states/entity/EntityAbilityState'
 require 'src/states/entity/PlayerAttackState'
 require 'src/states/entity/PlayerAbilityState'
 require 'src/states/entity/EntityStunnedState'
@@ -55,6 +56,10 @@ gTextures = {
     ['ground'] = love.graphics.newImage('graphics/ground.png'),
     ['tile_road'] = love.graphics.newImage('graphics/tile_road.png'),
     ['arrow'] = love.graphics.newImage('graphics/arrow.png'),
+    ['fireball'] = love.graphics.newImage('graphics/fireball.png'),
+    ['pyroblast'] = love.graphics.newImage('graphics/pyroblast.png'),
+    ['fireball_particle'] = love.graphics.newImage('graphics/fireball_particle.png'),
+    ['pyroblast_particle'] = love.graphics.newImage('graphics/fireball_particle.png'),
     ['player'] = love.graphics.newImage('graphics/player.png'),
     ['skeleton'] = love.graphics.newImage('graphics/skeleton.png'),
     ['wall'] = love.graphics.newImage('graphics/wall.png'),
@@ -117,5 +122,7 @@ gSounds = {
     ['drink'] = love.audio.newSource('sounds/drink.wav', 'static'),
     ['hit'] = love.audio.newSource('sounds/hit.wav', 'static'),
     ['arrow_shot'] = love.audio.newSource('sounds/arrow_shot.wav', 'static'),
+    ['fireball_shot'] = love.audio.newSource('sounds/fireball_shot.wav', 'static'),
+    ['pyroblast_shot'] = love.audio.newSource('sounds/fireball_shot.wav', 'static'),
     ['sword_swing'] = love.audio.newSource('sounds/sword_swing.wav', 'static'),   
 }

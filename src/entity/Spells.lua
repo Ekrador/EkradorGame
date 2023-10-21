@@ -1,6 +1,6 @@
 Spells = Class{}
 
-function Spells:init(def, player)
+function Spells:init(def, entity, map)
     self.name = def.name
     self.id = def.id
     self.damage = def.damage
@@ -18,30 +18,35 @@ function Spells:init(def, player)
     self.playerCanImprove = def.playerCanImprove
     self.scale = def.scale
     self.require = def.require
-    self.player = player
+    self.entity = entity
     self.cooldown = def.cooldown
     self.targetType = def.target
     self.target = nil
+    self.isProjectile = def.isProjectile
     self.ready = true
     self.cooldownTimer = 0
     self.onUse = def.onUse
     self.mainStat = 1
     self.mainStatString = ''
+    self.map = map
+    self.speed = def.speed
 end
 
 function Spells:update(dt)
-    if self.player.class == 'warrior' then 
-        self.mainStat = self.player.totalStrength
-        self.mainStatString = 'str'
-    elseif self.player.class == 'ranger' then 
-        self.mainStat = self.player.totalAgility
-        self.mainStatString = 'agi'
-    elseif self.player.class == 'mage' then 
-        self.mainStat = self.player.totalIntelligence
-        self.mainStatString = 'int'
+    if instanceOf(self.entity, Player) then
+        if self.entity.class == 'warrior' then 
+            self.mainStat = self.entity.totalStrength
+            self.mainStatString = 'str'
+        elseif self.entity.class == 'ranger' then 
+            self.mainStat = self.entity.totalAgility
+            self.mainStatString = 'agi'
+        elseif self.entity.class == 'mage' then 
+            self.mainStat = self.entity.totalIntelligence
+            self.mainStatString = 'int'
+        end
     end
     if self.ready == false then
-        self.cooldownTimer = self.cooldownTimer + dt*self.player.cooldownReduction
+        self.cooldownTimer = self.cooldownTimer + dt
         if self.cooldownTimer > self.cooldown then
             self.cooldownTimer = 0
             self.ready = true
@@ -54,10 +59,12 @@ function Spells:use(target, enemyOnScreen)
         if self:distToTarget(target) > self.range then
             --error sound
         else
-            self.player:spentEnergy(self.cost)
-            self.player:getEnergy(self.energy)
+            if instanceOf(self.entity, Player) then
+                self.entity:spentEnergy(self.cost)
+                self.entity:getEnergy(self.energy)
+            end
             self:assignTarget(target)
-            self.onUse(self.player, target)
+            self.onUse(self.entity, target, self.map)
             for k, v in pairs(self.target) do
                 for key, enemy in pairs(enemyOnScreen) do
                     if not enemy.dead then
@@ -69,7 +76,7 @@ function Spells:use(target, enemyOnScreen)
                                     effectPower = self.effectPower + (self.level * self.effectPower + self.scale * self.mainStat) / self.duration
                                 }
                             end
-                            if self.damage > 0 then                               
+                            if (self.damage > 0 and self.isProjectile == false) then                               
                                 enemy:takedamage(self.damage * self.level + self.scale * self.mainStat)
                             end
                         end
@@ -77,7 +84,7 @@ function Spells:use(target, enemyOnScreen)
                 end
             end
             if self.buff then
-                self.player:getStatus{
+                self.entity:getStatus{
                     status = self.buff,
                     duration = self.duration,
                     effectPower = self.effectPower + (self.level * self.effectPower + self.scale * self.mainStat) / self.duration
@@ -91,8 +98,8 @@ function Spells:use(target, enemyOnScreen)
 end
 
 function Spells:distToTarget(target)
-    return math.floor(math.sqrt((self.player.mapX - target.mapX)^2 + 
-    (self.player.mapY - target.mapY)^2))
+    return math.floor(math.sqrt((self.entity.mapX - target.mapX)^2 + 
+    (self.entity.mapY - target.mapY)^2))
 end
 
 

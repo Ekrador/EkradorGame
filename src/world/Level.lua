@@ -8,7 +8,6 @@ function Level:init(def)
     self.vendor = nil
     self.difficulty = def.difficulty
     self.enemiesAmount = def.enemiesAmount
-    self.qwer = def.enemiesAmount
     self.objects = {}
     --self:generateObjects()
     self.entities = {}
@@ -16,6 +15,7 @@ function Level:init(def)
     self.timer = 0
     self.lootTable = {}
     self.projectiles = {}
+    self.entitiesCounter = 0
 end
 
 function Level:generateTileMap()
@@ -34,18 +34,15 @@ function Level:generateTileMap()
     self.map.tiles = tiles
 end
 
-function Level:generateEntities()
+function Level:generateEntities(types, amount, startX, startY, endX, endY)
     if self.safeZone then
 
-    else
- 
-        local types = {'skeleton-archer'}
-        local i = 0
-        while self.enemiesAmount > 0 do
-            for y = 1, self.mapSize do
-                for x = 1, self.mapSize do
+    else 
+        while amount > 0 do
+            for y = startY, endY do
+                for x = startX, endX do
                     if not self.map.tiles[y][x]:collidable() and math.random(100) == 5 then
-                        i = i + 1
+                        self.entitiesCounter = self.entitiesCounter + 1
                         local type = types[math.random(#types)]
                         table.insert(self.entities, Entity{
                             animations = ENTITY_DEFS[type].animations,
@@ -62,19 +59,21 @@ function Level:generateEntities()
                             damage = ENTITY_DEFS[type].damage,
                             width = 32,
                             height = 39,
-                            attackSpeed = ENTITY_DEFS[type].attackSpeed
+                            attackSpeed = ENTITY_DEFS[type].attackSpeed,
                         })
-
-                        self.entities[i].stateMachine = StateMachine {
-                            ['walk'] = function() return EntityWalkState(self.entities[i], self) end,
-                            ['idle'] = function() return EntityIdleState(self.entities[i], self) end,
-                            ['attack'] = function() return EntityAttackState(self.entities[i], self) end,
-                            ['ranged_attack'] = function() return EntityRangedAttackState(self.entities[i], self) end,
-                            ['stunned'] = function() return EntityStunnedState(self.entities[i], self) end
+                        self.entities[self.entitiesCounter]:initSpells()
+                        self.entities[self.entitiesCounter].stateMachine = StateMachine {
+                            ['walk'] = function() return EntityWalkState(self.entities[self.entitiesCounter], self) end,
+                            ['idle'] = function() return EntityIdleState(self.entities[self.entitiesCounter], self) end,
+                            ['attack'] = function() return EntityAttackState(self.entities[self.entitiesCounter], self) end,
+                            ['ranged_attack'] = function() return EntityRangedAttackState(self.entities[self.entitiesCounter], self) end,
+                            ['stunned'] = function() return EntityStunnedState(self.entities[self.entitiesCounter], self) end,
+                            ['ability_state'] = function() return EntityAbilityState(self.entities[self.entitiesCounter], self) end
                         }
                     
-                        self.entities[i]:changeState('idle', self)
-                        self.enemiesAmount = self.enemiesAmount - 1
+                        self.entities[self.entitiesCounter]:changeState('idle')
+                        amount = amount - 1
+                        self.entities[self.entitiesCounter].ready = true
                         break
                     end                
                 end
@@ -107,7 +106,7 @@ function Level:update(dt)
                 end
                 entity.chanceOnLoot = false
             end
-        elseif not entity.dead then
+        elseif not entity.dead and entity.ready then
             entity:update(dt)
             entity:processAI(dt)
         end
@@ -154,16 +153,13 @@ end
 function Level:render(x,y)
     self.map:render(x,y)
     for k, entity in pairs(self.entities) do
-        if not entity.dead and entity.mapX == x and entity.mapY == y then
+        if not entity.dead and entity.mapX == x and entity.mapY == y and entity.ready then
         entity:render()
         end
     end
 
     for k, v in pairs(self.projectiles) do
         v:render()
-        love.graphics.print(tostring(v.mapX).. '        '.. tostring(v.mapY).. ' '.. string.format('%.2f',tostring(v.dir)).. ' '
-        .. string.format('%.2f',tostring(math.cos(v.dir)))
-        .. ' '.. string.format('%.2f',tostring(math.sin(v.dir))),gFonts['small'])
        end
 
     if self.vendor ~= nil then
@@ -183,7 +179,7 @@ function Level:enemiesOnScreen(dt)
             self.enemyOnScreen = {}
             for k, v in pairs(self.entities) do
                 if (v.x > screenX and v.x < screenX + VIRTUAL_WIDTH) 
-                and (v.y > screenY and v.y < screenY + VIRTUAL_HEIGHT) then
+                and (v.y > screenY and v.y < screenY + VIRTUAL_HEIGHT)  and v.ready then
                     table.insert(self.enemyOnScreen, v)
                 end
             end

@@ -73,4 +73,8 @@ function PlayerAbilityState:castSpell()
 end
 
 function PlayerAbilityState:render()
+    local anim = self.entity.currentAnimation
+    love.graphics.draw(gTextures[anim.texture], gFrames[anim.texture][anim:getCurrentFrame()],
+        math.floor(self.entity.x), math.floor(self.entity.y))
+    
 end

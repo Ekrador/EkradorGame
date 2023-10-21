@@ -56,12 +56,7 @@ function EntityAttackState:update(dt)
                 self.level.player:takedamage(self.entity.damage)
             end
         end
-        if self.entity:distToPlayer() <= self.entity.attackRange then
-            self.entity:changeState('attack')
-        else
-            self.entity.stop = false
-            self.entity:changeState('walk')
-        end
+        self:checkAgro()
     end
 end
 

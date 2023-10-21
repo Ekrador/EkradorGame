@@ -18,13 +18,23 @@ end
 
 function EntityBaseState:checkAgro()
     local distToPlayer = self.entity:distToPlayer()
-    if distToPlayer <= self.entity.attackRange  then
+    
+    if distToPlayer <= self.entity.attackRange and self.entity.chasing then
         self.entity.stop = true
-        if self.entity.attackRange > 1 then
+        if math.random(10) > 3 then
+            for k, v in pairs(self.entity.spells) do
+                if v.ready and math.random(10) > 3 then
+                    self.entity:changeState('ability_state', {spell = v})
+                end
+            end
+        elseif self.entity.attackRange > 1 then
             self.entity:changeState('ranged_attack')
         else
             self.entity:changeState('attack')
         end
+    else
+        self.entity.stop = false
+        self.entity:changeState('walk')
     end
 
     if distToPlayer <= self.entity.agroRange then

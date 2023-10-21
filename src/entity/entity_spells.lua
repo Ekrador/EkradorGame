@@ -21,6 +21,7 @@ ENTITY_SPELLS = {
                 effectPower = 0,
                 cooldown = 10,
                 target = 'enemy',
+                isProjectile = false,
                 onUse = function(player, target)
                     local path = player:pathfind{
                         startX = player.mapX,
@@ -42,7 +43,47 @@ ENTITY_SPELLS = {
             
         }
     },
-    ['skeleton'] = {
+    ['Lich'] = {
+        ['pyroblast'] ={
+            name = 'pyroblast',
+            damage = 200,
+            range = 8,
+            level = 1,
+            scale = 1,
+            mainStat = 1,
+            cooldown = 15,
+            aoe = 0,
+            duration = 5,
+            target = 'enemy',
+            debuff = 'ignite',
+            buff = nil,
+            effectPower = 100,
+            isProjectile = true,
+            speed = 35,
+            onUse = function(player, target)
+            end
+        },
+        ['riseSkeletons']={
+            name = 'riseSkeletons',
+            damage = 0,
+            range = 8,
+            level = 1,
+            scale = 1,
+            mainStat = 1,
+            cooldown = 10,
+            aoe = 0,
+            target = 'self',
+            isProjectile = false,
+            speed = 1,
+            onUse = function(entity, target, map)
+                local types = {'skeleton', 'skeleton-archer'}
+                local startX = entity.mapX - 4 >= 1 and entity.mapX - 4 or 1
+                local endX = entity.mapX + 4 >= map.mapSize and map.mapSize or entity.mapX + 4
+                local startY = entity.mapY - 4 >= 1 and entity.mapY - 4 or 1
+                local endY = entity.mapY + 4 >= map.mapSize and map.mapSize or entity.mapY + 4
+                map:generateEntities(types, 1, startX, startY, endX,  endY)
+            end
+        }
 
     }
 }

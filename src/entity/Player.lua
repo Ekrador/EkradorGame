@@ -23,9 +23,10 @@ function Player:init(def)
     self.totalIntelligence = def.intelligence
     self.damage = self.totalStrength
     self.cooldownReduction = 1
-    self.level = 1
+    self.level = def.level
+    self.playerlevel = 1
     self.xp = 0
-    self.xpToLevel = self.level * 100
+    self.xpToLevel = self.playerlevel * 100
     self.bonusPoints = 5
     self.talentPoints = 1
     self.healPotionTimer = 0
@@ -40,10 +41,6 @@ function Player:init(def)
         self.energyBar = 'Energy'
     elseif self.class == 'mage' then
         self.energyBar = 'Mana'
-    end
-    for k, v in pairs(ENTITY_SPELLS['player'][self.class]) do
-        spell = Spells(v, self)
-        table.insert(self.spells, spell)
     end
     self.GUI = Interface{
         class = self.class,
@@ -167,7 +164,7 @@ function Player:getXp(xp)
         self.bonusPoints = self.bonusPoints + BONUS_POINTS_LVLUP
         self.talentPoints = self.talentPoints + TALENT_POINTS_LVLUP
         self.xp = self.xp - self.xpToLevel
-        self.xpToLevel = self.level * 100
+        self.xpToLevel = self.playerlevel * 100
         self:getXp(0)
     end
 end
@@ -298,5 +295,12 @@ function Player:checkBeltUsage()
                 self.belt[i][1] = nil
             end
         end
+    end
+end
+
+function Player:initplayerSpells()
+    for k, v in pairs(ENTITY_SPELLS['player'][self.class]) do
+        spell = Spells(v, self, self.level)
+        table.insert(self.spells, spell)
     end
 end

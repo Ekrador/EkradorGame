@@ -27,6 +27,8 @@ function Entity:init(def)
     self.damage = def.damage
     self.path = {}
     self.timer = 0
+    self.spells = {}
+    self.ready = false
 
     self.x = (self.mapX-1)*0.5*GROUND_WIDTH + (self.mapY-1)*-1*GROUND_WIDTH*0.5
 
@@ -80,6 +82,9 @@ end
 
 function Entity:update(dt)
     self.stateMachine:update(dt)
+    for k, v in pairs(self.spells) do
+        v:update(dt)
+    end
     self.healthBar.x = self.x
     self.healthBar.y = self.y - 5
     self.healthBar.value = self.currentHealth
@@ -112,6 +117,7 @@ end
 function Entity:render()
     self.stateMachine:render()
     self:healthChangedDisplay()
+    self:nameDisplay()
     if self.renderHealthBars then
         self.healthBar:render()
     end
@@ -208,6 +214,7 @@ function Entity:pathfind(def)
                     direction = path[PathY[i]][PathX[i]]
                 }
             end
+            table.remove(movePath, -1)
             return movePath
         end
 
@@ -278,6 +285,27 @@ function Entity:healthChangedDisplay()
         self.renderHealthBars = true
     else
         self.renderHealthBars = false
+    end
+end
+
+function Entity:nameDisplay()
+    local mousex = self.level.player.x + mouseInScreenX 
+    local mousey = self.level.player.y + mouseInScreenY - self.level.player.height
+    local textWidth  = gFonts['small']:getWidth(self.name)
+    if((mousex > self.x and mousex < self.x + self.width) and (mousey < self.y and mousey > self.y - self.height)) then
+        love.graphics.setColor(0,0,0,1)
+        love.graphics.print(self.name, gFonts['small'], math.floor(self.x + self.width/2 - textWidth/2 ), math.floor(self.y - 14))
+        love.graphics.setColor(1,1,1,1)
+        love.graphics.print(self.name, gFonts['small'], math.floor(self.x + self.width/2 - textWidth/2), math.floor(self.y - 15))
+    end
+end
+
+function Entity:initSpells()
+    if ENTITY_SPELLS[self.name] ~= nil then
+        for k, v in pairs(ENTITY_SPELLS[self.name]) do
+            spell = Spells(v, self, self.level)
+            table.insert(self.spells, spell)
+        end
     end
 end
 

@@ -11,8 +11,16 @@ function Projectile:init(def)
     self.x = def.x 
     self.y = def.y 
     self.dir = math.atan2(self.endPointY - self.y,self.endPointX - self.x)
+    self.particle = def.particle
     gSounds[tostring(self.type)..'_shot']:stop()
     gSounds[tostring(self.type)..'_shot']:play() 
+
+    if(gTextures[tostring(self.type)..'_particle'] ~= nil) then
+        self.particleSystem = love.graphics.newParticleSystem(gTextures[tostring(self.type)..'_particle'], 6)
+        self.particleSystem:setParticleLifetime(0.5, 1)
+        self.particleSystem:setSpeed(self.speed)
+        self.particleSystem:setEmissionRate(6)
+    end
 end
 
 function Projectile:update(dt)
@@ -20,6 +28,14 @@ function Projectile:update(dt)
     local ay = self.speed * dt * math.sin(self.dir)
     self.x = self.x + ax
     self.y = self.y + ay
+    if(self.particleSystem ~= nil) then
+        local angle = math.atan2(-ay, -ax)
+        self.particleSystem:setPosition(self.x + gTextures[self.type]:getWidth()*ax/2, self.y+ gTextures[self.type]:getHeight()*ay/2)
+        self.particleSystem:setDirection(angle)
+        self.particleSystem:setRotation(self.dir)
+        self.particleSystem:setSpread(0.8)
+        self.particleSystem:update(dt)
+    end
     if math.abs(math.sin(self.dir)) == 1 then
     self.mapX, self.mapY = self:to_grid_coordinate(self.x - 16, self.y + math.sin(self.dir)*16) 
     elseif math.cos(self.dir) < 0 then 
@@ -31,6 +47,9 @@ end
 
 function Projectile:render()
     love.graphics.draw(gTextures[self.type],math.floor(self.x), math.floor(self.y), self.dir)
+    if(self.particleSystem ~= nil) then
+        love.graphics.draw( self.particleSystem, x, y)    
+    end
 end
 
 function Projectile:to_grid_coordinate(x,y) 

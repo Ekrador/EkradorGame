@@ -1,6 +1,6 @@
-EntityRangedAttackState = Class{__includes = EntityBaseState}
+EntityAbilityState = Class{__includes = EntityBaseState}
 
-function EntityRangedAttackState:init(entity, level)
+function EntityAbilityState:init(entity, level)
     self.entity = entity
     self.level = level
     local direction = self.entity.direction
@@ -25,7 +25,8 @@ function EntityRangedAttackState:init(entity, level)
     end 
 end
 
-function EntityRangedAttackState:enter(params)
+function EntityAbilityState:enter(params)
+    self.spell = params.spell
     self.entity.currentAnimation.interval = self.entity.currentAnimation.baseInterval
     self.entity:changeAnimation('attack-' .. tostring(self.entity.direction))
     self.entity.currentAnimation.interval = self.entity.currentAnimation.interval / self.entity.attackSpeed
@@ -41,20 +42,32 @@ function EntityRangedAttackState:enter(params)
     self.entity.currentAnimation:refresh()
 end
 
-function EntityRangedAttackState:update(dt)  
+function EntityAbilityState:update(dt)
     if self.entity.currentAnimation.timesPlayed > 0 then
         self.entity.currentAnimation.timesPlayed = 0
-        table.insert(self.level.projectiles, Projectile {
-            type = ENTITY_DEFS[self.entity.name].projectileType,
-            mapX = self.entity.mapX,
-            mapY = self.entity.mapY,
-            endPointX = self.level.player.x,
-            endPointY = self.level.player.y,
-            damage = ENTITY_DEFS[self.entity.name].damage,
-            speed = ENTITY_DEFS[self.entity.name].projectileSpeed,
-            x = self.entity.x + self.entity.width/2,
-            y = self.entity.y + self.entity.height/2,
-        })
-        self:checkAgro()
+        self:Cast()
     end
+end
+
+function EntityAbilityState:Cast()
+    local enemies = {}
+    table.insert(enemies, self.level.player)
+    local distToPlayer = self.entity:distToPlayer()
+    if distToPlayer <= self.entity.attackRange  then
+        if self.spell.isProjectile and self.spell.ready then
+            table.insert(self.level.projectiles, Projectile {
+                type = self.spell.name,
+                mapX = self.entity.mapX,
+                mapY = self.entity.mapY,
+                endPointX = self.level.player.x,
+                endPointY = self.level.player.y,
+                damage = self.spell.damage,
+                speed = self.spell.speed,
+                x = self.entity.x + self.entity.width/2,
+                y = self.entity.y + self.entity.height/2,
+            })
+        end
+        self.spell:use(self.level.player, enemies)
+    end
+    self:checkAgro()
 end

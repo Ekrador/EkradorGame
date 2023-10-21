@@ -20,6 +20,9 @@ function EntityStunnedState:update(dt)
 end
 
 function EntityStunnedState:render()
-    EntityBaseState.render(self)
+    local anim = self.entity.currentAnimation
+    love.graphics.draw(gTextures[anim.texture], gFrames[anim.texture][anim:getCurrentFrame()],
+    math.floor(self.entity.x), math.floor(self.entity.y))
+        
     love.graphics.draw(gTextures['stun'], self.entity.x , self.entity.y - 16)
 end

@@ -5,10 +5,6 @@ function EntityWalkState:init(entity, level)
     self.level = level
 end
 
-function EntityWalkState:enter(params)
-  
-end
-
 function EntityWalkState:update(dt)
     self.entity.path = self.entity:pathfind{
         startX = self.entity.mapX,
@@ -20,7 +16,7 @@ end
 
 function EntityWalkState:processAI(dt)  
     if not self.entity.getCommand  then
-        self:checkAgro()
+        --self:checkAgro()
         self:doStep()      
     end
 end
