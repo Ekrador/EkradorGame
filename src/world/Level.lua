@@ -34,7 +34,7 @@ function Level:generateTileMap()
     self.map.tiles = tiles
 end
 
-function Level:generateEntities(types, amount, startX, startY, endX, endY)
+function Level:generateEntities(types, amount, startX, startY, endX, endY, hasLoot)
     if self.safeZone then
 
     else 
@@ -60,6 +60,7 @@ function Level:generateEntities(types, amount, startX, startY, endX, endY)
                             width = 32,
                             height = 39,
                             attackSpeed = ENTITY_DEFS[type].attackSpeed,
+                            chanceOnLoot = hasLoot,
                         })
                         self.entities[self.entitiesCounter]:initSpells()
                         self.entities[self.entitiesCounter].stateMachine = StateMachine {
@@ -71,7 +72,7 @@ function Level:generateEntities(types, amount, startX, startY, endX, endY)
                             ['ability_state'] = function() return EntityAbilityState(self.entities[self.entitiesCounter], self) end
                         }
                     
-                        self.entities[self.entitiesCounter]:changeState('idle')
+                        self.entities[self.entitiesCounter]:changeState('idle', {entity = self.entities[self.entitiesCounter]})
                         amount = amount - 1
                         self.entities[self.entitiesCounter].ready = true
                         break

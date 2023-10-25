@@ -3,6 +3,7 @@ EntityWalkState = Class{__includes = EntityBaseState}
 function EntityWalkState:init(entity, level)
     self.entity = entity
     self.level = level
+    self.entity:changeAnimation('walk-' .. tostring(self.entity.direction))
 end
 
 function EntityWalkState:update(dt)
@@ -14,15 +15,19 @@ function EntityWalkState:update(dt)
     }
 end
 
+function EntityWalkState:enter(params)
+    self.entity = params.entity
+end
+
 function EntityWalkState:processAI(dt)  
     if not self.entity.getCommand  then
-        --self:checkAgro()
+        self:checkAgro()
         self:doStep()      
     end
 end
 
 function EntityWalkState:doStep()
-    local direction = 0
+    local direction = 1
     if self.entity.chasing and #self.entity.path > 0  then
         direction = self.entity.path[1].direction
     else
@@ -60,7 +65,7 @@ end
 function EntityWalkState:chanceToIdle()
     self.entity.getCommand = false
     if math.random(8) == 1 then
-        self.entity:changeState('idle')
+        self.entity:changeState('idle', {entity = self.entity})
     end
 end
 

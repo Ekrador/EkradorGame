@@ -8,6 +8,10 @@ function EntityIdleState:init(entity, level)
     self.waitTimer = 0
 end
 
+function EntityIdleState:enter(params)
+    self.entity = params.entity
+end
+
 function EntityIdleState:processAI(dt)
     --self:checkAgro()
     if self.waitDuration == 0 then
@@ -16,7 +20,7 @@ function EntityIdleState:processAI(dt)
         self.waitTimer = self.waitTimer + dt
 
         if self.waitTimer > self.waitDuration then
-            self.entity:changeState('walk')
+            self.entity:changeState('walk', {entity = self.entity})
         end
     end
 end

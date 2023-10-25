@@ -44,7 +44,7 @@ function PlayState:enter(params)
     self.player.level = self.level
     self.level.player = self.player
     self.player.stateMachine:change('idle')
-    self.level:generateEntities({'Lich'}, self.level.enemiesAmount, 1, 1, self.level.mapSize,self.level.mapSize)
+    self.level:generateEntities({'Lich'}, self.level.enemiesAmount, 1, 1, self.level.mapSize,self.level.mapSize, true)
 end
 
 function PlayState:update(dt)   

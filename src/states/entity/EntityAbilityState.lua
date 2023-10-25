@@ -7,29 +7,29 @@ function EntityAbilityState:init(entity, level)
     self.hitDirection = 1
 
     if direction == 'up' then
-        hitDirection = 8
+        self.hitDirection = 8
     elseif direction == 'up-right' then
-        hitDirection = 1
+        self.hitDirection = 1
     elseif direction == 'right' then
-        hitDirection = 2
+        self.hitDirection = 2
     elseif direction == 'down-right' then
-        hitDirection = 3
+        self.hitDirection = 3
     elseif direction == 'down' then
-        hitDirection = 4
+        self.hitDirection = 4
     elseif direction == 'down-left' then
-        hitDirection = 5
+        self.hitDirection = 5
     elseif direction == 'left' then
-        hitDirection = 6
+        self.hitDirection = 6
     elseif direction == 'up-left' then
-        hitDirection = 7
+        self.hitDirection = 7
     end 
+    self.entity:changeAnimation('attack-' .. tostring(self.entity.direction))
 end
 
 function EntityAbilityState:enter(params)
     self.spell = params.spell
-    self.entity.currentAnimation.interval = self.entity.currentAnimation.baseInterval
+    self.entity = params.entity
     self.entity:changeAnimation('attack-' .. tostring(self.entity.direction))
-    self.entity.currentAnimation.interval = self.entity.currentAnimation.interval / self.entity.attackSpeed
     self.entity.getCommand = false
     local dirx = self.level.player.mapX - self.entity.mapX
     local diry = self.level.player.mapY - self.entity.mapY
@@ -53,7 +53,7 @@ function EntityAbilityState:Cast()
     local enemies = {}
     table.insert(enemies, self.level.player)
     local distToPlayer = self.entity:distToPlayer()
-    if distToPlayer <= self.entity.attackRange  then
+    if distToPlayer <= self.spell.range  then
         if self.spell.isProjectile and self.spell.ready then
             table.insert(self.level.projectiles, Projectile {
                 type = self.spell.name,

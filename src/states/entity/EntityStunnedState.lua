@@ -6,6 +6,7 @@ function EntityStunnedState:init(entity, level)
 end
 
 function EntityStunnedState:enter(params)
+    self.entity = params.entity
     self.stunDuration = params.duration
     self.timer = 0
     self.entity.getCommand = false
@@ -15,7 +16,7 @@ end
 function EntityStunnedState:update(dt)
     self.timer = self.timer + dt
     if self.timer > self.stunDuration then
-        self.entity:changeState('walk')
+        self.entity:changeState('walk', {entity = self.entity})
     end
 end
 
