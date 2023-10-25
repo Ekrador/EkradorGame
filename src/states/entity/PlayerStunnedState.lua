@@ -1,4 +1,4 @@
 PlayerStunnedState = Class{__includes = EntityStunnedState}
 function EntityStunnedState:init(entity, level)
-    EntityWalkState.init(self, entity)
+    EntityWalkState.init(self, entity, level)
 end

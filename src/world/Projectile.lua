@@ -68,3 +68,8 @@ function Projectile:to_grid_coordinate(x,y)
     
     return invertX, invertY
 end
+
+function Projectile:hit()
+    gSounds[tostring(self.type)..'_hit']:stop()
+    gSounds[tostring(self.type)..'_hit']:play() 
+end

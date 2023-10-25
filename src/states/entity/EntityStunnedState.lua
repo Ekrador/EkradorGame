@@ -9,8 +9,6 @@ function EntityStunnedState:enter(params)
     self.entity = params.entity
     self.stunDuration = params.duration
     self.timer = 0
-    self.entity.getCommand = false
-    self.entity.stop = false
 end
 
 function EntityStunnedState:update(dt)

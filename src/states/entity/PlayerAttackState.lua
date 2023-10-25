@@ -1,7 +1,7 @@
 PlayerAttackState = Class{__includes = EntityAttackState}
 
 function PlayerAttackState:init(entity, level)
-    EntityAttackState.init(self, entity)
+    EntityAttackState.init(self, entity, level)
     self.level = level
 end
 

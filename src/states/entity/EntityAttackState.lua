@@ -3,8 +3,9 @@ EntityAttackState = Class{__includes = EntityBaseState}
 function EntityAttackState:init(entity, level)
     self.entity = entity
     self.level = level
-    local direction = self.entity.direction
+    self.direction = self.entity.direction
     self.hitDirection = 1
+<<<<<<< Updated upstream
 
     if direction == 'up' then
         self.hitDirection = 8
@@ -24,13 +25,40 @@ function EntityAttackState:init(entity, level)
         self.hitDirection = 7
     end 
     self.entity:changeAnimation('attack-' .. tostring(self.entity.direction))
+=======
+    if self.direction == 'up' then
+        self.hitDirection = 8
+    elseif self.direction == 'up-right' then
+        self.hitDirection = 1
+    elseif self.direction == 'right' then
+        self.hitDirection = 2
+    elseif self.direction == 'down-right' then
+        self.hitDirection = 3
+    elseif self.direction == 'down' then
+        self.hitDirection = 4
+    elseif self.direction == 'down-left' then
+        self.hitDirection = 5
+    elseif self.direction == 'left' then
+        self.hitDirection = 6
+    elseif self.direction == 'up-left' then
+        self.hitDirection = 7
+    end 
+    self.entity:changeAnimation('attack-' .. tostring(self.entity.direction))
+
+>>>>>>> Stashed changes
 end
 
 function EntityAttackState:enter(params)
     self.damage = {}
     self.entity = params.entity
+<<<<<<< Updated upstream
     self.entity:changeAnimation('attack-' .. tostring(self.entity.direction))
     self.entity.getCommand = false
+=======
+    self.entity.currentState = params.state
+    self.entity:changeAnimation('attack-' .. tostring(self.entity.direction))
+    self.entity.currentAnimation.interval = self.entity.currentAnimation.interval / self.entity.attackSpeed
+>>>>>>> Stashed changes
     local dirx = self.level.player.mapX - self.entity.mapX
     local diry = self.level.player.mapY - self.entity.mapY
     for i = 1, 8 do
@@ -57,6 +85,7 @@ function EntityAttackState:update(dt)
             end
         end
         self:checkAgro()
+       --self.entity:changeState('attack', {state = 'attack', entity = self.entity})
     end
 end
 
@@ -66,22 +95,22 @@ function EntityAttackState:damageToTile(tile, range)
     if range < 1 then
         return 
     else
-        local dx = MDx[hitDirection == 1 and 8 or hitDirection - 1]
-        local dy = MDy[hitDirection == 1 and 8 or hitDirection - 1]
+        local dx = MDx[self.hitDirection == 1 and 8 or self.hitDirection - 1]
+        local dy = MDy[self.hitDirection == 1 and 8 or self.hitDirection - 1]
         local newX = tile.x + dx
         local newY = tile.y + dy
         local nextTile = {x = newX, y = newY}
         self:damageToTile(nextTile, range - 1)
         table.insert(self.damage, nextTile)
-        dx = MDx[hitDirection]
-        dy = MDy[hitDirection]
+        dx = MDx[self.hitDirection]
+        dy = MDy[self.hitDirection]
         newX = tile.x + dx
         newY = tile.y + dy
         nextTile = {x = newX, y = newY}
         self:damageToTile(nextTile, range - 1)
         table.insert(self.damage, nextTile)
-        dx = MDx[hitDirection == 8 and 1 or hitDirection + 1]
-        dy = MDy[hitDirection == 8 and 1 or hitDirection + 1]
+        dx = MDx[self.hitDirection == 8 and 1 or self.hitDirection + 1]
+        dy = MDy[self.hitDirection == 8 and 1 or self.hitDirection + 1]
         newX = tile.x + dx
         newY = tile.y + dy
         nextTile = {x = newX, y = newY}

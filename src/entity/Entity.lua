@@ -23,19 +23,20 @@ function Entity:init(def)
     self.healthLogHandler = 0
     self.healthChanged = false
     self.dead = false
-    self.chanceOnLoot = true
+    self.chanceOnLoot = def.chanceOnLoot
     self.damage = def.damage
     self.path = {}
     self.timer = 0
     self.spells = {}
     self.ready = false
+    self.currentState = 'default'
 
-    self.x = (self.mapX-1)*0.5*GROUND_WIDTH + (self.mapY-1)*-1*GROUND_WIDTH*0.5
+    self.x = self:convertToX(self.mapX, self.mapY)
 
-    self.y = (self.mapX-1)*0.5*GROUND_HEIGHT+ (self.mapY-1)*0.5*GROUND_HEIGHT - self.height + GROUND_HEIGHT
+    self.y = self:convertToY(self.mapX, self.mapY)
 
     self.getCommand = false
-    self.stop = false
+    self.walk = false
     self.healthBar = ProgressBar{
         x = self.x,
         y = self.y - 5,
@@ -152,7 +153,6 @@ function Entity:pathfind(def)
 
     local lastStep = 0
     local curStep = 0
-    local maxSteps = 100
     local tracking = true
     while tracking do
         for i = 1, 8 do
@@ -160,7 +160,7 @@ function Entity:pathfind(def)
             local dy = MDy[i]
             local newX = xCur + dx
             local newY = yCur + dy
-            if not self.level.map.tiles[newY][newX]:collidable() and path[newY][newX] == 0 then
+            if not self.level.map.tiles[newY][newX]:collidable() and path[newY][newX] == 0  and not self.level.map.tiles[newY][newX].occupied then
                 lastStep = lastStep + 1
                 MShx[lastStep] = newX
                 MShy[lastStep] = newY
@@ -171,10 +171,6 @@ function Entity:pathfind(def)
                     tracking = false
                     break
                 end
-                if lastStep > maxSteps then
-                    return nil
-                end
-
             end
         end
 
@@ -309,3 +305,11 @@ function Entity:initSpells()
     end
 end
 
+
+function Entity:convertToX(mapX, mapY)
+    return (mapX-1)*0.5*GROUND_WIDTH + (mapY-1)*-1*GROUND_WIDTH*0.5
+end
+
+function Entity:convertToY(mapX, mapY)
+    return (mapX-1)*0.5*GROUND_HEIGHT+ (mapY-1)*0.5*GROUND_HEIGHT - self.height + GROUND_HEIGHT
+end

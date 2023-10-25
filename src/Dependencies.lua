@@ -122,7 +122,10 @@ gSounds = {
     ['drink'] = love.audio.newSource('sounds/drink.wav', 'static'),
     ['hit'] = love.audio.newSource('sounds/hit.wav', 'static'),
     ['arrow_shot'] = love.audio.newSource('sounds/arrow_shot.wav', 'static'),
+    ['arrow_hit'] = love.audio.newSource('sounds/arrow_hit.wav', 'static'),
     ['fireball_shot'] = love.audio.newSource('sounds/fireball_shot.wav', 'static'),
     ['pyroblast_shot'] = love.audio.newSource('sounds/fireball_shot.wav', 'static'),
+    ['fireball_hit'] = love.audio.newSource('sounds/fireball_hit.wav', 'static'),
+    ['pyroblast_hit'] = love.audio.newSource('sounds/fireball_hit.wav', 'static'),
     ['sword_swing'] = love.audio.newSource('sounds/sword_swing.wav', 'static'),   
 }

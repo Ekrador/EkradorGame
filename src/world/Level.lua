@@ -47,7 +47,7 @@ function Level:generateEntities(types, amount, startX, startY, endX, endY, hasLo
                         table.insert(self.entities, Entity{
                             animations = ENTITY_DEFS[type].animations,
                             name = ENTITY_DEFS[type].name,
-                            speed = ENTITY_DEFS[type].speed or 1,
+                            speed = ENTITY_DEFS[type].speed or 15,
                             mapX = x,
                             mapY = y,
                             width = 32,
@@ -60,7 +60,11 @@ function Level:generateEntities(types, amount, startX, startY, endX, endY, hasLo
                             width = 32,
                             height = 39,
                             attackSpeed = ENTITY_DEFS[type].attackSpeed,
+<<<<<<< Updated upstream
                             chanceOnLoot = hasLoot,
+=======
+                            chanceOnLoot = hasLoot
+>>>>>>> Stashed changes
                         })
                         self.entities[self.entitiesCounter]:initSpells()
                         self.entities[self.entitiesCounter].stateMachine = StateMachine {
@@ -72,7 +76,11 @@ function Level:generateEntities(types, amount, startX, startY, endX, endY, hasLo
                             ['ability_state'] = function() return EntityAbilityState(self.entities[self.entitiesCounter], self) end
                         }
                     
+<<<<<<< Updated upstream
                         self.entities[self.entitiesCounter]:changeState('idle', {entity = self.entities[self.entitiesCounter]})
+=======
+                        self.entities[self.entitiesCounter]:changeState('idle', {state = 'idle', entity = self.entities[self.entitiesCounter]})
+>>>>>>> Stashed changes
                         amount = amount - 1
                         self.entities[self.entitiesCounter].ready = true
                         break
@@ -85,7 +93,6 @@ end
 
 
 function Level:update(dt)
-    self.map:update(dt)
     self:enemiesOnScreen(dt)
     if self.vendor ~= nil then
         self.vendor:update(dt)
@@ -117,9 +124,11 @@ function Level:update(dt)
         v:update(dt)
         if v.mapX == self.player.mapX and v.mapY == self.player.mapY then
             self.player:takedamage(v.damage)
+            v:hit()
             table.remove(self.projectiles, k)
         elseif (v.mapY < 0 and v.mapY > self.mapSize) or (v.mapX < 0 and v.mapX > self.mapSize) or
         self.map.tiles[v.mapY][v.mapX]:collidable() then
+            v:hit()
             table.remove(self.projectiles, k)
         end
     end
@@ -154,8 +163,8 @@ end
 function Level:render(x,y)
     self.map:render(x,y)
     for k, entity in pairs(self.entities) do
-        if not entity.dead and entity.mapX == x and entity.mapY == y and entity.ready then
-        entity:render()
+        if not entity.dead and entity.ready then
+            entity:render()
         end
     end
 

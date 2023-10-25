@@ -1,5 +1,5 @@
 PlayerAbilityState = Class{__includes = PlayerIdleState}
-function PlayerAbilityState:init(entity, level)
+function PlayerAbilityState:init(self, entity, level)
     self.level = level
     self.entity = entity
     self.mouseX = mouseInScreenX + self.entity.x

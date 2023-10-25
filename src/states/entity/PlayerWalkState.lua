@@ -2,13 +2,16 @@
 PlayerWalkState = Class{__includes = EntityWalkState}
 
 function PlayerWalkState:init(entity, level)
-    EntityWalkState.init(self, entity)
+    EntityWalkState.init(self, entity, level)
     self.level = level
     self.mx = mouseInScreenX
     self.my = mouseInScreenY
     self.direction = 1
 end
   
+function PlayerWalkState:enter()
+end
+
 function PlayerWalkState:update(dt)
     if love.keyboard.isDown('lshift') then
         if (self.mx > self.entity.width) and (self.my < self.entity.height / 2) then

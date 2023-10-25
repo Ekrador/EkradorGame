@@ -6,14 +6,8 @@ function Tile:init(def)
     self.id = def.id
     self.width = TILE_IDS[self.id]:getWidth()
     self.height = TILE_IDS[self.id]:getHeight() - 1
-
-
-   
+    self.occupied = false
 end
-
-function Tile:update(dt)
-end
-
 
 function Tile:collidable(target)
     for k, v in pairs(COLLIDABLE_TILES) do

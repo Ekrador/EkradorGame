@@ -2,7 +2,7 @@ LEVEL_DEF = {
     ['city'] = {
         mapSize = 10,
         difficulty = 1,
-        enemiesAmount = 3,
+        enemiesAmount = 5,
         safeZone = false,
         data = {
             4, 4, 4, 4, 4, 4, 4, 4, 4, 4,

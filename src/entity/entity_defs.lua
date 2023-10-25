@@ -261,7 +261,7 @@ ENTITY_DEFS = {
             }
         },
         name = 'skeleton',
-        speed = 1,
+        speed = 20,
         health = 200,
         agroRange = 6,
         attackRange = 1,
@@ -383,7 +383,7 @@ ENTITY_DEFS = {
             }
         },
         name = 'skeleton-archer',
-        speed = 1,
+        speed = 15,
         health = 200,
         agroRange = 6,
         attackRange = 5,
@@ -508,8 +508,8 @@ ENTITY_DEFS = {
             }
         },
         name = 'Lich',
-        speed = 1,
-        health = 2000,
+        speed = 15,
+        health = 200,
         agroRange = 6,
         attackRange = 5,
         damage = 35,

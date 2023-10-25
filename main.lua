@@ -113,3 +113,4 @@ function instanceOf(subject, super)
 		mt = getmetatable(mt)
 	end	
 end
+
