@@ -5,7 +5,6 @@ function TileMap:init(mapSize)
     self.tiles = {}
 end
 
-
 function TileMap:pointToTile(x, y)
 
     return self.tiles[math.floor(y / TILE_SIZE) + 1][math.floor(x / TILE_SIZE) + 1]

@@ -44,11 +44,7 @@ function PlayState:enter(params)
     self.player.level = self.level
     self.level.player = self.player
     self.player.stateMachine:change('idle')
-<<<<<<< Updated upstream
-    self.level:generateEntities({'Lich'}, self.level.enemiesAmount, 1, 1, self.level.mapSize,self.level.mapSize, true)
-=======
     self.level:generateEntities({'skeleton'}, self.level.enemiesAmount, 1, 1, self.level.mapSize,self.level.mapSize, true)
->>>>>>> Stashed changes
 end
 
 function PlayState:update(dt)   
@@ -80,14 +76,6 @@ function PlayState:render()
     --love.graphics.print(tostring(self.player.damage), gFonts['medium'], self.camX, self.camY + 10)
     love.graphics.print(tostring(mx)..'  '..tostring(my), gFonts['medium'], self.camX, self.camY + 40)
     love.graphics.print(tostring(math.floor(mouseInScreenX))..'  '..tostring(math.floor(mouseInScreenY)), gFonts['medium'], self.camX, self.camY +50)
-    if self.level ~= nil then
-        for k, v in pairs(self.level.entities) do
-                --love.graphics.print(v.currentState, gFonts['medium'],v.x, v.y - 50)
-            --for i, j in pairs(v.spells) do
-            --    love.graphics.print(tostring(j.ready).. ' ' ..j.cooldownTimer..' '.. tostring(j.ready), gFonts['medium'],v.x, v.y - 40)
-            --end
-        end
-    end
     love.graphics.print(tostring(mouseTileX)..'  '..tostring(mouseTileY), gFonts['medium'], self.camX, self.camY +30)
     -- love.graphics.print(tostring(self.camX)..'  '..tostring(self.camY), gFonts['medium'],self.camX, self.camY + 50)
     --love.graphics.print(tostring(self.player.damage), gFonts['medium'],self.camX, self.camY + 60)

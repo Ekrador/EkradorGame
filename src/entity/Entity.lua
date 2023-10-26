@@ -96,11 +96,6 @@ function Entity:update(dt)
     end
 end
 
-function Entity:collides(target)
-    return not (self.x + self.width < target.x or self.x > target.x + target.width or
-                self.y + self.height < target.y or self.y > target.y + target.height)
-end
-
 function Entity:takedamage(dmg)
     self.healthLogHandler = -dmg
     self.currentHealth = math.max(0, self.currentHealth - dmg)
@@ -154,13 +149,14 @@ function Entity:pathfind(def)
     local lastStep = 0
     local curStep = 0
     local tracking = true
+    local maxSteps = 30
     while tracking do
         for i = 1, 8 do
             local dx = MDx[i]
             local dy = MDy[i]
             local newX = xCur + dx
             local newY = yCur + dy
-            if not self.level.map.tiles[newY][newX]:collidable() and path[newY][newX] == 0  and not self.level.map.tiles[newY][newX].occupied then
+            if not self.level.map.tiles[newY][newX]:collidable() and path[newY][newX] == 0 and not self:collidesMoving({x = newX, y = newY}) then
                 lastStep = lastStep + 1
                 MShx[lastStep] = newX
                 MShy[lastStep] = newY
@@ -176,6 +172,10 @@ function Entity:pathfind(def)
 
         if not tracking then
             break
+        end
+
+        if curStep > maxSteps then
+            return nil
         end
 
         if curStep < lastStep then
@@ -312,4 +312,13 @@ end
 
 function Entity:convertToY(mapX, mapY)
     return (mapX-1)*0.5*GROUND_HEIGHT+ (mapY-1)*0.5*GROUND_HEIGHT - self.height + GROUND_HEIGHT
+end
+
+function Entity:collidesMoving(point)
+    for k, v in pairs(self.level.entities) do
+        if v.mapX == point.x and v.mapY == point.y then
+            return true
+        end
+    end
+    return false
 end

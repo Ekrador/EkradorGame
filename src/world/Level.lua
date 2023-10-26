@@ -95,7 +95,7 @@ function Level:update(dt)
     if self.player then
         self.player.enemyOnScreen = self.enemyOnScreen
     end
-
+    
     for i = #self.entities, 1, -1 do
         local entity = self.entities[i]
         if entity.currentHealth <= 0 then

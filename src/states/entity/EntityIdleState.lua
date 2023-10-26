@@ -6,7 +6,6 @@ function EntityIdleState:init(entity, level)
     self.entity:changeAnimation('idle-' .. self.entity.direction)
     self.waitDuration = 0
     self.waitTimer = 0
-    self.level.map.tiles[self.entity.mapY][self.entity.mapX].occupied = true
 end
 
 function EntityIdleState:enter(params)
