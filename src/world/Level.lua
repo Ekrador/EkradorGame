@@ -60,11 +60,7 @@ function Level:generateEntities(types, amount, startX, startY, endX, endY, hasLo
                             width = 32,
                             height = 39,
                             attackSpeed = ENTITY_DEFS[type].attackSpeed,
-<<<<<<< Updated upstream
-                            chanceOnLoot = hasLoot,
-=======
                             chanceOnLoot = hasLoot
->>>>>>> Stashed changes
                         })
                         self.entities[self.entitiesCounter]:initSpells()
                         self.entities[self.entitiesCounter].stateMachine = StateMachine {
@@ -76,11 +72,7 @@ function Level:generateEntities(types, amount, startX, startY, endX, endY, hasLo
                             ['ability_state'] = function() return EntityAbilityState(self.entities[self.entitiesCounter], self) end
                         }
                     
-<<<<<<< Updated upstream
-                        self.entities[self.entitiesCounter]:changeState('idle', {entity = self.entities[self.entitiesCounter]})
-=======
                         self.entities[self.entitiesCounter]:changeState('idle', {state = 'idle', entity = self.entities[self.entitiesCounter]})
->>>>>>> Stashed changes
                         amount = amount - 1
                         self.entities[self.entitiesCounter].ready = true
                         break

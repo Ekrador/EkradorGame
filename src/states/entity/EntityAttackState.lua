@@ -5,27 +5,6 @@ function EntityAttackState:init(entity, level)
     self.level = level
     self.direction = self.entity.direction
     self.hitDirection = 1
-<<<<<<< Updated upstream
-
-    if direction == 'up' then
-        self.hitDirection = 8
-    elseif direction == 'up-right' then
-        self.hitDirection = 1
-    elseif direction == 'right' then
-        self.hitDirection = 2
-    elseif direction == 'down-right' then
-        self.hitDirection = 3
-    elseif direction == 'down' then
-        self.hitDirection = 4
-    elseif direction == 'down-left' then
-        self.hitDirection = 5
-    elseif direction == 'left' then
-        self.hitDirection = 6
-    elseif direction == 'up-left' then
-        self.hitDirection = 7
-    end 
-    self.entity:changeAnimation('attack-' .. tostring(self.entity.direction))
-=======
     if self.direction == 'up' then
         self.hitDirection = 8
     elseif self.direction == 'up-right' then
@@ -45,20 +24,14 @@ function EntityAttackState:init(entity, level)
     end 
     self.entity:changeAnimation('attack-' .. tostring(self.entity.direction))
 
->>>>>>> Stashed changes
 end
 
 function EntityAttackState:enter(params)
     self.damage = {}
     self.entity = params.entity
-<<<<<<< Updated upstream
-    self.entity:changeAnimation('attack-' .. tostring(self.entity.direction))
-    self.entity.getCommand = false
-=======
     self.entity.currentState = params.state
     self.entity:changeAnimation('attack-' .. tostring(self.entity.direction))
     self.entity.currentAnimation.interval = self.entity.currentAnimation.interval / self.entity.attackSpeed
->>>>>>> Stashed changes
     local dirx = self.level.player.mapX - self.entity.mapX
     local diry = self.level.player.mapY - self.entity.mapY
     for i = 1, 8 do

@@ -81,11 +81,7 @@ ENTITY_SPELLS = {
                 local endX = entity.mapX + 4 >= map.mapSize and map.mapSize or entity.mapX + 4
                 local startY = entity.mapY - 4 >= 1 and entity.mapY - 4 or 1
                 local endY = entity.mapY + 4 >= map.mapSize and map.mapSize or entity.mapY + 4
-<<<<<<< Updated upstream
-                map:generateEntities(types, 1, startX, startY, endX,  endY, false)
-=======
                 map:generateEntities(types, 3, startX, startY, endX,  endY, false)
->>>>>>> Stashed changes
             end
         }
 

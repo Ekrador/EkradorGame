@@ -24,22 +24,13 @@ function EntityRangedAttackState:init(entity, level)
         self.hitDirection = 7
     end 
     self.entity:changeAnimation('attack-' .. tostring(self.entity.direction))
-<<<<<<< Updated upstream
-=======
-
->>>>>>> Stashed changes
 end
 
 function EntityRangedAttackState:enter(params)
     self.entity = params.entity
-<<<<<<< Updated upstream
-    self.entity:changeAnimation('attack-' .. tostring(self.entity.direction))
-    self.entity.getCommand = false
-=======
     self.entity.currentState = params.state
     self.entity:changeAnimation('attack-' .. tostring(self.entity.direction))
     --self.entity.currentAnimation.interval = self.entity.currentAnimation.interval / self.entity.attackSpeed
->>>>>>> Stashed changes
     local dirx = self.level.player.mapX - self.entity.mapX
     local diry = self.level.player.mapY - self.entity.mapY
     for i = 1, 8 do

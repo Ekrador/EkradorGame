@@ -3,9 +3,6 @@ EntityWalkState = Class{__includes = EntityBaseState}
 function EntityWalkState:init(entity, level)
     self.entity = entity
     self.level = level
-<<<<<<< Updated upstream
-    self.entity:changeAnimation('walk-' .. tostring(self.entity.direction))
-=======
     self.path = {
         x = nil,
         y = nil
@@ -21,7 +18,6 @@ end
 function EntityWalkState:enter(params)
     self.entity = params.entity
     self.entity.currentState = params.state
->>>>>>> Stashed changes
 end
 
 function EntityWalkState:update(dt)
@@ -33,20 +29,6 @@ function EntityWalkState:update(dt)
     }
 end
 
-<<<<<<< Updated upstream
-function EntityWalkState:enter(params)
-    self.entity = params.entity
-end
-
-function EntityWalkState:processAI(dt)  
-    if not self.entity.getCommand  then
-        self:checkAgro()
-        self:doStep()      
-    end
-end
-
-function EntityWalkState:doStep()
-=======
 function EntityWalkState:processAI(dt) 
     self:update(dt) 
     if not self.entity.getCommand  then
@@ -57,7 +39,6 @@ function EntityWalkState:processAI(dt)
 end
 
 function EntityWalkState:doStep(dt)
->>>>>>> Stashed changes
     local direction = 1
     if self.entity.chasing and #self.entity.path > 0  then
         direction = self.entity.path[1].direction

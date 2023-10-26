@@ -26,11 +26,7 @@ function EntityIdleState:processAI(dt)
         self.waitTimer = self.waitTimer + dt
 
         if self.waitTimer > self.waitDuration then
-<<<<<<< Updated upstream
-            self.entity:changeState('walk', {entity = self.entity})
-=======
             self.entity:changeState('walk', {state='walk',entity = self.entity})
->>>>>>> Stashed changes
         end
     end
 end

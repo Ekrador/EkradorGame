@@ -30,14 +30,9 @@ end
 function EntityAbilityState:enter(params)
     self.spell = params.spell
     self.entity = params.entity
-<<<<<<< Updated upstream
-    self.entity:changeAnimation('attack-' .. tostring(self.entity.direction))
-    self.entity.getCommand = false
-=======
     self.entity.currentState = params.state
     self.entity:changeAnimation('attack-' .. tostring(self.entity.direction))
     --self.entity.currentAnimation.interval = self.entity.currentAnimation.interval / self.entity.attackSpeed
->>>>>>> Stashed changes
     local dirx = self.level.player.mapX - self.entity.mapX
     local diry = self.level.player.mapY - self.entity.mapY
     for i = 1, 8 do
