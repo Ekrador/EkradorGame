@@ -17,7 +17,6 @@ end
 
 function EntityWalkState:enter(params)
     self.entity = params.entity
-    self.entity.currentState = params.state
 end
 
 function EntityWalkState:update(dt)

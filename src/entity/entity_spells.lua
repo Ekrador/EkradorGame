@@ -59,8 +59,19 @@ ENTITY_SPELLS = {
             buff = nil,
             effectPower = 100,
             isProjectile = true,
-            speed = 35,
-            onUse = function(player, target)
+            speed = 0.5,
+            onUse = function(entity, target, map)
+                table.insert(map.projectiles, Projectile {
+                    type = 'pyroblast',
+                    mapX = entity.mapX,
+                    mapY = entity.mapY,
+                    endPointX = map.player.x,
+                    endPointY = map.player.y,
+                    damage = 200,
+                    speed = 35,
+                    x = entity.x + entity.width/2,
+                    y = entity.y + entity.height/2,
+                })
             end
         },
         ['riseSkeletons']={
@@ -70,7 +81,7 @@ ENTITY_SPELLS = {
             level = 1,
             scale = 1,
             mainStat = 1,
-            cooldown = 10,
+            cooldown = 60,
             aoe = 0,
             target = 'self',
             isProjectile = false,

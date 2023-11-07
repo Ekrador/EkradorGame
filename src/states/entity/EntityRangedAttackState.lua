@@ -28,9 +28,8 @@ end
 
 function EntityRangedAttackState:enter(params)
     self.entity = params.entity
-    self.entity.currentState = params.state
     self.entity:changeAnimation('attack-' .. tostring(self.entity.direction))
-    --self.entity.currentAnimation.interval = self.entity.currentAnimation.interval / self.entity.attackSpeed
+    self.entity.currentAnimation.interval = self.entity.currentAnimation.interval / self.entity.attackSpeed
     local dirx = self.level.player.mapX - self.entity.mapX
     local diry = self.level.player.mapY - self.entity.mapY
     for i = 1, 8 do
@@ -45,6 +44,7 @@ end
 function EntityRangedAttackState:update(dt)  
     if self.entity.currentAnimation.timesPlayed > 0 then
         self.entity.currentAnimation.timesPlayed = 0
+        self.entity.currentAnimation.interval = self.entity.currentAnimation.baseInterval
         table.insert(self.level.projectiles, Projectile {
             type = ENTITY_DEFS[self.entity.name].projectileType,
             mapX = self.entity.mapX,

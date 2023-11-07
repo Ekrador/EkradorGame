@@ -10,11 +10,6 @@ end
 
 function EntityIdleState:enter(params)
     self.entity = params.entity
-    self.entity.currentState = params.state
-end
-
-function EntityIdleState:enter(params)
-    self.entity = params.entity
 end
 
 function EntityIdleState:processAI(dt)
