@@ -44,7 +44,7 @@ function Player:init(def)
     end
     self.GUI = Interface{
         class = self.class,
-        player = self
+        player = self,
         }
 
     self.equipment = {
@@ -165,7 +165,7 @@ function Player:getXp(xp)
         self.talentPoints = self.talentPoints + TALENT_POINTS_LVLUP
         self.xp = self.xp - self.xpToLevel
         self.xpToLevel = self.playerlevel * 100
-        self:getXp(0)
+        self:getXp(self.xp)
     end
 end
 

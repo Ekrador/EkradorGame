@@ -14,7 +14,7 @@ end
 function Inventory:render()
     local x = self.x
     local y = self.y
-
+    self.player:calculateStats()
     local frame = 2
     love.graphics.draw(gTextures['inventory'],x, y)
     love.graphics.print('Available points: '..tostring(self.player.bonusPoints),gFonts['small'], x + 76, y + 110)
@@ -139,13 +139,13 @@ function Inventory:update(dt)
 
     if self.player.bonusPoints > 0 then
         if love.mouse.wasPressed(1) and (mx > 132 and mx < 143) and (my > 120 and my < 131) then
-            self.player.totalStrength = self.player.totalStrength + 1
+            self.player.strength = self.player.strength + 1
             self.player.bonusPoints = math.max(0, self.player.bonusPoints - 1)
         elseif love.mouse.wasPressed(1) and (mx > 132 and mx < 143) and (my > 132 and my < 143) then
-            self.player.totalAgility = self.player.totalAgility + 1
+            self.player.agility = self.player.agility + 1
             self.player.bonusPoints = math.max(0, self.player.bonusPoints - 1)
         elseif love.mouse.wasPressed(1) and (mx > 132 and mx < 143) and (my > 143 and my < 154) then
-            self.player.totalIntelligence = self.player.totalIntelligence + 1
+            self.player.intelligence = self.player.intelligence + 1
             self.player.bonusPoints = math.max(0, self.player.bonusPoints - 1)
         end
     end

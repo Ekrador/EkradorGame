@@ -29,7 +29,7 @@ function Entity:init(def)
     self.timer = 0
     self.spells = {}
     self.ready = false
-    self.currentState = 'default'
+    self.currentState = 'idle'
 
     self.x = self:convertToX(self.mapX, self.mapY)
 
