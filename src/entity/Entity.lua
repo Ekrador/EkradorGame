@@ -149,7 +149,7 @@ function Entity:pathfind(def)
     local lastStep = 0
     local curStep = 0
     local tracking = true
-    local maxSteps = 30
+    local maxSteps = 100
     while tracking do
         for i = 1, 8 do
             local dx = MDx[i]

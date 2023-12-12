@@ -36,8 +36,11 @@ function EntityBaseState:checkAgro()
             self.entity:changeState('attack', {entity = self.entity})
         end
     else
-        self.entity.getCommand = true
-        self.entity:changeState('walk', {entity = self.entity})
+        if self.entity.currentState == 'idle' then
+        else
+            self.entity.getCommand = true
+            self.entity:changeState('walk', {entity = self.entity})
+        end
     end
 
 end

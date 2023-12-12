@@ -154,7 +154,6 @@ function Level:render(x,y)
     for k, entity in pairs(self.entities) do
         if not entity.dead and entity.ready then
             love.graphics.print(tostring(entity.currentState), gFonts['medium'], math.floor(entity.x), math.floor(entity.y) )
-            love.graphics.print(tostring(entity.mapX).. ' ' .. tostring(entity.mapY), gFonts['medium'], math.floor(entity.x), math.floor(entity.y + 12) )
             entity:render()
         end
     end
