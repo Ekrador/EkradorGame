@@ -22,14 +22,16 @@ ENTITY_SPELLS = {
                 cooldown = 10,
                 target = 'enemy',
                 isProjectile = false,
-                onUse = function(player, target)
+                onUse = function(player, target, map)
                     local path = player:pathfind{
                         startX = player.mapX,
                         startY = player.mapY,
                         endX = target.mapX,
                         endY = target.mapY
                     }
-                    path[#path] = nil
+                    if path == nil then
+                        return
+                    end
                     player.actionsQueue = {}
                     player.getCommand = true
                     player:move(path, 10)

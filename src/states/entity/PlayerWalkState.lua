@@ -38,7 +38,6 @@ function PlayerWalkState:update(dt)
     elseif (love.mouse.wasPressed(2) or love.mouse.wasReleased(2)) and 
     (mouseTileY > 0 and mouseTileY < self.level.mapSize) and (mouseTileX > 0 and mouseTileX < self.level.mapSize) and
     not self.level.map.tiles[mouseTileY][mouseTileX]:collidable() then
-        --timer for antispam
         local path = self.entity:pathfind{
             startX = self.entity.mapX,
             startY = self.entity.mapY,
@@ -51,6 +50,9 @@ function PlayerWalkState:update(dt)
                 self.entity.step:remove()
             end            
             self.entity:move(path, self.entity.speed)
+        else
+            --error sound
+            self.entity:changeState('idle')
         end
     else
         if not self.entity.getCommand then

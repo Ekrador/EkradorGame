@@ -1,5 +1,5 @@
 PlayerAbilityState = Class{__includes = PlayerIdleState}
-function PlayerAbilityState:init(self, entity, level)
+function PlayerAbilityState:init(entity, level)
     self.level = level
     self.entity = entity
     self.mouseX = mouseInScreenX + self.entity.x
@@ -45,8 +45,6 @@ function PlayerAbilityState:getTarget()
         for k, v in pairs(self.level.enemyOnScreen) do
             if ((self.mouseX > v.x) and (self.mouseX < v.x + v.width)) and ((self.mouseY > v.y) and (self.mouseY < v.y + v.height)) then
                 self.target = v
-            else
-                self.target = nil
             end
         end
     elseif self.spell.targetType == 'cell' then
@@ -69,7 +67,6 @@ end
 
 function PlayerAbilityState:castSpell()
         self.entity.spells[self.id]:use(self.target, self.level.enemyOnScreen)
-        self.entity:changeState('walk')
 end
 
 function PlayerAbilityState:render()

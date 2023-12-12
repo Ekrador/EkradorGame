@@ -20,16 +20,17 @@ function EntityWalkState:enter(params)
 end
 
 function EntityWalkState:update(dt)
+    self.entity.currentState = 'walk'
     self.entity.path = self.entity:pathfind{
         startX = self.entity.mapX,
         startY = self.entity.mapY,
         endX = self.level.player.mapX,
         endY = self.level.player.mapY
     }
+    self:processAI(dt)
 end
 
 function EntityWalkState:processAI(dt) 
-    self:update(dt) 
     if not self.entity.getCommand  then
         self:checkAgro()
     elseif not self.entity.path then
@@ -56,7 +57,6 @@ function EntityWalkState:doStep(dt)
         self.entity:changeAnimation('walk-' .. tostring(self.entity.direction))
     end
 
-    if not self.level.map.tiles[self.newY][self.newX]:collidable() then
         self.entity.walk = true
         self.entity.getCommand = true
         self.path.x = (self.newX-1)*0.5*GROUND_WIDTH + (self.newY-1)*-1*GROUND_WIDTH*0.5
@@ -68,23 +68,18 @@ function EntityWalkState:doStep(dt)
         self.entity.y = self.entity.y + ay
         if (math.abs(self.entity.x - self.path.x) < 1 and math.abs(self.entity.y - self.path.y) < 1) then
             self.entity.x = self.path.x
-            self.entity.y = self.path.y
             self.entity.mapX = self.newX
             self.entity.mapY = self.newY
+            self.entity.y = self.path.y
             self.entity.walk = false
             self.entity.getCommand = false
             if not self.entity.chasing then
                 self:chanceToIdle()
             end
         end
-    else
-        self.entity.walk = false
-        self.entity.getCommand = false
-    end
 end
 
 function EntityWalkState:chanceToIdle()
-    self.entity.getCommand = false
     if math.random(8) == 1 then
         self.entity:changeState('idle', {entity = self.entity})
     end

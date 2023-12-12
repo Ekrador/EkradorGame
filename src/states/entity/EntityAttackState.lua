@@ -43,12 +43,13 @@ function EntityAttackState:enter(params)
         y = self.entity.mapY
     }
     self:damageToTile(tile, self.entity.attackRange)
-
+    
     -- restart animation
     self.entity.currentAnimation:refresh()
 end
 
 function EntityAttackState:update(dt)  
+    self.entity.currentState = 'attack'
     if self.entity.currentAnimation.timesPlayed > 0 then
         self.entity.currentAnimation.timesPlayed = 0
         for k, tile in pairs(self.damage) do

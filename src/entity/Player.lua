@@ -22,6 +22,7 @@ function Player:init(def)
     self.totalAgility = def.agility
     self.totalIntelligence = def.intelligence
     self.damage = self.totalStrength
+    self.armor = 0
     self.cooldownReduction = 1
     self.level = def.level
     self.playerlevel = 1
@@ -161,6 +162,7 @@ end
 function Player:getXp(xp)
     self.xp = self.xp + xp
     if self.xpToLevel <= self.xp then
+        self.playerlevel = self.playerlevel + 1
         self.bonusPoints = self.bonusPoints + BONUS_POINTS_LVLUP
         self.talentPoints = self.talentPoints + TALENT_POINTS_LVLUP
         self.xp = self.xp - self.xpToLevel
@@ -238,13 +240,14 @@ function Player:calculateStats()
     local agility = 0
     local intelligence = 0
     local damage = 3
-
+    local armor = 0
     for k, v in pairs(self.equipment) do
         if v.weared ~= nil then
             strength = strength + (v.weared.strength and v.weared.strength or 0)
             agility = agility + (v.weared.agility and v.weared.agility or 0)
             intelligence = intelligence + (v.weared.intelligence and v.weared.intelligence or 0)
             damage = damage + (v.weared.damage and v.weared.damage or 0)
+            armor = armor + (v.weared.armor and v.weared.armor or 0)
         end
     end
 
@@ -254,6 +257,7 @@ function Player:calculateStats()
     self.maxHealth = 100 + strength * 6
     self.attackSpeed = 1 + agility * 0.01
     self.damage = math.random((self.totalStrength + damage) * 0.8, self.totalStrength + damage)
+    self.armor = armor
 end
 
 

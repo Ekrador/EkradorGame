@@ -11,9 +11,9 @@ function Interface:update(dt)
     self:holdMouse(dt)
     self:dragSpells(dt)
     self.xpBar = ProgressBar{
-        x = self.player.x - VIRTUAL_WIDTH / 2 + 80,
-        y = self.player.y - VIRTUAL_HEIGHT / 2 + 180,
-        width = 300,
+        x = self.player.x - VIRTUAL_WIDTH / 2 + 89,
+        y = self.player.y - VIRTUAL_HEIGHT / 2 + 190,
+        width = 205,
         height = 4,
         color = {r = 1/255, g = 32/255, b = 180/255},
         value = self.player.xp,

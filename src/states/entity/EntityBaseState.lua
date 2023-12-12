@@ -27,17 +27,17 @@ function EntityBaseState:checkAgro()
         if math.random(10) > 3 then
             for k, v in pairs(self.entity.spells) do
                 if v.ready and math.random(10) > 3 then
-                    self.entity:changeState('ability_state', {spell = v, entity = self.entity, state = 'ability '..tostring(v.name)})
+                    self.entity:changeState('ability_state', {spell = v, entity = self.entity})
                 end
             end
         elseif self.entity.attackRange > 1 then
-            self.entity:changeState('ranged_attack', {entity = self.entity, state = 'ranged_attack'})
+            self.entity:changeState('ranged_attack', {entity = self.entity})
         else
-            self.entity:changeState('attack', {state = 'attack', entity = self.entity})
+            self.entity:changeState('attack', {entity = self.entity})
         end
     else
         self.entity.getCommand = true
-        self.entity:changeState('walk', {state='walk',entity = self.entity})
+        self.entity:changeState('walk', {entity = self.entity})
     end
 
 end

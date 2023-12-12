@@ -156,16 +156,27 @@ function Entity:pathfind(def)
             local dy = MDy[i]
             local newX = xCur + dx
             local newY = yCur + dy
-            if not self.level.map.tiles[newY][newX]:collidable() and path[newY][newX] == 0 and not self:collidesMoving({x = newX, y = newY}) then
-                lastStep = lastStep + 1
-                MShx[lastStep] = newX
-                MShy[lastStep] = newY
-                MshN[lastStep] = i
-                path[newY][newX] = i
-
-                if newX == endX and newY == endY then
-                    tracking = false
-                    break
+            if not self.level.map.tiles[newY][newX]:collidable() and path[newY][newX] == 0 then
+                if not self:collidesMoving({x = newX, y = newY}) then
+                    lastStep = lastStep + 1
+                    MShx[lastStep] = newX
+                    MShy[lastStep] = newY
+                    MshN[lastStep] = i
+                    path[newY][newX] = i
+                    if newX == endX and newY == endY then
+                        tracking = false
+                        break
+                    end
+                else
+                    if newX == endX and newY == endY then
+                        if xCur == startX and yCur == startY then
+                            return nil
+                        end
+                    endX = xCur
+                    endY = yCur
+                        tracking = false
+                        break
+                    end
                 end
             end
         end
@@ -182,6 +193,8 @@ function Entity:pathfind(def)
             curStep = curStep + 1
             xCur = MShx[curStep]
             yCur = MShy[curStep]
+        else 
+            return nil
         end
     end
 
@@ -232,7 +245,7 @@ function Entity:statusEffect(dt)
         if state.timer == 0 then
             if state.status == 'stun' then
                 self.stunned = true
-                self:changeState('stunned', {duration = state.duration})
+                self:changeState('stunned', {entity = self, duration = state.duration})
             elseif state.status == 'slow' then
                 self.speedUnbaffed = self.speed
                 self.speed = self.speed / state.effectPower
@@ -316,7 +329,7 @@ end
 
 function Entity:collidesMoving(point)
     for k, v in pairs(self.level.entities) do
-        if v.mapX == point.x and v.mapY == point.y then
+        if v.mapX == point.x and v.mapY == point.y and not v.dead then
             return true
         end
     end

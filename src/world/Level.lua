@@ -72,7 +72,7 @@ function Level:generateEntities(types, amount, startX, startY, endX, endY, hasLo
                             ['ability_state'] = function() return EntityAbilityState(self.entities[self.entitiesCounter], self) end
                         }
                     
-                        self.entities[self.entitiesCounter]:changeState('idle', {state = 'idle', entity = self.entities[self.entitiesCounter]})
+                        self.entities[self.entitiesCounter]:changeState('idle', {entity = self.entities[self.entitiesCounter]})
                         amount = amount - 1
                         self.entities[self.entitiesCounter].ready = true
                         break
@@ -92,10 +92,7 @@ function Level:update(dt)
             self.vendor:onInteract()
         end
     end
-    if self.player then
-        self.player.enemyOnScreen = self.enemyOnScreen
-    end
-    
+
     for i = #self.entities, 1, -1 do
         local entity = self.entities[i]
         if entity.currentHealth <= 0 then
@@ -109,7 +106,6 @@ function Level:update(dt)
             end
         elseif not entity.dead and entity.ready then
             entity:update(dt)
-            entity:processAI(dt)
         end
     end
 
@@ -157,6 +153,8 @@ function Level:render(x,y)
     self.map:render(x,y)
     for k, entity in pairs(self.entities) do
         if not entity.dead and entity.ready then
+            love.graphics.print(tostring(entity.currentState), gFonts['medium'], math.floor(entity.x), math.floor(entity.y) )
+            love.graphics.print(tostring(entity.mapX).. ' ' .. tostring(entity.mapY), gFonts['medium'], math.floor(entity.x), math.floor(entity.y + 12) )
             entity:render()
         end
     end
