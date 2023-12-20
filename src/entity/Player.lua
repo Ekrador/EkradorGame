@@ -22,14 +22,13 @@ function Player:init(def)
     self.totalAgility = def.agility
     self.totalIntelligence = def.intelligence
     self.damage = self.totalStrength
-    self.armor = 0
     self.cooldownReduction = 1
     self.level = def.level
-    self.playerlevel = 11
+    self.playerlevel = 1
     self.xp = 0
     self.xpToLevel = self.playerlevel * 100
     self.bonusPoints = 5
-    self.talentPoints = 11
+    self.talentPoints = 1
     self.healPotionTimer = 0
     self.energyPotionTimer = 0
     self.healPotionReady = false
@@ -128,7 +127,6 @@ function Player:update(dt)
         end
     end
 
-    
 
         -- FOR DEBUG
         if love.keyboard.wasPressed('space') then
@@ -141,9 +139,19 @@ function Player:update(dt)
             gStateStack:push(TalentTree(self))
         end
         if love.keyboard.wasPressed('m') then
-            self.gold = self.gold + 15
+            self.gold = self.gold + 9999
         end
 
+end
+
+function Player:takedamage(amount)
+    local shield = self.equipment.shield.weared
+    if shield then
+        if math.random(100) <= shield.block_chance then
+            amount = math.max(amount - shield.block_damage, 1)
+        end
+    end
+    Entity.takedamage(self, amount)
 end
 
 function Player:getEnergy(amount)

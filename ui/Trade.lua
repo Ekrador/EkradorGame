@@ -18,6 +18,9 @@ function Trade:init(vendor, player)
     end
 end
 function Trade:update(dt)
+    if love.keyboard.wasPressed('z') then
+        self.vendor:updateAssortment()
+    end
     if mx > 31 and mx < 56 and my > 18 and my < 34 and love.mouse.wasPressed(1) then
         self.currentTradeTab = 'items'
     elseif mx > 63 and mx < 88 and my > 18 and my < 34 and love.mouse.wasPressed(1) then
@@ -51,6 +54,14 @@ function Trade:update(dt)
         end
     end
     
+    if ((mx > 108 and mx < 138) and (my > 141 and my < 152) and love.mouse.wasPressed(1)) then
+        for i = 1, STASH_LIMIT do
+            if self.player.stash[i][1] ~= nil then
+                local item = self.player.stash[i][1]
+                self:sell(i, item)                
+            end
+        end
+    end
     if ((mx > 141 and mx < 165) and (my > 141 and my < 152) and love.mouse.wasPressed(1))
     or love.keyboard.wasPressed('escape') then
         gStateStack:pop()
@@ -134,22 +145,24 @@ function Trade:render()
         end
     end
     love.graphics.print(string.format('%4s', tostring(self.player.gold)), gFonts['small'], self.x + 300, self.y + 160)
+    love.graphics.print('Sell all',gFonts['small'], self.x + 111, self.y + 144)
     love.graphics.print('Close',gFonts['small'], self.x + 145, self.y + 144)
     self:renderStashItems()
 end
 
 function Trade:identifyItem(item)
     local type = item.type
+    local item = ITEMS_DEFS[type]()
     local newItem = Items{
         x = x,
         y = y,
         type = type,
         quality = defineItemQuality(),
-        stats_multiplier = ITEMS_DEFS[type].stats_multiplier,
-        block_chance = ITEMS_DEFS[type].block_chance,
-        block_damage = ITEMS_DEFS[type].block_damage,
-        damage = ITEMS_DEFS[type].damage,
-        armor = ITEMS_DEFS[type].armor,
+        stats_multiplier = item.stats_multiplier,
+        block_chance = item.block_chance,
+        block_damage = item.block_damage,
+        damage = item.damage,
+        armor = item.armor,
     }
     return newItem
 end

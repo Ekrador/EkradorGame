@@ -13,6 +13,7 @@ function Entity:init(def)
     self.width = def.width 
     self.height = def.height 
     self.speed = def.speed
+    self.armor = 0
     self.attackSpeed = def.attackSpeed and def.attackSpeed or 1
     self.speedUnbaffed = def.speed
     self.level = def.level
@@ -96,7 +97,8 @@ function Entity:update(dt)
     end
 end
 
-function Entity:takedamage(dmg)
+function Entity:takedamage(amount)
+    local dmg = amount * (1 - math.min(100, self.armor) * 0.5 / 100)
     self.healthLogHandler = -dmg
     self.currentHealth = math.max(0, self.currentHealth - dmg)
     self.healthChanged = true
