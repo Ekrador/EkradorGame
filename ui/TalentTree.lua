@@ -39,7 +39,8 @@ function TalentTree:render()
         love.graphics.print('Close',gFonts['small'], self.x + 326, self.y + 160)
 
         for i = 1, #self.player.spells do
-            local canLearn =  self.player.spells[i].playerCanImprove > self.player.spells[i].level and self.points > 0 
+            local canLearn =  self.spells[i].playerCanImprove > self.player.spells[i].level and self.points > 0 and
+            self.player.playerlevel >= self.player.spells[i].require
             love.graphics.draw(gTextures['plus'], gFrames['plus'][canLearn and 1 or 2],
             self.x + self.player.spells[i].x + 17, self.y + self.player.spells[i].y+2)
             if self.spells[i].level < 1 then
@@ -51,13 +52,14 @@ function TalentTree:render()
             love.graphics.draw(gTextures[tostring(self.player.class)..'_spells'],
                 gFrames[tostring(self.player.class)..'_spells'][self.player.spells[i].id], self.x + self.player.spells[i].x, self.y + self.player.spells[i].y)
                 love.graphics.print(tostring(self.spells[i].level), gFonts['small'], self.x + self.player.spells[i].x + 12, self.y + self.player.spells[i].y + 12)
+            love.graphics.setColor(255, 255, 255, 1)
         end
 
         love.graphics.setColor(255, 255, 255, 1)
 
         if self.grabbedSkill > 0 then
             love.graphics.draw(gTextures[tostring(self.player.class)..'_spells'],
-            gFrames[tostring(self.player.class)..'_spells'][self.player.spells[self.grabbedSkill].id], math.floor(self.x + mx), math.floor(self.y + my))
+            gFrames[tostring(self.player.class)..'_spells'][self.grabbedSkill], math.floor(self.x + mx), math.floor(self.y + my))
         end
 
         self:renderTips()
@@ -70,14 +72,19 @@ function TalentTree:update(dt)
         if self.points > 0 then
             if love.mouse.wasPressed(1) and (mx > self.player.spells[i].x + 17 and mx < self.player.spells[i].x + 32) and 
             (my > self.player.spells[i].y and my < self.player.spells[i].y + 15) and self.spells[i].playerCanImprove > 0 then
-                self.spells[i].level = self.spells[i].level + 1
-                self.points = self.points - 1
-                self.spells[i].playerCanImprove = self.spells[i].playerCanImprove - 1
+                if self.player.playerlevel >= self.player.spells[i].require then
+                    self.spells[i].level = self.spells[i].level + 1
+                    self.points = self.points - 1
+                    self.spells[i].playerCanImprove = self.spells[i].playerCanImprove - 1
+                else
+                    wrongAction()
+                end
             end
         end
         if (mx > self.player.spells[i].x and mx < self.player.spells[i].x + 15) and 
-            (my > self.player.spells[i].y and my < self.player.spells[i].y + 15) and love.mouse.isDown(1) and
-            self.player.spells[i].level > 0 then     
+            (my > self.player.spells[i].y and my < self.player.spells[i].y + 15)  and
+            self.player.spells[i].level > 0  and not self.player.spells[i].isPassive
+            and love.mouse.isDown(1) then     
                 self.grabbedSkill = self.player.spells[i].id
         end
     end
@@ -101,7 +108,7 @@ function TalentTree:update(dt)
                 if ((mx > 90 + (i-1) * 20) and (mx < 90 + i * 20)) and (my > 195 and my < 215) then
                     self.player.spellPanel[i] = self.grabbedSkill
                     for j = 1, 4 do
-                        if not i == j and self.player.spellPanel[j] == self.grabbedSkill then
+                        if self.player.spellPanel[j] == self.grabbedSkill and i ~= j   then
                             self.player.spellPanel[j] = 0
                         end
                     end
@@ -132,10 +139,20 @@ function TalentTree:renderTips()
         if (mx > self.player.spells[i].x and mx < self.player.spells[i].x + 15) 
         and (my > self.player.spells[i].y and my < self.player.spells[i].y + 15) then
             local tooltipText = '"'..tostring(self.player.spells[i].name)..'"'.."\n"
-            local heighMultiplier = 1
-            tooltipText = tooltipText .. 'range: '..tostring(self.player.spells[i].range) ..'\n'
-            tooltipText = tooltipText .. 'cost: '..tostring(self.player.spells[i].cost) ..'\n'
-            heighMultiplier = heighMultiplier + 2
+            local heighMultiplier = 2
+            if ENTITY_SPELLS['player'][self.player.class][self.player.spells[i].name].isPassive then
+                heighMultiplier = heighMultiplier + 1
+                tooltipText = tooltipText .. 'passive talent'..'\n'
+            end
+            tooltipText = tooltipText .. ENTITY_SPELLS['player'][self.player.class][self.player.spells[i].name].description .. "\n"
+            if self.player.spells[i].range > 0 then
+                tooltipText = tooltipText .. 'range: '..tostring(self.player.spells[i].range) ..'\n'
+                heighMultiplier = heighMultiplier + 1
+            end
+            if self.player.spells[i].cost > 0 then
+                tooltipText = tooltipText .. 'cost: '..tostring(self.player.spells[i].cost) ..'\n'
+                heighMultiplier = heighMultiplier + 1
+            end
             if self.player.spells[i].energy > 0 then
                 tooltipText = tooltipText .. 'gain '..tostring(self.player.spells[i].energy)..' '..tostring(self.player.energyBar) .."\n"
                 heighMultiplier = heighMultiplier + 1
@@ -168,20 +185,29 @@ function TalentTree:renderTips()
                 tooltipText = tooltipText ..'duration: '..tostring(self.player.spells[i].duration).. ' s'.."\n"
                 heighMultiplier = heighMultiplier + 1
             end
-            if self.player.spells[i].aoe then
+            if self.player.spells[i].aoe > 0 then
                 tooltipText = tooltipText ..'affected area: '..tostring(self.player.spells[i].aoe)..' cell around target'.."\n"
                 heighMultiplier = heighMultiplier + 1
             end
-            tooltipText = tooltipText ..'cooldown: '..tostring(self.player.spells[i].cooldown)..' s'.."\n"
+            if self.player.spells[i].cooldown > 0 then
+                tooltipText = tooltipText ..'cooldown: '..tostring(self.player.spells[i].cooldown)..' s'.."\n"
+                heighMultiplier = heighMultiplier + 1
+            end
             tooltipText = tooltipText ..'learned: '..tostring((ENTITY_SPELLS['player'][self.player.class][self.player.spells[i].name].playerCanImprove - self.spells[i].playerCanImprove))
             ..'/'..tostring(ENTITY_SPELLS['player'][self.player.class][self.player.spells[i].name].playerCanImprove).."\n"
-            heighMultiplier = heighMultiplier + 2
+            heighMultiplier = heighMultiplier + 3
             local textWidth  = gFonts['small']:getWidth(tooltipText)
             local textHeight = gFonts['small']:getHeight()
             love.graphics.setColor(0, 0, 0, 0.8)
             love.graphics.rectangle('fill',x , y, textWidth, textHeight * heighMultiplier, 3)
+            if ENTITY_SPELLS['player'][self.player.class][self.player.spells[i].name].require > self.player.playerlevel then
+                love.graphics.setColor(1, 0, 0, 1)
+            else
+                love.graphics.setColor(0.2, 1, 0.2, 1)
+            end
+            love.graphics.print('require level ' .. ENTITY_SPELLS['player'][self.player.class][self.player.spells[i].name].require, gFonts['small'], x, y)
             love.graphics.setColor(0.2, 1, 0.2, 1)
-            love.graphics.print(tooltipText, gFonts['small'], x, y)
+            love.graphics.print(tooltipText, gFonts['small'], x, y + 8)
             love.graphics.setColor(255, 255, 255, 1)
             end
     end

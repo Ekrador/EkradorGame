@@ -153,7 +153,6 @@ function Level:render(x,y)
     self.map:render(x,y)
     for k, entity in pairs(self.entities) do
         if not entity.dead and entity.ready then
-            love.graphics.print(tostring(entity.currentState), gFonts['medium'], math.floor(entity.x), math.floor(entity.y) )
             entity:render()
         end
     end
@@ -179,7 +178,7 @@ function Level:enemiesOnScreen(dt)
             self.enemyOnScreen = {}
             for k, v in pairs(self.entities) do
                 if (v.x > screenX and v.x < screenX + VIRTUAL_WIDTH) 
-                and (v.y > screenY and v.y < screenY + VIRTUAL_HEIGHT)  and v.ready then
+                and (v.y > screenY and v.y < screenY + VIRTUAL_HEIGHT)  and v.ready and not v.dead then
                     table.insert(self.enemyOnScreen, v)
                 end
             end

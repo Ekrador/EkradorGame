@@ -5,6 +5,8 @@ function PlayerAbilityState:init(entity, level)
     self.mouseX = mouseInScreenX + self.entity.x
     self.mouseY = mouseInScreenY + self.entity.y
     self.target = nil
+    self.stateTimer = 0
+    self.skillTimer = 0
 end
 
 
@@ -56,8 +58,6 @@ function PlayerAbilityState:getTarget()
                 mapX,
                 mapY
             }
-        else
-            self.target = nil
         end
     elseif self.spell.targetType == 'self' then
         self.target = self.entity

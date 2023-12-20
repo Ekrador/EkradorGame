@@ -30,6 +30,8 @@ function Spells:init(def, entity, map)
     self.mainStatString = ''
     self.map = map
     self.speed = def.speed
+    self.isPassive = def.isPassive
+    self.sound = def.sound and def.sound or function() end
 end
 
 function Spells:update(dt)
@@ -52,19 +54,28 @@ function Spells:update(dt)
             self.ready = true
         end
     end
+    if self.isPassive and self.level > 0 then
+        self.onUse(self.entity)
+    end
 end
 
 function Spells:use(target, enemyOnScreen)
     if self.ready then
         if self:distToTarget(target) > self.range then
-            --error sound
+            wrongAction()
         else
-            if instanceOf(self.entity, Player) then
-                self.entity:spentEnergy(self.cost)
-                self.entity:getEnergy(self.energy)
-            end
             self:assignTarget(target)
             self.onUse(self.entity, target, self.map)
+            if instanceOf(self.entity, Player) then
+                if self.entity.currentEnergy >= self.cost then
+                    self.entity:spentEnergy(self.cost)
+                    self.entity:getEnergy(self.energy)
+                    self.sound()
+                else
+                    wrongAction()
+                    return
+                end
+            end
             for k, v in pairs(self.target) do
                 for key, enemy in pairs(enemyOnScreen) do
                     if not enemy.dead then
@@ -93,7 +104,7 @@ function Spells:use(target, enemyOnScreen)
             self.ready = false
         end
     else 
-        -- cooldown sound 
+        wrongAction()
     end
 end
 

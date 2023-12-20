@@ -34,6 +34,9 @@ function PlayerAttackState:update(dt)
                 if tile.x == enemy.mapX and tile.y == enemy.mapY then
                     if not enemy.dead then
                         enemy:takedamage(self.entity.damage)
+                        if self.entity.energyBar == 'Rage' then
+                            self.entity:getEnergy(2)
+                        end
                     end
                     goto next
                 end

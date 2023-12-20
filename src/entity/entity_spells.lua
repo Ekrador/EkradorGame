@@ -22,6 +22,8 @@ ENTITY_SPELLS = {
                 cooldown = 10,
                 target = 'enemy',
                 isProjectile = false,
+                isPassive = false,
+                description = 'rapidly moves you towards a target\n and stun it',
                 onUse = function(player, target, map)
                     local path = player:pathfind{
                         startX = player.mapX,
@@ -35,6 +37,93 @@ ENTITY_SPELLS = {
                     player.actionsQueue = {}
                     player.getCommand = true
                     player:move(path, 10)
+                end
+            },
+            ['spin attack'] = {
+                name = 'spin attack',
+                id = 2,
+                x = 73,
+                y = 58,
+                require = 2,
+                level = 0,
+                playerCanImprove = 2,
+                damage = 100,
+                range = 1,
+                cost = 50,
+                energy = 0,
+                scale = 5,
+                duration = 0,
+                debuff = nil,
+                buff = nil,
+                aoe = 1,
+                effectPower = 0,
+                cooldown = 20,
+                target = 'self',
+                isProjectile = false,
+                isPassive = false,
+                description = 'swing the weapon around you,\n damage nearby enemies',
+                onUse = function(player, target, map)
+                end,
+                sound = function ()
+                    gSounds['sword_swing']:stop()
+                    gSounds['sword_swing']:play()  
+                end
+
+            },
+            ['anger'] = {
+                name = 'anger',
+                id = 3,
+                x = 104,
+                y = 85,
+                require = 3,
+                level = 0,
+                playerCanImprove = 1,
+                damage = 0,
+                range = 0,
+                cost = 0,
+                energy = 0,
+                scale = 1,
+                duration = 0,
+                debuff = nil,
+                buff = nil,
+                aoe = 0,
+                effectPower = 0,
+                cooldown = 0,
+                target = 'self',
+                isProjectile = false,
+                isPassive = true,
+                description = 'gives your attacks additional damage\n based on the amount of rage, up to 30%',
+                onUse = function(player)
+                    player.damage = player.damage * (1 + player.currentEnergy / player.maxEnergy * 0.3)
+                end
+            },
+            ['fatal blows'] = {
+                name = 'fatal blows',
+                id = 4,
+                x = 104,
+                y = 125,
+                require = 3,
+                level = 0,
+                playerCanImprove = 1,
+                damage = 0,
+                range = 0,
+                cost = 0,
+                energy = 0,
+                scale = 1,
+                duration = 0,
+                debuff = nil,
+                buff = nil,
+                aoe = 0,
+                effectPower = 0,
+                cooldown = 0,
+                target = 'self',
+                isProjectile = false,
+                isPassive = true,
+                description = 'gives your attacks chance to deal\n critical damage depending on rage amount up to 20% chance',
+                onUse = function(player)
+                    local critChance = player.currentEnergy / player.maxEnergy * 20
+                    local critical = math.random(100) <= critChance
+                    player.damage = critical and player.damage*2 or player.damage
                 end
             },
         },

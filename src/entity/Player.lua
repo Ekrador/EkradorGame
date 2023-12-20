@@ -25,11 +25,11 @@ function Player:init(def)
     self.armor = 0
     self.cooldownReduction = 1
     self.level = def.level
-    self.playerlevel = 1
+    self.playerlevel = 11
     self.xp = 0
     self.xpToLevel = self.playerlevel * 100
     self.bonusPoints = 5
-    self.talentPoints = 1
+    self.talentPoints = 11
     self.healPotionTimer = 0
     self.energyPotionTimer = 0
     self.healPotionReady = false
@@ -101,6 +101,8 @@ end
 
 function Player:update(dt)
     self.stateMachine:update(dt)
+    self:calculateStats()
+    
     for k, v in pairs(self.spells) do
         v:update(dt)
     end
@@ -113,7 +115,6 @@ function Player:update(dt)
         self.currentAnimation:update(dt)
     end
 
-    self:calculateStats()
 
     self:regenerateEnergy(dt)
 
@@ -303,8 +304,12 @@ function Player:checkBeltUsage()
 end
 
 function Player:initplayerSpells()
+    local spells = {}
     for k, v in pairs(ENTITY_SPELLS['player'][self.class]) do
         spell = Spells(v, self, self.level)
-        table.insert(self.spells, spell)
+        table.insert(spells, spell)
+    end
+    for k, v in pairs(spells) do
+        self.spells[v.id] = v
     end
 end

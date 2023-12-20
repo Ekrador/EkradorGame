@@ -262,7 +262,7 @@ ENTITY_DEFS = {
         },
         name = 'skeleton',
         speed = 20,
-        health = 200,
+        health = 2000,
         agroRange = 6,
         attackRange = 1,
         damage = 5

@@ -14,7 +14,7 @@ end
 function Inventory:render()
     local x = self.x
     local y = self.y
-    local damage = self.player.totalStrength + (self.player.equipment.weapon.weared and self.player.equipment.weapon.weared or 0)
+    local damage = self.player.totalStrength + 3 + (self.player.equipment.weapon.weared and self.player.equipment.weapon.weared.damage or 0)
     self.player:calculateStats()
     local frame = 2
     love.graphics.draw(gTextures['inventory'],x, y)

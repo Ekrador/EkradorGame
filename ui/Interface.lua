@@ -32,7 +32,7 @@ function Interface:render(x, y)
                 love.graphics.setColor(1,1,1,0.3)
             end
             love.graphics.draw(gTextures[tostring(self.player.class)..'_spells'],
-            gFrames[tostring(self.player.class)..'_spells'][self.player.spells[self.player.spellPanel[i]].id], x + 93 + (i-1) * 20, y + 198)
+            gFrames[tostring(self.player.class)..'_spells'][self.player.spellPanel[i]], x + 93 + (i-1) * 20, y + 198)
             love.graphics.setColor(1,1,1,1)
         end
     end

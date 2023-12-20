@@ -15,9 +15,6 @@ end
 -- end
 
 function Looting:update(dt)
-    --interaction with items
-    self.player:update(dt)
-
     for k, v in pairs(self.loot.content) do
         if (mx > v.x and mx < v.x + 15) and (my > v.y and my < v.y + 15) and love.mouse.wasPressed(2) then
             self:itemTransfer(k, v)
