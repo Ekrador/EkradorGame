@@ -30,7 +30,6 @@ function EntityAttackState:enter(params)
     self.damage = {}
     self.entity = params.entity
     self.entity:changeAnimation('attack-' .. tostring(self.entity.direction))
-    self.entity.currentAnimation.interval = self.entity.currentAnimation.interval / self.entity.attackSpeed
     local dirx = self.level.player.mapX - self.entity.mapX
     local diry = self.level.player.mapY - self.entity.mapY
     for i = 1, 8 do

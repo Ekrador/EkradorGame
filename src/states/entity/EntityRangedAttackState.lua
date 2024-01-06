@@ -4,47 +4,40 @@ function EntityRangedAttackState:init(entity, level)
     self.entity = entity
     self.level = level
     local direction = self.entity.direction
-    self.hitDirection = 1
-
-    if direction == 'up' then
-        self.hitDirection = 8
-    elseif direction == 'up-right' then
-        self.hitDirection = 1
-    elseif direction == 'right' then
-        self.hitDirection = 2
-    elseif direction == 'down-right' then
-        self.hitDirection = 3
-    elseif direction == 'down' then
-        self.hitDirection = 4
-    elseif direction == 'down-left' then
-        self.hitDirection = 5
-    elseif direction == 'left' then
-        self.hitDirection = 6
-    elseif direction == 'up-left' then
-        self.hitDirection = 7
-    end 
     self.entity:changeAnimation('attack-' .. tostring(self.entity.direction))
 end
 
 function EntityRangedAttackState:enter(params)
+    self.entity.currentAnimation:refresh()
     self.entity = params.entity
-    self.entity:changeAnimation('attack-' .. tostring(self.entity.direction))
-    self.entity.currentAnimation.interval = self.entity.currentAnimation.interval / self.entity.attackSpeed
     local dirx = self.level.player.mapX - self.entity.mapX
     local diry = self.level.player.mapY - self.entity.mapY
+    if dirx > 0 then
+        dirx = 1
+    elseif dirx < 0 then
+        dirx = -1
+    else
+        dirx = 0
+    end
+    if diry > 0 then
+        diry = 1
+    elseif diry < 0 then
+        diry = -1
+    else
+        diry = 0
+    end
     for i = 1, 8 do
         if MDx[i] == dirx and MDy[i] == diry then
             self.entity.direction = self.entity.directions[i]
         end
     end
-    -- restart animation
-    self.entity.currentAnimation:refresh()
+    self.entity:changeAnimation('attack-' .. tostring(self.entity.direction))
 end
 
 function EntityRangedAttackState:update(dt)  
+    self.entity.currentState = 'ranged_attack'
     if self.entity.currentAnimation.timesPlayed > 0 then
         self.entity.currentAnimation.timesPlayed = 0
-        self.entity.currentAnimation.interval = self.entity.currentAnimation.baseInterval
         table.insert(self.level.projectiles, Projectile {
             type = ENTITY_DEFS[self.entity.name].projectileType,
             mapX = self.entity.mapX,

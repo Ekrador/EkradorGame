@@ -14,7 +14,7 @@ end
 function EntityStunnedState:update(dt)
     self.timer = self.timer + dt
     if self.timer > self.stunDuration then
-        self.entity:changeState('walk', {entity = self.entity})
+        self.entity:changeState('idle', {entity = self.entity})
     end
 end
 

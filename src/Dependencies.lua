@@ -10,8 +10,14 @@ require 'src/const'
 
 require 'src/states/BaseState'
 require 'src/states/StateStack'
-require 'src/states/StartState'
-require 'src/states/PlayState'
+require 'src/states/game/StartState'
+require 'src/states/game/PlayState'
+require 'src/states/game/DialogueState'
+require 'src/states/game/FadeInState'
+require 'src/states/game/FadeOutState'
+require 'src/states/game/GameOverState'
+require 'src/states/game/VictoryState'
+
 
 require 'src/entity/entity_defs'
 require 'src/entity/entity_spells'
@@ -48,6 +54,8 @@ require 'ui/Inventory'
 require 'ui/TalentTree'
 require 'ui/ProgressBar'
 require 'ui/Trade'
+require 'ui/Panel'
+require 'ui/Textbox'
 
 
 gTextures = {
@@ -61,9 +69,15 @@ gTextures = {
     ['fireball_particle'] = love.graphics.newImage('graphics/fireball_particle.png'),
     ['pyroblast_particle'] = love.graphics.newImage('graphics/fireball_particle.png'),
     ['player'] = love.graphics.newImage('graphics/player.png'),
+    ['player_attack'] = love.graphics.newImage('graphics/player_attack.png'),
     ['skeleton'] = love.graphics.newImage('graphics/skeleton.png'),
+    ['Lich'] = love.graphics.newImage('graphics/Lich.png'),
+    ['Lich_attack'] = love.graphics.newImage('graphics/Lich_attack.png'),
+    ['skeleton-archer_attack'] = love.graphics.newImage('graphics/skeleton-archer_attack.png'),
+    ['skeleton_attack'] = love.graphics.newImage('graphics/skeleton_attack.png'),
     ['wall'] = love.graphics.newImage('graphics/wall.png'),
     ['panel'] = love.graphics.newImage('graphics/panel.png'),
+    ['start'] = love.graphics.newImage('graphics/start.png'),
     ['health'] = love.graphics.newImage('graphics/health.png'),
     ['Rage'] = love.graphics.newImage('graphics/rage.png'),
     ['Mana'] = love.graphics.newImage('graphics/mana.png'),
@@ -87,6 +101,7 @@ gTextures = {
     ['vendor'] = love.graphics.newImage('graphics/vendor.png'),
     ['trade'] = love.graphics.newImage('graphics/trade.png'),
     ['gold'] = love.graphics.newImage('graphics/gold.png'),
+    ['box'] = love.graphics.newImage('graphics/box.png'),
     ['Health_potion'] = love.graphics.newImage('graphics/Health_potion.png'),
     ['Mana_potion'] = love.graphics.newImage('graphics/Mana_potion.png'),
     ['Energy_potion'] = love.graphics.newImage('graphics/Energy_potion.png'),
@@ -95,7 +110,12 @@ gTextures = {
 
 gFrames = {
     ['player'] = GenerateQuads(gTextures['player'], 32, 39),
+    ['player_attack'] = GenerateQuads(gTextures['player_attack'], 32, 39),
     ['skeleton'] = GenerateQuads(gTextures['skeleton'], 32, 39),
+    ['Lich'] = GenerateQuads(gTextures['Lich'], 32, 39),
+    ['skeleton-archer_attack'] = GenerateQuads(gTextures['skeleton-archer_attack'], 32, 39),
+    ['skeleton_attack'] = GenerateQuads(gTextures['skeleton_attack'], 32, 39),
+    ['Lich_attack'] = GenerateQuads(gTextures['Lich_attack'], 32, 39),
     ['health'] = GenerateQuads(gTextures['health'], 39, 1),
     ['Rage'] = GenerateQuads(gTextures['Rage'], 39, 1),
     ['Mana'] = GenerateQuads(gTextures['Mana'], 39, 1),
@@ -127,5 +147,9 @@ gSounds = {
     ['pyroblast_shot'] = love.audio.newSource('sounds/fireball_shot.wav', 'static'),
     ['fireball_hit'] = love.audio.newSource('sounds/fireball_hit.wav', 'static'),
     ['pyroblast_hit'] = love.audio.newSource('sounds/fireball_hit.wav', 'static'),
-    ['sword_swing'] = love.audio.newSource('sounds/sword_swing.wav', 'static'),   
+    ['sword_swing'] = love.audio.newSource('sounds/sword_swing.wav', 'static'), 
+    ['step'] = love.audio.newSource('sounds/step.wav', 'static'),
+    ['skeletons_step'] = love.audio.newSource('sounds/skeletons_step.wav', 'static'),  
+    ['start_theme'] = love.audio.newSource('sounds/start_theme.wav', 'static'), 
+    ['game_theme'] = love.audio.newSource('sounds/game_theme.wav', 'static'), 
 }

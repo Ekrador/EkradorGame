@@ -75,43 +75,43 @@ ENTITY_DEFS = {
             },
             ['attack-up-right'] = {
                 frames = {16, 17, 18},
-                interval = 0.15,
-                texture = 'player'
+                interval = 0.25,
+                texture = 'player_attack'
             },
             ['attack-right'] = {
                 frames = {7, 8, 9},
-                interval = 0.15,
-                texture = 'player'
+                interval = 0.25,
+                texture = 'player_attack'
             },
             ['attack-down-right'] = {
                 frames = {22, 23, 24},
-                interval = 0.15,
-                texture = 'player'
+                interval = 0.25,
+                texture = 'player_attack'
             },
             ['attack-down'] = {
                 frames = {1, 2, 3 },
-                interval = 0.15,
-                texture = 'player'
+                interval = 0.25,
+                texture = 'player_attack'
             },
             ['attack-down-left'] = {
                 frames = {19, 20, 21},
-                interval = 0.15,
-                texture = 'player'
+                interval = 0.25,
+                texture = 'player_attack'
             },
             ['attack-left'] = {
                 frames = {4, 5, 6},
-                interval = 0.15,
-                texture = 'player'
+                interval = 0.25,
+                texture = 'player_attack'
             },
             ['attack-up-left'] = {
                 frames = {13, 14, 15},
-                interval = 0.15,
-                texture = 'player'
+                interval = 0.25,
+                texture = 'player_attack'
             },
             ['attack-up'] = {
                 frames = {10, 11, 12},                          
-                interval = 0.15,
-                texture = 'player'
+                interval = 0.25,
+                texture = 'player_attack'
             }
         },
         speed = 2,
@@ -120,7 +120,7 @@ ENTITY_DEFS = {
     },
     ['warrior'] = {
         regenEnergy = -2,
-        regenHp = 1,
+        regenHp = 2,
         currentEnergy = 0,
         regenRate = 1,
         strength = 5,
@@ -221,51 +221,51 @@ ENTITY_DEFS = {
             },
             ['attack-up-right'] = {
                 frames = {1, 2, 3},
-                interval = 0.15,
-                texture = 'skeleton'
+                interval = 0.25,
+                texture = 'skeleton_attack'
             },
             ['attack-right'] = {
                 frames = {4, 5, 6},
-                interval = 0.15,
-                texture = 'skeleton'
+                interval = 0.25,
+                texture = 'skeleton_attack'
             },
             ['attack-down-right'] = {
                 frames = {7, 8, 9},
-                interval = 0.15,
-                texture = 'skeleton'
+                interval = 0.25,
+                texture = 'skeleton_attack'
             },
             ['attack-down'] = {
                 frames = {10, 11, 12},
-                interval = 0.15,
-                texture = 'skeleton'
+                interval = 0.25,
+                texture = 'skeleton_attack'
             },
             ['attack-down-left'] = {
                 frames = {13, 14, 15},
-                interval = 0.15,
-                texture = 'skeleton'
+                interval = 0.25,
+                texture = 'skeleton_attack'
             },
             ['attack-left'] = {
                 frames = {16, 17, 18},
-                interval = 0.15,
-                texture = 'skeleton'
+                interval = 0.25,
+                texture = 'skeleton_attack'
             },
             ['attack-up-left'] = {
                 frames = {19, 20, 21},
-                interval = 0.15,
-                texture = 'skeleton'
+                interval = 0.25,
+                texture = 'skeleton_attack'
             },
             ['attack-up'] = {
                 frames = {22, 23, 24},                          
-                interval = 0.15,
-                texture = 'skeleton'
+                interval = 0.25,
+                texture = 'skeleton_attack'
             }
         },
         name = 'skeleton',
         speed = 20,
-        health = 200,
+        health = 250,
         agroRange = 6,
         attackRange = 1,
-        damage = 5
+        damage = 15
     },
     ['skeleton-archer'] = {
         animations = {
@@ -343,53 +343,53 @@ ENTITY_DEFS = {
             },
             ['attack-up-right'] = {
                 frames = {1, 2, 3},
-                interval = 0.15,
-                texture = 'skeleton'
+                interval = 0.8,
+                texture = 'skeleton-archer_attack'
             },
             ['attack-right'] = {
                 frames = {4, 5, 6},
-                interval = 0.15,
-                texture = 'skeleton'
+                interval = 0.8,
+                texture = 'skeleton-archer_attack'
             },
             ['attack-down-right'] = {
                 frames = {7, 8, 9},
-                interval = 0.15,
-                texture = 'skeleton'
+                interval = 0.8,
+                texture = 'skeleton-archer_attack'
             },
             ['attack-down'] = {
                 frames = {10, 11, 12},
-                interval = 0.15,
-                texture = 'skeleton'
+                interval = 0.8,
+                texture = 'skeleton-archer_attack'
             },
             ['attack-down-left'] = {
                 frames = {13, 14, 15},
-                interval = 0.15,
-                texture = 'skeleton'
+                interval = 0.8,
+                texture = 'skeleton-archer_attack'
             },
             ['attack-left'] = {
                 frames = {16, 17, 18},
-                interval = 0.15,
-                texture = 'skeleton'
+                interval = 0.8,
+                texture = 'skeleton-archer_attack'
             },
             ['attack-up-left'] = {
                 frames = {19, 20, 21},
-                interval = 0.15,
-                texture = 'skeleton'
+                interval = 0.8,
+                texture = 'skeleton-archer_attack'
             },
             ['attack-up'] = {
                 frames = {22, 23, 24},                          
-                interval = 0.15,
-                texture = 'skeleton'
+                interval = 0.8,
+                texture = 'skeleton-archer_attack'
             }
         },
         name = 'skeleton-archer',
         speed = 15,
-        health = 200,
-        agroRange = 6,
+        health = 150,
+        agroRange = 8,
         attackRange = 5,
-        damage = 35,
+        damage = 25,
         projectileType = 'arrow',
-        projectileSpeed = 35,
+        projectileSpeed = 100,
         attackSpeed = 0.1,
     },
     ['Lich'] = {
@@ -397,124 +397,124 @@ ENTITY_DEFS = {
             ['walk-up-right'] = {
                 frames = {2, 3},
                 interval = 0.15,
-                texture = 'skeleton'
+                texture = 'Lich'
             },
             ['walk-right'] = {
                 frames = {5, 6},
                 interval = 0.15,
-                texture = 'skeleton'
+                texture = 'Lich'
             },
             ['walk-down-right'] = {
                 frames = {8, 9},
                 interval = 0.15,
-                texture = 'skeleton'
+                texture = 'Lich'
             },
             ['walk-down'] = {
                 frames = {11, 12 },
                 interval = 0.15,
-                texture = 'skeleton'
+                texture = 'Lich'
             },
             ['walk-down-left'] = {
                 frames = {14, 15},
                 interval = 0.15,
-                texture = 'skeleton'
+                texture = 'Lich'
             },
             ['walk-left'] = {
                 frames = {17, 18},
                 interval = 0.15,
-                texture = 'skeleton'
+                texture = 'Lich'
             },
             ['walk-up-left'] = {
                 frames = {20, 21},
                 interval = 0.15,
-                texture = 'skeleton'
+                texture = 'Lich'
             },
             ['walk-up'] = {
                 frames = {23, 24},                          
                 interval = 0.15,
-                texture = 'skeleton'
+                texture = 'Lich'
             },
             ['idle-up-right'] = {
                 frames = {1},
-                texture = 'skeleton'
+                texture = 'Lich'
             },
             ['idle-right'] = {
                 frames = {4},
-                texture = 'skeleton'
+                texture = 'Lich'
             },
             ['idle-down-right'] = {
                 frames = {7},
-                texture = 'skeleton'
+                texture = 'Lich'
             },
             ['idle-down'] = {
                 frames = {10},
-                texture = 'skeleton'
+                texture = 'Lich'
             },
             ['idle-down-left'] = {
                 frames = {13},
-                texture = 'skeleton'
+                texture = 'Lich'
             },
             ['idle-left'] = {
                 frames = {16},
-                texture = 'skeleton'
+                texture = 'Lich'
             },
             ['idle-up-left'] = {
                 frames = {19},
-                texture = 'skeleton'
+                texture = 'Lich'
             },
             ['idle-up'] = {
                 frames = {22},
-                texture = 'skeleton'
+                texture = 'Lich'
             },
             ['attack-up-right'] = {
                 frames = {1, 2, 3},
-                interval = 0.15,
-                texture = 'skeleton'
+                interval = 0.4,
+                texture = 'Lich_attack'
             },
             ['attack-right'] = {
                 frames = {4, 5, 6},
-                interval = 0.15,
-                texture = 'skeleton'
+                interval = 0.4,
+                texture = 'Lich_attack'
             },
             ['attack-down-right'] = {
                 frames = {7, 8, 9},
-                interval = 0.15,
-                texture = 'skeleton'
+                interval = 0.4,
+                texture = 'Lich_attack'
             },
             ['attack-down'] = {
                 frames = {10, 11, 12},
-                interval = 0.15,
-                texture = 'skeleton'
+                interval = 0.4,
+                texture = 'Lich_attack'
             },
             ['attack-down-left'] = {
                 frames = {13, 14, 15},
-                interval = 0.15,
-                texture = 'skeleton'
+                interval = 0.4,
+                texture = 'Lich_attack'
             },
             ['attack-left'] = {
                 frames = {16, 17, 18},
-                interval = 0.15,
-                texture = 'skeleton'
+                interval = 0.4,
+                texture = 'Lich_attack'
             },
             ['attack-up-left'] = {
                 frames = {19, 20, 21},
-                interval = 0.15,
-                texture = 'skeleton'
+                interval = 0.4,
+                texture = 'Lich_attack'
             },
             ['attack-up'] = {
                 frames = {22, 23, 24},                          
-                interval = 0.15,
-                texture = 'skeleton'
+                interval = 0.4,
+                texture = 'Lich_attack'
             }
         },
         name = 'Lich',
         speed = 15,
-        health = 200,
-        agroRange = 6,
-        attackRange = 5,
+        health = 3000,
+        agroRange = 20,
+        attackRange = 8,
         damage = 35,
         projectileType = 'fireball',
-        projectileSpeed = 35,
+        projectileSpeed = 70,
         attackSpeed = 0.1,
     }
 }

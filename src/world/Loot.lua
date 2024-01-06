@@ -57,9 +57,9 @@ function Loot:generateItem()
     return item
 end
 
-function Loot:render(x, y)
+function Loot:render()
     if (#self.content > 0 or self.goldAmount > 0) then
-        love.graphics.draw(gTextures['loot'], self.x, self.y)
+        love.graphics.draw(gTextures['box'], self.x, self.y)
     end
 
     if (#self.content > 0 or self.goldAmount > 0) and self.nearPlayer then

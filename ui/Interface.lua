@@ -15,14 +15,16 @@ function Interface:update(dt)
         y = self.player.y - VIRTUAL_HEIGHT / 2 + 190,
         width = 205,
         height = 4,
-        color = {r = 1/255, g = 32/255, b = 180/255},
+        color = {r = 1/255, g = 32/255, b = 180/255, transparency = 1},
         value = self.player.xp,
         max = self.player.xpToLevel,
     }
 end
 
 function Interface:render(x, y)
-    self.xpBar:render()
+    if self.xpBar ~= nil then
+        self.xpBar:render()
+    end
     love.graphics.draw(gTextures['panel'],x, y)
     self:renderResources(x, y)
     for i = 1, 4 do

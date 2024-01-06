@@ -28,13 +28,13 @@ end
 function ProgressBar:render()
     local renderWidth = (self.value / self.max) * self.width
 
-    love.graphics.setColor(self.color.r, self.color.g, self.color.b, 1)
+    love.graphics.setColor(self.color.r, self.color.g, self.color.b, self.color.transparency)
     
     if self.value > 0 then
         love.graphics.rectangle('fill', self.x, self.y, renderWidth, self.height, 3)
     end
 
-    love.graphics.setColor(0, 0, 0, 1)
+    love.graphics.setColor(0, 0, 0, self.color.transparency)
     love.graphics.rectangle('line', self.x, self.y, self.width, self.height, 3)
     love.graphics.setColor(1, 1, 1, 1)
 end

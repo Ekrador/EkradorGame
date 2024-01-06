@@ -3,7 +3,6 @@ Level = Class{}
 function Level:init(def)
     self.mapSize = def.mapSize
     self.data = def.data 
-    self.safeZone = def.safeZone
     self.player = nil
     self.vendor = nil
     self.difficulty = def.difficulty
@@ -35,13 +34,10 @@ function Level:generateTileMap()
 end
 
 function Level:generateEntities(types, amount, startX, startY, endX, endY, hasLoot)
-    if self.safeZone then
-
-    else 
-        while amount > 0 do
+    while amount > 0 do
             for y = startY, endY do
                 for x = startX, endX do
-                    if not self.map.tiles[y][x]:collidable() and math.random(100) == 5 then
+                    if not self.map.tiles[y][x]:collidable() and math.random(100) == 1 then
                         self.entitiesCounter = self.entitiesCounter + 1
                         local type = types[math.random(#types)]
                         table.insert(self.entities, Entity{
@@ -73,18 +69,25 @@ function Level:generateEntities(types, amount, startX, startY, endX, endY, hasLo
                         }
                     
                         self.entities[self.entitiesCounter]:changeState('idle', {entity = self.entities[self.entitiesCounter]})
-                        amount = amount - 1
                         self.entities[self.entitiesCounter].ready = true
-                        break
+                        amount = amount - 1
+                        if amount <= 0 then
+                            goto stop
+                        end
                     end                
                 end
             end
         end
-    end
+    ::stop::
 end
 
 
 function Level:update(dt)
+    self.timer = self.timer + dt
+    if self.timer >= 180 then
+        self.vendor:updateAssortment()
+        self.timer = 0
+    end
     self:enemiesOnScreen(dt)
     if self.vendor ~= nil then
         self.vendor:update(dt)
@@ -93,19 +96,22 @@ function Level:update(dt)
         end
     end
 
-    for i = #self.entities, 1, -1 do
-        local entity = self.entities[i]
-        if entity.currentHealth <= 0 then
-            entity.dead = true
-            if entity.chanceOnLoot then
+    for k,v in pairs(self.enemyOnScreen) do
+        if v.currentHealth <= 0 then
+            v.dead = true
+            if v.name == 'Lich' then
+                gStateStack:pop()
+                gStateStack:push(VictoryState(self.camX, self.camY))
+            end
+            if v.chanceOnLoot then
                 self.player:getXp(math.random(30, 50))
                 if math.random(5) == 1 then
-                    table.insert(self.lootTable, Loot(entity.mapX, entity.mapY, self.player))
+                    table.insert(self.lootTable, Loot(v.mapX, v.mapY, self.player))
                 end
-                entity.chanceOnLoot = false
+                v.chanceOnLoot = false
             end
-        elseif not entity.dead and entity.ready then
-            entity:update(dt)
+        elseif not v.dead and v.ready then
+            v:update(dt)
         end
     end
 
@@ -147,42 +153,84 @@ function Level:update(dt)
             self.vendor:updateAssortment()
         end
     end
+    if love.keyboard.wasPressed('m') then
+        self.player.gold = 99999
+    end
 end
 
 function Level:render(x,y)
-    self.map:render(x,y)
-    for k, entity in pairs(self.entities) do
-        if not entity.dead and entity.ready then
-            entity:render()
+    local endX = self.player.mapX + 16 < self.mapSize and self.player.mapX + 16 or self.mapSize
+    local endY = self.player.mapY + 16 < self.mapSize and self.player.mapY + 16 or self.mapSize
+    local startY = self.player.mapY - 16 > 0 and self.player.mapY - 16 or 1
+    local startX = self.player.mapX - 16 > 0 and self.player.mapX - 16 or 1
+    for y = startY, endY do
+        for x = startX, endX do
+            if not self.map.tiles[y][x]:collidable() then
+                self.map:render(x,y)
+            end
         end
+    end
+
+    for k, v in pairs(self.lootTable) do
+        v:render()
+    end
+
+    local upperEnt = {}
+    local lowerEnt = {}
+    for k, entity in pairs(self.enemyOnScreen) do
+        if not entity.dead and entity.ready and 
+        (entity.mapX + entity.mapY) < (self.player.mapX + self.player.mapY) then
+            table.insert(upperEnt, entity)
+        elseif not entity.dead and entity.ready and 
+        (entity.mapX + entity.mapY) > (self.player.mapX + self.player.mapY) then
+            table.insert(lowerEnt, entity)
+        end
+    end
+    for k, v in pairs(upperEnt) do
+        v:render()
+    end
+    self.player:render(x, y)
+    for k, v in pairs(lowerEnt) do
+        v:render()
     end
 
     for k, v in pairs(self.projectiles) do
         v:render()
-       end
+    end
 
     if self.vendor ~= nil then
         self.vendor:render()
     end
-    for k, v in pairs(self.lootTable) do
-        v:render(x, y)
+
+    for y = startY, endY do
+        for x = startX, endX do
+            if self.map.tiles[y][x]:collidable() then
+                if ((y - self.player.mapY) < (self.map.tiles[y][x].height / GROUND_HEIGHT)  and
+                (y - self.player.mapY) >= 0) and
+                ((x - self.player.mapX) >= 0 and 
+                (x  - self.player.mapX) < (self.map.tiles[y][x].height / GROUND_HEIGHT)) then
+                    love.graphics.setColor(255, 255, 255, 0.5)        
+                end
+                self.map:render(x,y)
+                love.graphics.setColor(255, 255, 255, 1)
+            end
+        end
     end
 end
 
 function Level:enemiesOnScreen(dt)
     if self.player then
-        local screenX = self.player.x - VIRTUAL_WIDTH / 2
-        local screenY = self.player.y - VIRTUAL_HEIGHT / 2
-        self.timer = self.timer + dt
-        if self.timer > 2 then
-            self.enemyOnScreen = {}
-            for k, v in pairs(self.entities) do
-                if (v.x > screenX and v.x < screenX + VIRTUAL_WIDTH) 
-                and (v.y > screenY and v.y < screenY + VIRTUAL_HEIGHT)  and v.ready and not v.dead then
-                    table.insert(self.enemyOnScreen, v)
-                end
+        local screenX = self.player.x - self.player.width/2 - VIRTUAL_WIDTH / 2
+        local screenY = self.player.y - self.player.height - VIRTUAL_HEIGHT / 2
+        self.enemyOnScreen = {}
+        for k, v in pairs(self.entities) do
+            if (v.x + v.width > screenX and v.x < screenX + VIRTUAL_WIDTH) 
+            and (v.y + v.height > screenY and v.y - v.height < screenY + VIRTUAL_HEIGHT)  and v.ready and not v.dead then
+                table.insert(self.enemyOnScreen, v)
+                v.onscreen = true
+            else
+                v.onscreen = false
             end
-            self.timer = 0
         end
     end
 end

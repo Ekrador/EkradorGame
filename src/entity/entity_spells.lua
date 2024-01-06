@@ -11,7 +11,7 @@ ENTITY_SPELLS = {
                 level = 0,
                 playerCanImprove = 3,
                 damage = 5,
-                range = 4,
+                range = 7,
                 cost = 0,
                 energy = 20,
                 duration = 3.5,
@@ -35,6 +35,7 @@ ENTITY_SPELLS = {
                         return
                     end
                     player.actionsQueue = {}
+                    player.step:remove()
                     player.getCommand = true
                     player:move(path, 10)
                 end
@@ -159,7 +160,7 @@ ENTITY_SPELLS = {
                     endPointX = map.player.x,
                     endPointY = map.player.y,
                     damage = 200,
-                    speed = 35,
+                    speed = 70,
                     x = entity.x + entity.width/2,
                     y = entity.y + entity.height/2,
                 })

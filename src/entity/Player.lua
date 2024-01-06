@@ -33,7 +33,7 @@ function Player:init(def)
     self.energyPotionTimer = 0
     self.healPotionReady = false
     self.energyPotiReady = false
-    self.gold = 0
+    self.gold = 100
     self.step = {}
     if self.class == 'warrior' then
         self.energyBar = 'Rage'
@@ -127,21 +127,12 @@ function Player:update(dt)
         end
     end
 
-
-        -- FOR DEBUG
-        if love.keyboard.wasPressed('space') then
-            self:heal(15)
-        end
-        if love.keyboard.wasPressed('c') then
-            gStateStack:push(Inventory(self))
-        end
-        if love.keyboard.wasPressed('p') then
-            gStateStack:push(TalentTree(self))
-        end
-        if love.keyboard.wasPressed('m') then
-            self.gold = self.gold + 9999
-        end
-
+    if love.keyboard.wasPressed('c') then
+        gStateStack:push(Inventory(self))
+    end
+    if love.keyboard.wasPressed('v') then
+        gStateStack:push(TalentTree(self))
+    end
 end
 
 function Player:takedamage(amount)
@@ -171,6 +162,7 @@ end
 function Player:getXp(xp)
     self.xp = self.xp + xp
     if self.xpToLevel <= self.xp then
+        self:heal(20)
         self.playerlevel = self.playerlevel + 1
         self.bonusPoints = self.bonusPoints + BONUS_POINTS_LVLUP
         self.talentPoints = self.talentPoints + TALENT_POINTS_LVLUP
@@ -206,8 +198,14 @@ function Player:move(path, speed)
     for i = 1, #path do
         table.insert(self.actionsQueue, path[i])
     end
-
-    self:steps(1, speed)
+    if #self.step > 0 then
+        self.step:finish(function()
+            self:steps(1, speed)
+        end)
+    else
+        self:steps(1, speed)
+    end
+    
 end
 
 
@@ -236,10 +234,11 @@ function Player:steps(i, speed)
     local newY = (path[i].x-1)*0.5*GROUND_HEIGHT+ (path[i].y-1)*0.5*GROUND_HEIGHT - self.height + GROUND_HEIGHT
     self.direction = self.directions[path[i].direction]
     self:changeAnimation('walk-' .. tostring(self.direction))
+    gSounds['step']:stop()
+    gSounds['step']:play() 
     self.step = Timer.tween(1 / speed,{
         [self] = { x = newX, y = newY }
-    })  
-    self.step:register():finish(function()  
+    }):finish(function()  
         self:steps(i + 1, speed)
     end)
 end

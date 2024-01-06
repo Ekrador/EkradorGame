@@ -119,7 +119,7 @@ function TalentTree:update(dt)
     end
 
     if ((mx > 323 and mx < 347) and (my > 157 and my < 168) and love.mouse.wasPressed(1)) or
-    love.keyboard.wasPressed('escape') or love.keyboard.wasPressed('p') then
+    love.keyboard.wasPressed('escape') or love.keyboard.wasPressed('v') then
         gStateStack:pop()
     end
 end

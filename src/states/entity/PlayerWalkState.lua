@@ -51,7 +51,6 @@ function PlayerWalkState:update(dt)
             end            
             self.entity:move(path, self.entity.speed)
         else
-            --error sound
             self.entity:changeState('idle')
         end
     else

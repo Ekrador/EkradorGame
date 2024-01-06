@@ -45,7 +45,17 @@ function EntityWalkState:doStep(dt)
     if self.entity.chasing and #self.entity.path > 0  then
         direction = self.entity.path[1].direction
     else
-        direction = math.random(#self.entity.directions)
+        local canWalk = false
+        while not canWalk do
+            direction = math.random(#self.entity.directions)
+            local dx = MDx[direction]
+            local dy = MDy[direction]
+            local newX = self.entity.mapX + dx
+            local newY = self.entity.mapY + dy
+            if not self.level.map.tiles[newY][newX]:collidable() then
+                canWalk = true
+            end
+        end            
     end
     
     if self.entity.walk == false then
@@ -67,6 +77,10 @@ function EntityWalkState:doStep(dt)
         self.entity.x = self.entity.x + ax
         self.entity.y = self.entity.y + ay
         if (math.abs(self.entity.x - self.path.x) < 1 and math.abs(self.entity.y - self.path.y) < 1) then
+            if self.entity.onscreen then
+                gSounds['skeletons_step']:stop()
+                gSounds['skeletons_step']:play()
+            end
             self.entity.x = self.path.x
             self.entity.mapX = self.newX
             self.entity.mapY = self.newY

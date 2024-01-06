@@ -43,10 +43,10 @@ function EntityAbilityState:enter(params)
 end
 
 function EntityAbilityState:update(dt)
+    self.entity.currentState = 'ability'
     if self.entity.currentAnimation.timesPlayed > 0 then
         self.entity.currentAnimation.timesPlayed = 0
         self:Cast()
-        
     end
 end
 

@@ -35,7 +35,7 @@ function PlayerAttackState:update(dt)
                     if not enemy.dead then
                         enemy:takedamage(self.entity.damage)
                         if self.entity.energyBar == 'Rage' then
-                            self.entity:getEnergy(2)
+                            self.entity:getEnergy(3)
                         end
                     end
                     goto next

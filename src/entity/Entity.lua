@@ -5,6 +5,8 @@ function Entity:init(def)
     self.direction = 'down'
     self.name = def.name
     self.animations = self:createAnimations(def.animations)
+    self.startX = def.mapX
+    self.startY = def.mapY
     self.mapX = def.mapX
     self.mapY = def.mapY
     self.attackRange = def.attackRange
@@ -31,6 +33,7 @@ function Entity:init(def)
     self.spells = {}
     self.ready = false
     self.currentState = 'idle'
+    self.onscreen = false
 
     self.x = self:convertToX(self.mapX, self.mapY)
 
@@ -43,7 +46,7 @@ function Entity:init(def)
         y = self.y - 5,
         width = self.width - 4,
         height = 3,
-        color = {r = 189/255, g = 32/255, b = 32/255},
+        color = {r = 189/255, g = 32/255, b = 32/255, transparency = 0.1},
         value = self.currentHealth,
         max = self.maxHealth,
     }
@@ -151,13 +154,16 @@ function Entity:pathfind(def)
     local lastStep = 0
     local curStep = 0
     local tracking = true
-    local maxSteps = 100
+    local maxSteps = 600
     while tracking do
         for i = 1, 8 do
             local dx = MDx[i]
             local dy = MDy[i]
             local newX = xCur + dx
             local newY = yCur + dy
+            if path == nil then
+                return nil
+            end
             if not self.level.map.tiles[newY][newX]:collidable() and path[newY][newX] == 0 then
                 if not self:collidesMoving({x = newX, y = newY}) then
                     lastStep = lastStep + 1
@@ -247,6 +253,7 @@ function Entity:statusEffect(dt)
         if state.timer == 0 then
             if state.status == 'stun' then
                 self.stunned = true
+                self.getCommand = false
                 self:changeState('stunned', {entity = self, duration = state.duration})
             elseif state.status == 'slow' then
                 self.speedUnbaffed = self.speed

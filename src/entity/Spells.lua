@@ -62,7 +62,9 @@ end
 function Spells:use(target, enemyOnScreen)
     if self.ready then
         if self:distToTarget(target) > self.range then
-            wrongAction()
+            if instanceOf(self.entity, Player) then
+                wrongAction()
+            end
         else
             self:assignTarget(target)
             self.onUse(self.entity, target, self.map)
@@ -104,7 +106,9 @@ function Spells:use(target, enemyOnScreen)
             self.ready = false
         end
     else 
-        wrongAction()
+        if instanceOf(self.entity, Player) then
+            wrongAction()
+        end
     end
 end
 
