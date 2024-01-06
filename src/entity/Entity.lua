@@ -46,7 +46,7 @@ function Entity:init(def)
         y = self.y - 5,
         width = self.width - 4,
         height = 3,
-        color = {r = 189/255, g = 32/255, b = 32/255, transparency = 0.1},
+        color = {r = 189/255, g = 32/255, b = 32/255, transparency = 0.7},
         value = self.currentHealth,
         max = self.maxHealth,
     }

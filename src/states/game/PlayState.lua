@@ -98,8 +98,8 @@ end
 function PlayState:populateMap()
     self.level.vendor = Vendor {
         player = self.player,
-        mapX = 40,
-        mapY = 115,
+        mapX = 35,
+        mapY = 118,
         width = 32,
         height = 39,
     }

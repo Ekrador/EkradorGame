@@ -18,9 +18,6 @@ function Trade:init(vendor, player)
     end
 end
 function Trade:update(dt)
-    if love.keyboard.wasPressed('z') then
-        self.vendor:updateAssortment()
-    end
     if mx > 31 and mx < 56 and my > 18 and my < 34 and love.mouse.wasPressed(1) then
         self.currentTradeTab = 'items'
     elseif mx > 63 and mx < 88 and my > 18 and my < 34 and love.mouse.wasPressed(1) then

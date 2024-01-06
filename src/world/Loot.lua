@@ -20,6 +20,13 @@ function Loot:spawn()
         local item = self:generateItem()
         table.insert(self.content, item)
     end
+    if math.random(100) < 20 then
+        table.insert(self.content, Potions {type = 'Health',
+        amount = 0.3,
+        player = self.player,
+        price = 10
+       })
+    end
 end
 
 function Loot:use()

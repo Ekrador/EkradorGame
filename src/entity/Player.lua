@@ -153,9 +153,8 @@ function Player:spentEnergy(amount)
     self.currentEnergy = math.max(0, self.currentEnergy - amount)
 end
 
-function Player:render(x, y)
-    self.stateMachine:render()
-    self.GUI:render(x, y)     
+function Player:render()
+    self.stateMachine:render()    
     self:healthChangedDisplay()         
 end
 

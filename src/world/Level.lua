@@ -8,7 +8,6 @@ function Level:init(def)
     self.difficulty = def.difficulty
     self.enemiesAmount = def.enemiesAmount
     self.objects = {}
-    --self:generateObjects()
     self.entities = {}
     self.enemyOnScreen = {}
     self.timer = 0
@@ -100,8 +99,7 @@ function Level:update(dt)
         if v.currentHealth <= 0 then
             v.dead = true
             if v.name == 'Lich' then
-                gStateStack:pop()
-                gStateStack:push(VictoryState(self.camX, self.camY))
+                gStateStack:push(VictoryState(self.player.x - VIRTUAL_WIDTH / 2, self.player.y - VIRTUAL_HEIGHT / 2))
             end
             if v.chanceOnLoot then
                 self.player:getXp(math.random(30, 50))
@@ -135,27 +133,6 @@ function Level:update(dt)
             break
         end
     end
-
-    -- FOR DEBUG
-    if love.keyboard.wasPressed('x') then
-        table.insert(self.lootTable, Loot(self.player.mapX, self.player.mapY, self.player))
-    end
-    if love.keyboard.wasPressed('z') then
-        if self.vendor == nil then
-            self.vendor = Vendor {
-                player = self.player,
-                mapX = self.player.mapX,
-                mapY = self.player.mapY,
-                width = 32,
-                height = 39,
-            }
-        else
-            self.vendor:updateAssortment()
-        end
-    end
-    if love.keyboard.wasPressed('m') then
-        self.player.gold = 99999
-    end
 end
 
 function Level:render(x,y)
@@ -179,29 +156,17 @@ function Level:render(x,y)
     local lowerEnt = {}
     for k, entity in pairs(self.enemyOnScreen) do
         if not entity.dead and entity.ready and 
-        (entity.mapX + entity.mapY) < (self.player.mapX + self.player.mapY) then
-            table.insert(upperEnt, entity)
-        elseif not entity.dead and entity.ready and 
-        (entity.mapX + entity.mapY) > (self.player.mapX + self.player.mapY) then
+        (entity.mapX + entity.mapY) - (self.player.mapX + self.player.mapY) == 1 or
+        (entity.mapX + entity.mapY) - (self.player.mapX + self.player.mapY) == 2 then
             table.insert(lowerEnt, entity)
+        elseif not entity.dead and entity.ready then
+            table.insert(upperEnt, entity)
         end
     end
-    for k, v in pairs(upperEnt) do
-        v:render()
-    end
-    self.player:render(x, y)
-    for k, v in pairs(lowerEnt) do
-        v:render()
-    end
-
-    for k, v in pairs(self.projectiles) do
-        v:render()
-    end
-
     if self.vendor ~= nil then
         self.vendor:render()
     end
-
+    
     for y = startY, endY do
         for x = startX, endX do
             if self.map.tiles[y][x]:collidable() then
@@ -209,13 +174,27 @@ function Level:render(x,y)
                 (y - self.player.mapY) >= 0) and
                 ((x - self.player.mapX) >= 0 and 
                 (x  - self.player.mapX) < (self.map.tiles[y][x].height / GROUND_HEIGHT)) then
-                    love.graphics.setColor(255, 255, 255, 0.5)        
+                        love.graphics.setColor(255, 255, 255, 0.5)        
                 end
                 self.map:render(x,y)
                 love.graphics.setColor(255, 255, 255, 1)
             end
+            for k, v in pairs(upperEnt) do
+                if v.mapX == x and v.mapY == y then
+                    v:render()
+                end
+            end
         end
     end
+    self.player:render()
+    for k, v in pairs(lowerEnt) do
+        v:render()
+    end
+
+    for k, v in pairs(self.projectiles) do
+        v:render()
+    end
+    self.player.GUI:render(x, y) 
 end
 
 function Level:enemiesOnScreen(dt)

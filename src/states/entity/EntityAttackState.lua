@@ -35,6 +35,7 @@ function EntityAttackState:enter(params)
     for i = 1, 8 do
         if MDx[i] == dirx and MDy[i] == diry then
             self.entity.direction = self.entity.directions[i]
+            self.hitDirection = i
         end
     end
     local tile = {
