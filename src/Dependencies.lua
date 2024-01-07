@@ -35,6 +35,7 @@ require 'src/states/entity/PlayerAttackState'
 require 'src/states/entity/PlayerAbilityState'
 require 'src/states/entity/EntityStunnedState'
 require 'src/states/entity/EntityRangedAttackState'
+require 'src/states/entity/EntityDeathState'
 require 'src/world/tile_ids'
 require 'src/world/levels_defs'
 require 'src/world/Level'
@@ -75,6 +76,8 @@ gTextures = {
     ['Lich_attack'] = love.graphics.newImage('graphics/Lich_attack.png'),
     ['skeleton-archer_attack'] = love.graphics.newImage('graphics/skeleton-archer_attack.png'),
     ['skeleton_attack'] = love.graphics.newImage('graphics/skeleton_attack.png'),
+    ['skeleton_death'] = love.graphics.newImage('graphics/skeleton_death.png'),
+    ['Lich_death'] = love.graphics.newImage('graphics/Lich_death.png'),
     ['wall'] = love.graphics.newImage('graphics/wall.png'),
     ['panel'] = love.graphics.newImage('graphics/panel.png'),
     ['start'] = love.graphics.newImage('graphics/start.png'),
@@ -115,6 +118,8 @@ gFrames = {
     ['Lich'] = GenerateQuads(gTextures['Lich'], 32, 39),
     ['skeleton-archer_attack'] = GenerateQuads(gTextures['skeleton-archer_attack'], 32, 39),
     ['skeleton_attack'] = GenerateQuads(gTextures['skeleton_attack'], 32, 39),
+    ['skeleton_death'] = GenerateQuads(gTextures['skeleton_death'], 32, 39),
+    ['Lich_death'] = GenerateQuads(gTextures['Lich_death'], 32, 39),
     ['Lich_attack'] = GenerateQuads(gTextures['Lich_attack'], 32, 39),
     ['health'] = GenerateQuads(gTextures['health'], 39, 1),
     ['Rage'] = GenerateQuads(gTextures['Rage'], 39, 1),

@@ -258,6 +258,11 @@ ENTITY_DEFS = {
                 frames = {22, 23, 24},                          
                 interval = 0.25,
                 texture = 'skeleton_attack'
+            },
+            ['death'] = {
+                frames = {1, 2, 3},
+                interval = 0.2,
+                texture = 'skeleton_death'
             }
         },
         name = 'skeleton',
@@ -380,6 +385,11 @@ ENTITY_DEFS = {
                 frames = {22, 23, 24},                          
                 interval = 0.8,
                 texture = 'skeleton-archer_attack'
+            },
+            ['death'] = {
+                frames = {1, 2, 3},
+                interval = 0.2,
+                texture = 'skeleton_death'
             }
         },
         name = 'skeleton-archer',
@@ -505,6 +515,11 @@ ENTITY_DEFS = {
                 frames = {22, 23, 24},                          
                 interval = 0.4,
                 texture = 'Lich_attack'
+            },
+            ['death'] = {
+                frames = {1, 2, 3},
+                interval = 0.2,
+                texture = 'Lich_death'
             }
         },
         name = 'Lich',

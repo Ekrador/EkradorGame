@@ -19,6 +19,7 @@ function PlayerAttackState:enter(params)
         x = self.entity.mapX,
         y = self.entity.mapY
     }
+    table.insert(self.damage, tile)
     self:damageToTile(tile, self.entity.attackRange)
     -- restart animation
     self.entity.currentAnimation:refresh()
@@ -29,7 +30,7 @@ function PlayerAttackState:update(dt)
         gSounds['sword_swing']:stop()
         gSounds['sword_swing']:play() 
         self.entity.currentAnimation.timesPlayed = 0
-        for k, enemy in pairs(self.level.entities) do
+        for k, enemy in pairs(self.level.enemyOnScreen) do
             for j, tile in pairs(self.damage) do
                 if tile.x == enemy.mapX and tile.y == enemy.mapY then
                     if not enemy.dead then

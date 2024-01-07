@@ -64,7 +64,8 @@ function Level:generateEntities(types, amount, startX, startY, endX, endY, hasLo
                             ['attack'] = function() return EntityAttackState(self.entities[self.entitiesCounter], self) end,
                             ['ranged_attack'] = function() return EntityRangedAttackState(self.entities[self.entitiesCounter], self) end,
                             ['stunned'] = function() return EntityStunnedState(self.entities[self.entitiesCounter], self) end,
-                            ['ability_state'] = function() return EntityAbilityState(self.entities[self.entitiesCounter], self) end
+                            ['ability_state'] = function() return EntityAbilityState(self.entities[self.entitiesCounter], self) end,
+                            ['death_state'] = function() return EntityDeathState(self.entities[self.entitiesCounter], self) end                           
                         }
                     
                         self.entities[self.entitiesCounter]:changeState('idle', {entity = self.entities[self.entitiesCounter]})
@@ -96,8 +97,12 @@ function Level:update(dt)
     end
 
     for k,v in pairs(self.enemyOnScreen) do
-        if v.currentHealth <= 0 then
-            v.dead = true
+        if v.currentHealth <= 0 and not v.dead then
+            if v.currentState ~= 'death' then
+                v:changeState('death_state', {entity = v})
+            else
+                v:update(dt)
+            end
             if v.name == 'Lich' then
                 gStateStack:push(VictoryState(self.player.x - VIRTUAL_WIDTH / 2, self.player.y - VIRTUAL_HEIGHT / 2))
             end

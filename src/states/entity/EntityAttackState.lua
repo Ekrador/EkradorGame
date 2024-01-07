@@ -42,6 +42,7 @@ function EntityAttackState:enter(params)
         x = self.entity.mapX,
         y = self.entity.mapY
     }
+    table.insert(self.damage, tile)
     self:damageToTile(tile, self.entity.attackRange)
     
     -- restart animation
@@ -58,7 +59,6 @@ function EntityAttackState:update(dt)
             end
         end
         self:checkAgro()
-       --self.entity:changeState('attack', {state = 'attack', entity = self.entity})
     end
 end
 
