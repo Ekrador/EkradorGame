@@ -6,6 +6,10 @@ Here the player can improve the characteristics and skills of his character,
 obtain items and gain experience by defeating monsters.  
 On the map we have a merchant who trade undefined items and potions, and the player can also sell what he does not need.  
 The main goal is to reach the final boss and defeat him.
+Controls:  
+- Q, W, E, R for skills and 1, 2, 3, 4 for potions on belt slots  
+- C to open inventory, V to open talent tree  
+- RMB - move, Shift - attack  
 #### Structure of project:
 - fonts - fonts for game
 - graphics - sprites for game (all drawn by me using aseprite)
