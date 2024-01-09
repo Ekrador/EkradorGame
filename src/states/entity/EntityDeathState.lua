@@ -9,12 +9,12 @@ end
 
 function EntityDeathState:enter(params)
     self.entity = params.entity
+    self.entity.currentState = 'death'
     self.entity:changeAnimation('death')
     self.entity.currentAnimation:refresh()
 end
 
 function EntityDeathState:update(dt)
-    self.entity.currentState = 'death'
     if self.entity.currentAnimation.timesPlayed > 0 then
         self.entity.currentAnimation.timesPlayed = 0
         self.entity.dead = true

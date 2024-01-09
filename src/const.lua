@@ -39,6 +39,7 @@ function itemSwapSound()
 end
 
 function wrongAction()
+    gSounds['start_theme']:setVolume(0.4)
     gSounds['wrong_action']:stop()
     gSounds['wrong_action']:play() 
 end

@@ -263,7 +263,7 @@ function Player:calculateStats()
     self.totalIntelligence = intelligence + self.intelligence
     self.maxHealth = 100 + strength * 6
     self.attackSpeed = 1 + agility * 0.01
-    self.damage = math.random((self.totalStrength + damage) * 0.8, self.totalStrength + damage) + 9999
+    self.damage = math.random((self.totalStrength + damage) * 0.8, self.totalStrength + damage) 
     self.armor = armor
 end
 

@@ -1,4 +1,3 @@
---require('lovedebug')
 require 'src/Dependencies'
 
 function love.load()

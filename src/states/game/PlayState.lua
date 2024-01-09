@@ -34,7 +34,6 @@ function PlayState:init()
         ['walk'] = function() return PlayerWalkState(self.player, self.level) end,
         ['idle'] = function() return PlayerIdleState(self.player, self.level) end,
         ['attack'] = function() return PlayerAttackState(self.player, self.level) end,
-        ['stunned'] = function() return PlayerStunnedState(self.player, self.level) end,
         ['ability'] = function() return PlayerAbilityState(self.player, self.level) end
     }
     
@@ -79,10 +78,6 @@ end
 function PlayState:render()
     love.graphics.translate(-math.floor(self.camX), -math.floor(self.camY))
     self.level:render(math.floor(self.camX), math.floor(self.camY))
-
-    --self.player:render(math.floor(self.camX), math.floor(self.camY))
-    love.graphics.print("Current FPS: "..tostring(love.timer.getFPS( )), self.camX, self.camY)
-    love.graphics.print(tostring(self.level.timer), self.camX, self.camY + 20)
     if self.pause then
         love.graphics.setFont(gFonts['gothic-large'])
         love.graphics.setColor(0, 0, 0, 1)

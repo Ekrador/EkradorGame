@@ -120,7 +120,7 @@ ENTITY_DEFS = {
     },
     ['warrior'] = {
         regenEnergy = -2,
-        regenHp = 2,
+        regenHp = 3,
         currentEnergy = 0,
         regenRate = 1,
         strength = 5,

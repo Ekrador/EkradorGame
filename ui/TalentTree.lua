@@ -19,7 +19,6 @@ end
 
 
 function TalentTree:render()
-    
         love.graphics.draw(gTextures['talent_tree'], self.x, self.y)
         love.graphics.print(tostring(self.points)..'  points to upgrade available.',gFonts['small'], self.x + 100, self.y + 160)
         if (mx > 252 and mx < 283) and (my > 157 and my < 168) then
@@ -135,7 +134,6 @@ function TalentTree:renderTips()
                 end
             end
 
-        love.graphics.print(tostring(yMargin), gFonts['medium'], self.x + 10, self.y)
         if (mx > self.player.spells[i].x and mx < self.player.spells[i].x + 15) 
         and (my > self.player.spells[i].y and my < self.player.spells[i].y + 15) then
             local tooltipText = '"'..tostring(self.player.spells[i].name)..'"'.."\n"

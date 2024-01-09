@@ -24,7 +24,9 @@ function Loot:spawn()
         table.insert(self.content, Potions {type = 'Health',
         amount = 0.3,
         player = self.player,
-        price = 10
+        price = 10,
+        x = LOOT_FIRST_ITEM_X + #self.content % LOOT_ITEMS_PER_ROW * ITEMS_INDENT,
+        y = LOOT_FIRST_ITEM_Y + math.floor(#self.content % LOOT_LIMIT / LOOT_ITEMS_PER_ROW) * ITEMS_INDENT
        })
     end
 end
