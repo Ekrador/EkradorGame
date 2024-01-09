@@ -20,6 +20,15 @@ function Loot:spawn()
         local item = self:generateItem()
         table.insert(self.content, item)
     end
+    if math.random(100) < 20 then
+        table.insert(self.content, Potions {type = 'Health',
+        amount = 0.3,
+        player = self.player,
+        price = 10,
+        x = LOOT_FIRST_ITEM_X + #self.content % LOOT_ITEMS_PER_ROW * ITEMS_INDENT,
+        y = LOOT_FIRST_ITEM_Y + math.floor(#self.content % LOOT_LIMIT / LOOT_ITEMS_PER_ROW) * ITEMS_INDENT
+       })
+    end
 end
 
 function Loot:use()
@@ -41,24 +50,25 @@ function Loot:generateItem()
     local x = LOOT_FIRST_ITEM_X + id % LOOT_ITEMS_PER_ROW * ITEMS_INDENT
     local y = LOOT_FIRST_ITEM_Y + math.floor(id % LOOT_LIMIT / LOOT_ITEMS_PER_ROW) * ITEMS_INDENT
 
+    local itemDefs = ITEMS_DEFS[itemType]()
     local item = Items{
         x = x,
         y = y,
         type = itemType,
         quality = defineItemQuality(),
-        stats_multiplier = ITEMS_DEFS[itemType].stats_multiplier,
-        block_chance = ITEMS_DEFS[itemType].block_chance,
-        block_damage = ITEMS_DEFS[itemType].block_damage,
-        damage = ITEMS_DEFS[itemType].damage,
-        armor = ITEMS_DEFS[itemType].armor,
+        stats_multiplier = itemDefs.stats_multiplier,
+        block_chance = itemDefs.block_chance,
+        block_damage = itemDefs.block_damage,
+        damage = itemDefs.damage,
+        armor = itemDefs.armor,
     }
 
     return item
 end
 
-function Loot:render(x, y)
+function Loot:render()
     if (#self.content > 0 or self.goldAmount > 0) then
-        love.graphics.draw(gTextures['loot'], self.x, self.y)
+        love.graphics.draw(gTextures['box'], self.x, self.y)
     end
 
     if (#self.content > 0 or self.goldAmount > 0) and self.nearPlayer then

@@ -4,48 +4,38 @@ function EntityRangedAttackState:init(entity, level)
     self.entity = entity
     self.level = level
     local direction = self.entity.direction
-    self.hitDirection = 1
-
-    if direction == 'up' then
-        hitDirection = 8
-    elseif direction == 'up-right' then
-        hitDirection = 1
-    elseif direction == 'right' then
-        hitDirection = 2
-    elseif direction == 'down-right' then
-        hitDirection = 3
-    elseif direction == 'down' then
-        hitDirection = 4
-    elseif direction == 'down-left' then
-        hitDirection = 5
-    elseif direction == 'left' then
-        hitDirection = 6
-    elseif direction == 'up-left' then
-        hitDirection = 7
-    end 
+    self.entity:changeAnimation('attack-' .. tostring(self.entity.direction))
 end
 
 function EntityRangedAttackState:enter(params)
-    self.entity.currentAnimation.interval = self.entity.currentAnimation.baseInterval
-    self.entity:changeAnimation('attack-' .. tostring(self.entity.direction))
-    self.entity.currentAnimation.interval = self.entity.currentAnimation.interval / self.entity.attackSpeed
-    self.entity.getCommand = false
+    self.entity.currentAnimation:refresh()
+    self.entity = params.entity
     local dirx = self.level.player.mapX - self.entity.mapX
     local diry = self.level.player.mapY - self.entity.mapY
+    if dirx > 0 then
+        dirx = 1
+    elseif dirx < 0 then
+        dirx = -1
+    else
+        dirx = 0
+    end
+    if diry > 0 then
+        diry = 1
+    elseif diry < 0 then
+        diry = -1
+    else
+        diry = 0
+    end
     for i = 1, 8 do
         if MDx[i] == dirx and MDy[i] == diry then
             self.entity.direction = self.entity.directions[i]
         end
     end
-    local tile = {
-        x = self.entity.mapX,
-        y = self.entity.mapY
-    }
-    -- restart animation
-    self.entity.currentAnimation:refresh()
+    self.entity:changeAnimation('attack-' .. tostring(self.entity.direction))
 end
 
 function EntityRangedAttackState:update(dt)  
+    self.entity.currentState = 'ranged_attack'
     if self.entity.currentAnimation.timesPlayed > 0 then
         self.entity.currentAnimation.timesPlayed = 0
         table.insert(self.level.projectiles, Projectile {
@@ -59,11 +49,6 @@ function EntityRangedAttackState:update(dt)
             x = self.entity.x + self.entity.width/2,
             y = self.entity.y + self.entity.height/2,
         })
-        if self.entity:distToPlayer() <= self.entity.attackRange then
-            self.entity:changeState('ranged_attack')
-        else
-            self.entity.stop = false
-            self.entity:changeState('walk')
-        end
+        self:checkAgro()
     end
 end

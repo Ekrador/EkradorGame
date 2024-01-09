@@ -10,9 +10,21 @@ end
 function Interface:update(dt)
     self:holdMouse(dt)
     self:dragSpells(dt)
+    self.xpBar = ProgressBar{
+        x = self.player.x - VIRTUAL_WIDTH / 2 + 89,
+        y = self.player.y - VIRTUAL_HEIGHT / 2 + 190,
+        width = 205,
+        height = 4,
+        color = {r = 1/255, g = 32/255, b = 180/255, transparency = 1},
+        value = self.player.xp,
+        max = self.player.xpToLevel,
+    }
 end
 
 function Interface:render(x, y)
+    if self.xpBar ~= nil then
+        self.xpBar:render()
+    end
     love.graphics.draw(gTextures['panel'],x, y)
     self:renderResources(x, y)
     for i = 1, 4 do
@@ -22,7 +34,7 @@ function Interface:render(x, y)
                 love.graphics.setColor(1,1,1,0.3)
             end
             love.graphics.draw(gTextures[tostring(self.player.class)..'_spells'],
-            gFrames[tostring(self.player.class)..'_spells'][self.player.spells[self.player.spellPanel[i]].id], x + 93 + (i-1) * 20, y + 198)
+            gFrames[tostring(self.player.class)..'_spells'][self.player.spellPanel[i]], x + 93 + (i-1) * 20, y + 198)
             love.graphics.setColor(1,1,1,1)
         end
     end

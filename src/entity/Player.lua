@@ -23,16 +23,17 @@ function Player:init(def)
     self.totalIntelligence = def.intelligence
     self.damage = self.totalStrength
     self.cooldownReduction = 1
-    self.level = 1
+    self.level = def.level
+    self.playerlevel = 1
     self.xp = 0
-    self.xpToLevel = self.level * 100
+    self.xpToLevel = self.playerlevel * 100
     self.bonusPoints = 5
     self.talentPoints = 1
     self.healPotionTimer = 0
     self.energyPotionTimer = 0
     self.healPotionReady = false
     self.energyPotiReady = false
-    self.gold = 0
+    self.gold = 100
     self.step = {}
     if self.class == 'warrior' then
         self.energyBar = 'Rage'
@@ -41,13 +42,9 @@ function Player:init(def)
     elseif self.class == 'mage' then
         self.energyBar = 'Mana'
     end
-    for k, v in pairs(ENTITY_SPELLS['player'][self.class]) do
-        spell = Spells(v, self)
-        table.insert(self.spells, spell)
-    end
     self.GUI = Interface{
         class = self.class,
-        player = self
+        player = self,
         }
 
     self.equipment = {
@@ -103,6 +100,8 @@ end
 
 function Player:update(dt)
     self.stateMachine:update(dt)
+    self:calculateStats()
+    
     for k, v in pairs(self.spells) do
         v:update(dt)
     end
@@ -115,7 +114,6 @@ function Player:update(dt)
         self.currentAnimation:update(dt)
     end
 
-    self:calculateStats()
 
     self:regenerateEnergy(dt)
 
@@ -129,22 +127,22 @@ function Player:update(dt)
         end
     end
 
-    
+    if love.keyboard.wasPressed('c') then
+        gStateStack:push(Inventory(self))
+    end
+    if love.keyboard.wasPressed('v') then
+        gStateStack:push(TalentTree(self))
+    end
+end
 
-        -- FOR DEBUG
-        if love.keyboard.wasPressed('space') then
-            self:heal(15)
+function Player:takedamage(amount)
+    local shield = self.equipment.shield.weared
+    if shield then
+        if math.random(100) <= shield.block_chance then
+            amount = math.max(amount - shield.block_damage, 1)
         end
-        if love.keyboard.wasPressed('c') then
-            gStateStack:push(Inventory(self))
-        end
-        if love.keyboard.wasPressed('p') then
-            gStateStack:push(TalentTree(self))
-        end
-        if love.keyboard.wasPressed('m') then
-            self.gold = self.gold + 15
-        end
-
+    end
+    Entity.takedamage(self, amount)
 end
 
 function Player:getEnergy(amount)
@@ -155,20 +153,21 @@ function Player:spentEnergy(amount)
     self.currentEnergy = math.max(0, self.currentEnergy - amount)
 end
 
-function Player:render(x, y)
-    self.stateMachine:render()
-    self.GUI:render(x, y)     
+function Player:render()
+    self.stateMachine:render()    
     self:healthChangedDisplay()         
 end
 
 function Player:getXp(xp)
     self.xp = self.xp + xp
     if self.xpToLevel <= self.xp then
+        self:heal(20)
+        self.playerlevel = self.playerlevel + 1
         self.bonusPoints = self.bonusPoints + BONUS_POINTS_LVLUP
         self.talentPoints = self.talentPoints + TALENT_POINTS_LVLUP
         self.xp = self.xp - self.xpToLevel
-        self.xpToLevel = self.level * 100
-        self:getXp(0)
+        self.xpToLevel = self.playerlevel * 100
+        self:getXp(self.xp)
     end
 end
 
@@ -198,8 +197,14 @@ function Player:move(path, speed)
     for i = 1, #path do
         table.insert(self.actionsQueue, path[i])
     end
-
-    self:steps(1, speed)
+    if #self.step > 0 then
+        self.step:finish(function()
+            self:steps(1, speed)
+        end)
+    else
+        self:steps(1, speed)
+    end
+    
 end
 
 
@@ -228,10 +233,11 @@ function Player:steps(i, speed)
     local newY = (path[i].x-1)*0.5*GROUND_HEIGHT+ (path[i].y-1)*0.5*GROUND_HEIGHT - self.height + GROUND_HEIGHT
     self.direction = self.directions[path[i].direction]
     self:changeAnimation('walk-' .. tostring(self.direction))
+    gSounds['step']:stop()
+    gSounds['step']:play() 
     self.step = Timer.tween(1 / speed,{
         [self] = { x = newX, y = newY }
-    })  
-    self.step:register():finish(function()  
+    }):finish(function()  
         self:steps(i + 1, speed)
     end)
 end
@@ -241,13 +247,14 @@ function Player:calculateStats()
     local agility = 0
     local intelligence = 0
     local damage = 3
-
+    local armor = 0
     for k, v in pairs(self.equipment) do
         if v.weared ~= nil then
             strength = strength + (v.weared.strength and v.weared.strength or 0)
             agility = agility + (v.weared.agility and v.weared.agility or 0)
             intelligence = intelligence + (v.weared.intelligence and v.weared.intelligence or 0)
             damage = damage + (v.weared.damage and v.weared.damage or 0)
+            armor = armor + (v.weared.armor and v.weared.armor or 0)
         end
     end
 
@@ -256,7 +263,8 @@ function Player:calculateStats()
     self.totalIntelligence = intelligence + self.intelligence
     self.maxHealth = 100 + strength * 6
     self.attackSpeed = 1 + agility * 0.01
-    self.damage = math.random((self.totalStrength + damage) * 0.8, self.totalStrength + damage)
+    self.damage = math.random((self.totalStrength + damage) * 0.8, self.totalStrength + damage) 
+    self.armor = armor
 end
 
 
@@ -298,5 +306,16 @@ function Player:checkBeltUsage()
                 self.belt[i][1] = nil
             end
         end
+    end
+end
+
+function Player:initplayerSpells()
+    local spells = {}
+    for k, v in pairs(ENTITY_SPELLS['player'][self.class]) do
+        spell = Spells(v, self, self.level)
+        table.insert(spells, spell)
+    end
+    for k, v in pairs(spells) do
+        self.spells[v.id] = v
     end
 end

@@ -6,20 +6,22 @@ function EntityStunnedState:init(entity, level)
 end
 
 function EntityStunnedState:enter(params)
+    self.entity = params.entity
     self.stunDuration = params.duration
     self.timer = 0
-    self.entity.getCommand = false
-    self.entity.stop = false
 end
 
 function EntityStunnedState:update(dt)
     self.timer = self.timer + dt
     if self.timer > self.stunDuration then
-        self.entity:changeState('walk')
+        self.entity:changeState('idle', {entity = self.entity})
     end
 end
 
 function EntityStunnedState:render()
-    EntityBaseState.render(self)
+    local anim = self.entity.currentAnimation
+    love.graphics.draw(gTextures[anim.texture], gFrames[anim.texture][anim:getCurrentFrame()],
+    math.floor(self.entity.x), math.floor(self.entity.y))
+        
     love.graphics.draw(gTextures['stun'], self.entity.x , self.entity.y - 16)
 end

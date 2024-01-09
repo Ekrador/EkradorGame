@@ -1,7 +1,7 @@
 PlayerAttackState = Class{__includes = EntityAttackState}
 
 function PlayerAttackState:init(entity, level)
-    EntityAttackState.init(self, entity)
+    EntityAttackState.init(self, entity, level)
     self.level = level
 end
 
@@ -19,6 +19,7 @@ function PlayerAttackState:enter(params)
         x = self.entity.mapX,
         y = self.entity.mapY
     }
+    table.insert(self.damage, tile)
     self:damageToTile(tile, self.entity.attackRange)
     -- restart animation
     self.entity.currentAnimation:refresh()
@@ -29,11 +30,14 @@ function PlayerAttackState:update(dt)
         gSounds['sword_swing']:stop()
         gSounds['sword_swing']:play() 
         self.entity.currentAnimation.timesPlayed = 0
-        for k, enemy in pairs(self.level.entities) do
+        for k, enemy in pairs(self.level.enemyOnScreen) do
             for j, tile in pairs(self.damage) do
                 if tile.x == enemy.mapX and tile.y == enemy.mapY then
                     if not enemy.dead then
                         enemy:takedamage(self.entity.damage)
+                        if self.entity.energyBar == 'Rage' then
+                            self.entity:getEnergy(3)
+                        end
                     end
                     goto next
                 end
@@ -42,4 +46,11 @@ function PlayerAttackState:update(dt)
         end
         self.entity:changeState('walk')
     end
+end
+
+function PlayerAttackState:render()
+    local anim = self.entity.currentAnimation
+    love.graphics.draw(gTextures[anim.texture], gFrames[anim.texture][anim:getCurrentFrame()],
+        math.floor(self.entity.x), math.floor(self.entity.y))
+    
 end

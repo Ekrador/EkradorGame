@@ -1,4 +1,3 @@
---require('lovedebug')
 require 'src/Dependencies'
 
 function love.load()
@@ -14,7 +13,7 @@ function love.load()
     })
 
     gStateStack = StateStack()
-    gStateStack:push(PlayState())
+    gStateStack:push(StartState())
 
     love.keyboard.keysPressed = {}
     love.mouse.keysPressed = {}
@@ -100,3 +99,17 @@ function to_grid_coordinate(x,y)
     
     return invertX, invertY
 end
+
+function instanceOf(subject, super)
+
+	super = tostring(super)
+	local mt = getmetatable(subject)
+
+	while true do
+		if mt == nil then return false end
+		if tostring(mt) == super then return true end
+
+		mt = getmetatable(mt)
+	end	
+end
+

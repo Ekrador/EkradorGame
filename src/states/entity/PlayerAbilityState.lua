@@ -5,6 +5,8 @@ function PlayerAbilityState:init(entity, level)
     self.mouseX = mouseInScreenX + self.entity.x
     self.mouseY = mouseInScreenY + self.entity.y
     self.target = nil
+    self.stateTimer = 0
+    self.skillTimer = 0
 end
 
 
@@ -45,8 +47,6 @@ function PlayerAbilityState:getTarget()
         for k, v in pairs(self.level.enemyOnScreen) do
             if ((self.mouseX > v.x) and (self.mouseX < v.x + v.width)) and ((self.mouseY > v.y) and (self.mouseY < v.y + v.height)) then
                 self.target = v
-            else
-                self.target = nil
             end
         end
     elseif self.spell.targetType == 'cell' then
@@ -58,8 +58,6 @@ function PlayerAbilityState:getTarget()
                 mapX,
                 mapY
             }
-        else
-            self.target = nil
         end
     elseif self.spell.targetType == 'self' then
         self.target = self.entity
@@ -69,8 +67,11 @@ end
 
 function PlayerAbilityState:castSpell()
         self.entity.spells[self.id]:use(self.target, self.level.enemyOnScreen)
-        self.entity:changeState('walk')
 end
 
 function PlayerAbilityState:render()
+    local anim = self.entity.currentAnimation
+    love.graphics.draw(gTextures[anim.texture], gFrames[anim.texture][anim:getCurrentFrame()],
+        math.floor(self.entity.x), math.floor(self.entity.y))
+    
 end

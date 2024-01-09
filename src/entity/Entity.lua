@@ -5,6 +5,8 @@ function Entity:init(def)
     self.direction = 'down'
     self.name = def.name
     self.animations = self:createAnimations(def.animations)
+    self.startX = def.mapX
+    self.startY = def.mapY
     self.mapX = def.mapX
     self.mapY = def.mapY
     self.attackRange = def.attackRange
@@ -13,6 +15,7 @@ function Entity:init(def)
     self.width = def.width 
     self.height = def.height 
     self.speed = def.speed
+    self.armor = 0
     self.attackSpeed = def.attackSpeed and def.attackSpeed or 1
     self.speedUnbaffed = def.speed
     self.level = def.level
@@ -23,23 +26,27 @@ function Entity:init(def)
     self.healthLogHandler = 0
     self.healthChanged = false
     self.dead = false
-    self.chanceOnLoot = true
+    self.chanceOnLoot = def.chanceOnLoot
     self.damage = def.damage
     self.path = {}
     self.timer = 0
+    self.spells = {}
+    self.ready = false
+    self.currentState = 'idle'
+    self.onscreen = false
 
-    self.x = (self.mapX-1)*0.5*GROUND_WIDTH + (self.mapY-1)*-1*GROUND_WIDTH*0.5
+    self.x = self:convertToX(self.mapX, self.mapY)
 
-    self.y = (self.mapX-1)*0.5*GROUND_HEIGHT+ (self.mapY-1)*0.5*GROUND_HEIGHT - self.height + GROUND_HEIGHT
+    self.y = self:convertToY(self.mapX, self.mapY)
 
     self.getCommand = false
-    self.stop = false
+    self.walk = false
     self.healthBar = ProgressBar{
         x = self.x,
         y = self.y - 5,
         width = self.width - 4,
         height = 3,
-        color = {r = 189/255, g = 32/255, b = 32/255},
+        color = {r = 189/255, g = 32/255, b = 32/255, transparency = 0.7},
         value = self.currentHealth,
         max = self.maxHealth,
     }
@@ -80,6 +87,9 @@ end
 
 function Entity:update(dt)
     self.stateMachine:update(dt)
+    for k, v in pairs(self.spells) do
+        v:update(dt)
+    end
     self.healthBar.x = self.x
     self.healthBar.y = self.y - 5
     self.healthBar.value = self.currentHealth
@@ -90,12 +100,8 @@ function Entity:update(dt)
     end
 end
 
-function Entity:collides(target)
-    return not (self.x + self.width < target.x or self.x > target.x + target.width or
-                self.y + self.height < target.y or self.y > target.y + target.height)
-end
-
-function Entity:takedamage(dmg)
+function Entity:takedamage(amount)
+    local dmg = amount * (1 - math.min(100, self.armor) * 0.5 / 100)
     self.healthLogHandler = -dmg
     self.currentHealth = math.max(0, self.currentHealth - dmg)
     self.healthChanged = true
@@ -112,6 +118,7 @@ end
 function Entity:render()
     self.stateMachine:render()
     self:healthChangedDisplay()
+    self:nameDisplay()
     if self.renderHealthBars then
         self.healthBar:render()
     end
@@ -146,29 +153,39 @@ function Entity:pathfind(def)
 
     local lastStep = 0
     local curStep = 0
-    local maxSteps = 100
     local tracking = true
+    local maxSteps = 600
     while tracking do
         for i = 1, 8 do
             local dx = MDx[i]
             local dy = MDy[i]
             local newX = xCur + dx
             local newY = yCur + dy
+            if path == nil then
+                return nil
+            end
             if not self.level.map.tiles[newY][newX]:collidable() and path[newY][newX] == 0 then
-                lastStep = lastStep + 1
-                MShx[lastStep] = newX
-                MShy[lastStep] = newY
-                MshN[lastStep] = i
-                path[newY][newX] = i
-
-                if newX == endX and newY == endY then
-                    tracking = false
-                    break
+                if not self:collidesMoving({x = newX, y = newY}) then
+                    lastStep = lastStep + 1
+                    MShx[lastStep] = newX
+                    MShy[lastStep] = newY
+                    MshN[lastStep] = i
+                    path[newY][newX] = i
+                    if newX == endX and newY == endY then
+                        tracking = false
+                        break
+                    end
+                else
+                    if newX == endX and newY == endY then
+                        if xCur == startX and yCur == startY then
+                            return nil
+                        end
+                    endX = xCur
+                    endY = yCur
+                        tracking = false
+                        break
+                    end
                 end
-                if lastStep > maxSteps then
-                    return nil
-                end
-
             end
         end
 
@@ -176,10 +193,16 @@ function Entity:pathfind(def)
             break
         end
 
+        if curStep > maxSteps then
+            return nil
+        end
+
         if curStep < lastStep then
             curStep = curStep + 1
             xCur = MShx[curStep]
             yCur = MShy[curStep]
+        else 
+            return nil
         end
     end
 
@@ -208,6 +231,7 @@ function Entity:pathfind(def)
                     direction = path[PathY[i]][PathX[i]]
                 }
             end
+            table.remove(movePath, -1)
             return movePath
         end
 
@@ -229,7 +253,8 @@ function Entity:statusEffect(dt)
         if state.timer == 0 then
             if state.status == 'stun' then
                 self.stunned = true
-                self:changeState('stunned', {duration = state.duration})
+                self.getCommand = false
+                self:changeState('stunned', {entity = self, duration = state.duration})
             elseif state.status == 'slow' then
                 self.speedUnbaffed = self.speed
                 self.speed = self.speed / state.effectPower
@@ -281,3 +306,41 @@ function Entity:healthChangedDisplay()
     end
 end
 
+function Entity:nameDisplay()
+    local mousex = self.level.player.x + mouseInScreenX 
+    local mousey = self.level.player.y + mouseInScreenY - self.level.player.height
+    local textWidth  = gFonts['small']:getWidth(self.name)
+    if((mousex > self.x and mousex < self.x + self.width) and (mousey < self.y and mousey > self.y - self.height)) then
+        love.graphics.setColor(0,0,0,1)
+        love.graphics.print(self.name, gFonts['small'], math.floor(self.x + self.width/2 - textWidth/2 ), math.floor(self.y - 14))
+        love.graphics.setColor(1,1,1,1)
+        love.graphics.print(self.name, gFonts['small'], math.floor(self.x + self.width/2 - textWidth/2), math.floor(self.y - 15))
+    end
+end
+
+function Entity:initSpells()
+    if ENTITY_SPELLS[self.name] ~= nil then
+        for k, v in pairs(ENTITY_SPELLS[self.name]) do
+            spell = Spells(v, self, self.level)
+            table.insert(self.spells, spell)
+        end
+    end
+end
+
+
+function Entity:convertToX(mapX, mapY)
+    return (mapX-1)*0.5*GROUND_WIDTH + (mapY-1)*-1*GROUND_WIDTH*0.5
+end
+
+function Entity:convertToY(mapX, mapY)
+    return (mapX-1)*0.5*GROUND_HEIGHT+ (mapY-1)*0.5*GROUND_HEIGHT - self.height + GROUND_HEIGHT
+end
+
+function Entity:collidesMoving(point)
+    for k, v in pairs(self.level.entities) do
+        if v.mapX == point.x and v.mapY == point.y and not v.dead then
+            return true
+        end
+    end
+    return false
+end

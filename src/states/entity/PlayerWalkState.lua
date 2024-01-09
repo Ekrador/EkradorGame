@@ -2,13 +2,16 @@
 PlayerWalkState = Class{__includes = EntityWalkState}
 
 function PlayerWalkState:init(entity, level)
-    EntityWalkState.init(self, entity)
+    EntityWalkState.init(self, entity, level)
     self.level = level
     self.mx = mouseInScreenX
     self.my = mouseInScreenY
     self.direction = 1
 end
   
+function PlayerWalkState:enter()
+end
+
 function PlayerWalkState:update(dt)
     if love.keyboard.isDown('lshift') then
         if (self.mx > self.entity.width) and (self.my < self.entity.height / 2) then
@@ -35,7 +38,6 @@ function PlayerWalkState:update(dt)
     elseif (love.mouse.wasPressed(2) or love.mouse.wasReleased(2)) and 
     (mouseTileY > 0 and mouseTileY < self.level.mapSize) and (mouseTileX > 0 and mouseTileX < self.level.mapSize) and
     not self.level.map.tiles[mouseTileY][mouseTileX]:collidable() then
-        --timer for antispam
         local path = self.entity:pathfind{
             startX = self.entity.mapX,
             startY = self.entity.mapY,
@@ -48,6 +50,8 @@ function PlayerWalkState:update(dt)
                 self.entity.step:remove()
             end            
             self.entity:move(path, self.entity.speed)
+        else
+            self.entity:changeState('idle')
         end
     else
         if not self.entity.getCommand then
@@ -56,3 +60,9 @@ function PlayerWalkState:update(dt)
     end
 end
 
+function PlayerWalkState:render()
+    local anim = self.entity.currentAnimation
+    love.graphics.draw(gTextures[anim.texture], gFrames[anim.texture][anim:getCurrentFrame()],
+        math.floor(self.entity.x), math.floor(self.entity.y))
+    
+end

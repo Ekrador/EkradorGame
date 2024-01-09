@@ -9,3 +9,10 @@ function PlayerIdleState:update(dt)
         self.entity:changeState('walk')
     end
 end
+
+function PlayerIdleState:render()
+    local anim = self.entity.currentAnimation
+    love.graphics.draw(gTextures[anim.texture], gFrames[anim.texture][anim:getCurrentFrame()],
+        math.floor(self.entity.x), math.floor(self.entity.y))
+    
+end

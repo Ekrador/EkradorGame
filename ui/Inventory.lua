@@ -14,9 +14,14 @@ end
 function Inventory:render()
     local x = self.x
     local y = self.y
-
+    local damage = self.player.totalStrength + 3 + (self.player.equipment.weapon.weared and self.player.equipment.weapon.weared.damage or 0)
+    self.player:calculateStats()
     local frame = 2
     love.graphics.draw(gTextures['inventory'],x, y)
+    love.graphics.print('Level: '..tostring(self.player.playerlevel),gFonts['small'], x + 150, y + 30)
+    love.graphics.print('Armor: '..tostring(self.player.armor),gFonts['small'], x + 150, y + 42)
+    love.graphics.print('Damage: ',gFonts['small'], x + 150, y + 54)
+    love.graphics.print(tostring(math.floor(damage * 0.8)).. ' - '..tostring(math.floor(damage)),gFonts['small'], x + 150, y + 66)
     love.graphics.print('Available points: '..tostring(self.player.bonusPoints),gFonts['small'], x + 76, y + 110)
     love.graphics.print('Strength:    '..tostring(self.player.totalStrength),gFonts['small'], x + 66, y + 122)
     love.graphics.print('Agility:       '..tostring(self.player.totalAgility),gFonts['small'], x + 66, y + 134)
@@ -139,13 +144,13 @@ function Inventory:update(dt)
 
     if self.player.bonusPoints > 0 then
         if love.mouse.wasPressed(1) and (mx > 132 and mx < 143) and (my > 120 and my < 131) then
-            self.player.totalStrength = self.player.totalStrength + 1
+            self.player.strength = self.player.strength + 1
             self.player.bonusPoints = math.max(0, self.player.bonusPoints - 1)
         elseif love.mouse.wasPressed(1) and (mx > 132 and mx < 143) and (my > 132 and my < 143) then
-            self.player.totalAgility = self.player.totalAgility + 1
+            self.player.agility = self.player.agility + 1
             self.player.bonusPoints = math.max(0, self.player.bonusPoints - 1)
         elseif love.mouse.wasPressed(1) and (mx > 132 and mx < 143) and (my > 143 and my < 154) then
-            self.player.totalIntelligence = self.player.totalIntelligence + 1
+            self.player.intelligence = self.player.intelligence + 1
             self.player.bonusPoints = math.max(0, self.player.bonusPoints - 1)
         end
     end
