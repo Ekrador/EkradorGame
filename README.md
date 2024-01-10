@@ -1,4 +1,5 @@
-# Ekrador's Game
+# Final project for CS50’s Introduction to Computer Science
+## Ekrador's Game
 #### Video Demo:  https://youtu.be/VFWq6UDF190
 #### Description:
 This is an isometric role-playing game built in the Love 2D engine using Lua.   
